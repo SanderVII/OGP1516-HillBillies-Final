@@ -13,10 +13,15 @@ import hillbillies.exception.UnitMaxedOutException;
 import hillbillies.util.Position;
 import hillbillies.util.UnitPosition;
 
-// TODO de fout zoeken in defaultBehaviour. (kan onder andere niet meer uitgezet worden).
-// TODO isvalidposition veranderen naar canHaveAsUnitCoordinates indien het over units gaat.
+//TODO de fout zoeken in defaultBehaviour. (kan onder andere niet meer uitgezet worden).
+//TODO isvalidposition veranderen naar canHaveAsUnitCoordinates indien het over units gaat.
+
+//TODO sprinting feature doesn't work.
+//TODO orientation of work seems incorrect for east-north directions.
+//TODO do not award xp for failed task (i.e. working air)
+
 /** 
- * @version 2.15
+ * @version 2.17
  */
 
 /**
@@ -51,6 +56,8 @@ import hillbillies.util.UnitPosition;
  * 					| hasProperWorld()
  * @invar	Each unit must have a proper faction to which it is attached.
  * 					| hasProperFaction()
+ * @invar	Each unit must have a proper task.
+ * 					| hasProperTask()
  * 
  * @author Sander Mergan, Thomas Vranken
  */
@@ -446,7 +453,6 @@ public class Unit extends Entity{
 		int weight = 0;
 		if (this.hasItem())
 			weight += this.getItem().getWeight();
-		
 		
 		weight += this.weight;
 		return weight;
@@ -1550,6 +1556,10 @@ public class Unit extends Entity{
 	 * @throws	IllegalArgumentException
 	 * 			The given destination is invalid.
 	 */
+	/* TODO there seems to be some bug: when the path is a U-shape (on a single z-level)
+	 * the unit walks towards the cube right before the final one, and then suddenly flashes to
+	 * its destination.
+	 */
 	private void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
 		if (thisIsDefaultBehaviour)
 			System.out.println("moveTo by defaultBehaviour");
@@ -1825,8 +1835,70 @@ public class Unit extends Entity{
 	private double orientation;
 	
 	// ==================================================================================
+	// Methods concerning the task of this unit.
+	// ==================================================================================
+	
+	/**
+	 * Return the task of this unit.
+	 */
+	@Basic @Raw
+	public Task getTask() {
+		return this.task;
+	}
+	
+	/**
+	 * Check whether this unit has a task.
+	 * @return	True if the task of this unit is effective.
+	 * 			| result == (getTask() != null)
+	 */
+	public boolean hasTask() {
+		return this.getTask() != null;
+	}
+	
+	/**
+	 * Checks whether this unit has a proper task attached to it.
+	 * 
+	 * @return	True if and only if the task of this unit does not reference
+	 * 			an effective task, or that task references this unit
+	 * 			as its unit.
+	 * 			| result == ( (this.getTask() == null) || 
+	 * 			|				(this.getTask().getUnit() == this) )
+	 */
+	public boolean hasProperTask() {
+		return ( (this.getTask() == null) || (this.getTask().getUnit() == this) );
+	}
+	
+	/**
+	 * Sets the task attached to this unit to to the given task.
+	 * 
+	 * @param	task
+	 * 			The task to attach to this unit.
+	 * @post	This unit references the given task as its task.
+	 * 			| new.getTask() == task
+	 * @throws	IllegalArgumentException
+	 * 			The given task is effective but does not references
+	 * 			this unit as its unit.
+	 * 			| (task != null) && (task.getUnit() != this)
+	 * 			Or, the task is not effective and this unit references
+	 * 			a task which still references this unit as its unit.
+	 * 			| (task == null) && (this.hasTask() && (this.getTask().getUnit() == this))
+	 */
+	public void setTask(@Raw Task task) throws IllegalArgumentException {
+		if ( (task != null) && (task.getUnit() != this) )
+			throw new IllegalArgumentException("Task does not properly associate this unit.");
+		if ( (task == null) && (this.hasTask() && (this.getTask().getUnit() == this)))
+			throw new IllegalArgumentException("Link with current task not properly broken.");
+		this.task = task;
+	}
+	
+	/**
+	 * A variable referencing the task attached to this unit.
+	 */
+	private Task task;
+	
+	// ==================================================================================
 	// Methods for the different activities.
-	// ==================================================================================	
+	// ==================================================================================
 	
 	/**
 	 * Returns the current activity.
@@ -1859,56 +1931,6 @@ public class Unit extends Entity{
 	 * A variable that stores the current activity of this unit. The default value is NOTHING.
 	 */
 	private Activity currentActivity = Activity.NOTHING;
-	
-	/**
-	 * Sets the log this unit is carrying to the given log.
-	 * 
-	 * @param	log
-	 *          		The new log this unit is carrying.
-	 * @post	The log this unit is carrying , is equal to the given log. 
-	 *       		| 	new.getLog() == log
-	 */
-	void setLog(Log log){
-		this.log = log;
-	}
-	
-	/**
-	 * Returns the log this unit is carrying.
-	 */
-	@Basic @Raw
-	public Log getLog(){
-		return this.log;
-	}
-	
-	/**
-	 * A variable referencing the log this unit is carrying.
-	 */
-	private Log log;
-	
-	/**
-	 * Sets the boulder this unit is carrying to the given boulder.
-	 * 
-	 * @param	boulder
-	 *          		The new boulder this unit is carrying.
-	 * @post	The boulder this unit is carrying , is equal to the given boulder. 
-	 *       		| 	new.getBoulder() == boulder
-	 */
-	void setBoulder(Boulder boulder){
-		this.boulder = boulder;
-	}
-	
-	/**
-	 * Returns the boulder this unit is carrying.
-	 */
-	@Basic @Raw
-	public Boulder getBoulder(){
-		return this.boulder;
-	}
-	
-	/**
-	 * A variable referencing the boulder this unit is carrying.
-	 */
-	private Boulder boulder;
 	
 	/**
 	 * Checks whether the time until the current activity of this unit is finished, is a valid time.
@@ -2488,7 +2510,7 @@ public class Unit extends Entity{
 	 * @post	The item this unit is carrying is equal to the given item.
 	 *				| this.getItem() == item
 	 * @throws IllegalArgumentException
-	 *				The given item doesn't reference this unit correctly
+	 *				The given item doesn't reference this unit correctly.
 	 *				| (item != null) && (item.getUnit != this)  
 	 * @throws IllegalArgumentException
 	 *				The given item is null and the item currently being carried is not correctly dropped yet. 
