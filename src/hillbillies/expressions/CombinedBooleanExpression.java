@@ -1,4 +1,4 @@
-package hillbillies.model.expression;
+package hillbillies.expressions;
 
 import hillbillies.model.Unit;
 import hillbillies.model.World;
