@@ -102,10 +102,9 @@ public class SchedulerTest {
 	}
 	
 	@Test
-	public void testFaction () {
+	public void testSetScheduler_CurrentScheduler () {
 		Scheduler scheduler2 = new Scheduler(faction2);
 		exception.expect(IllegalArgumentException.class);
-		this.faction.setScheduler(scheduler2);
 		
 		this.faction2.setScheduler(scheduler2);
 		assertTrue(scheduler2.hasProperFaction());
