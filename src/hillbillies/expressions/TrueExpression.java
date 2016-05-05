@@ -12,7 +12,7 @@ public class TrueExpression extends BooleanExpression {
 	}
 	
 	@Override
-	public Boolean evaluate() {
+	public Boolean evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return true;
 	}

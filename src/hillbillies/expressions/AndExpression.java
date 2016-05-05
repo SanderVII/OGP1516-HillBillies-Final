@@ -10,18 +10,12 @@ public class AndExpression extends CombinedBooleanExpression {
 		super(left, right, sourceLocation);
 	}
 	
-	public Boolean evaluate() {
-		if (this.getLeft() instanceof BooleanExpression && this.getRight() instanceof BooleanExpression) {
-			boolean leftBoolean = ((Boolean) this.getLeft().evaluate()).booleanValue();
-			boolean rightBoolean = ((Boolean) this.getRight().evaluate()).booleanValue();
-			if (leftBoolean && rightBoolean)
-				return true;
-			else
-				return false;
-		} else
-			// TODO wat als slechte expressie? misschien beter checken bij aanmaken constructor?
+	public Boolean evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
+		boolean leftBoolean = ((Boolean) this.getLeft().evaluate(world, unit, selectedCubes, sourceLocation)).booleanValue();
+		boolean rightBoolean = ((Boolean) this.getRight().evaluate(world, unit, selectedCubes, sourceLocation)).booleanValue();
+		if (leftBoolean && rightBoolean)
+			return true;
+		else
 			return false;
-			
 	}
-	
 }

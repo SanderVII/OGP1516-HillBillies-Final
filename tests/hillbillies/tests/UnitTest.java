@@ -103,8 +103,8 @@ public class UnitTest {
 	
 	@Test
 	public final void advanceTimeWorkAt_CurrentPosition(){
-		unitMin.workAt(unitMin.getCubePosition());
-		System.out.println(Arrays.toString(unitMin.getCubePosition()));
+		unitMin.workAt(unitMin.getCubeCoordinates());
+		System.out.println(Arrays.toString(unitMin.getCubeCoordinates()));
 		double deltaT = 0.1;
 		assertTrue(unitMin.isWorking());
 		assertTrue(unitMin.getProgress() == 0);
@@ -362,16 +362,16 @@ public class UnitTest {
 	
 	@Test
 	public final void getCubePosition() {
-		assertTrue(unitMin.getCubePosition()[0] == 0);
-		assertTrue(unitMin.getCubePosition()[1] == 0);
-		assertTrue(unitMin.getCubePosition()[2] == 1);
+		assertTrue(unitMin.getCubeCoordinates()[0] == 0);
+		assertTrue(unitMin.getCubeCoordinates()[1] == 0);
+		assertTrue(unitMin.getCubeCoordinates()[2] == 1);
 	}
 	
 	@Test
 	public final void getCubeCente() {
-		assertTrue(Position.getCubeCenter(unitMin.getCubePosition())[0] == 0.5);
-		assertTrue(Position.getCubeCenter(unitMin.getCubePosition())[1] == 0.5);
-		assertTrue(Position.getCubeCenter(unitMin.getCubePosition())[2] == 1.5);
+		assertTrue(Position.getCubeCenter(unitMin.getCubeCoordinates())[0] == 0.5);
+		assertTrue(Position.getCubeCenter(unitMin.getCubeCoordinates())[1] == 0.5);
+		assertTrue(Position.getCubeCenter(unitMin.getCubeCoordinates())[2] == 1.5);
 	}
 	
 	@Test
