@@ -102,6 +102,8 @@ public class World {
 				}
 			}
 		}
+		
+		this.caveInCollapsingCubes();
 	}		
 	
 	/**
@@ -373,7 +375,7 @@ public class World {
 	 * Symbolic constant denoting the probability of
 	 * creating a boulder or rock after a cube collapses.
 	 */
-	public static final double DROP_CHANCE = 0.25;
+	public static final double DROP_CHANCE = 1.0;
 	
 	/**
 	 * Symbolic constant denoting the maximum amount of units in this world.
