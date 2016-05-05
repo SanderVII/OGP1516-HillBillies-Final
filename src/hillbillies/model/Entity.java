@@ -284,7 +284,7 @@ public abstract class Entity {
 	public boolean isFalling() throws IllegalArgumentException {
 		if (this.getIsFalling())
 			return true;
-		else if (Util.fuzzyEquals(this.getPosition().getZCoordinate(), 0))
+		else if (this.getPosition().getCubeCoordinates()[2] == 0)
 			return false;
 		else
 			return (this.getWorld().getCubeBelow(this.getPosition().getCoordinates()).isPassable());
@@ -319,7 +319,7 @@ public abstract class Entity {
 	 * @return	True if all of the requirements are fullfilled.
 	 */
 	public boolean canEndFalling() {
-		return (! this.getWorld().getCubeBelow(this.getPosition().getCoordinates()).isPassable())
+		return ( (this.getPosition().getCubeCoordinates()[2] == 0) || (! this.getWorld().getCubeBelow(this.getPosition().getCoordinates()).isPassable()))
 					&& (Util.fuzzyLessThanOrEqualTo(
 							this.getPosition().getZCoordinate(), 
 							this.getPosition().getCubeCenter()[2]));

@@ -24,6 +24,8 @@ import hillbillies.model.Terrain;
  * 	 
  * @invar   Each world must have proper units.
  *        	| hasProperUnits()	 
+ * @invar   Each world must have proper factions.
+*        | hasProperFactions()
  * @invar   Each world must have proper items.
  *        	| hasProperItems()
  * @invar  The maximum x-value of each world must be a valid maximum x-value for any
@@ -101,7 +103,6 @@ public class World {
 				}
 			}
 		}
-		
 		this.caveInCollapsingCubes();
 	}		
 	
@@ -127,6 +128,15 @@ public class World {
 	}
 	
 	/**
+	 * Returns the terrainChangeListener of this world.
+	 */
+	@Basic
+	@Raw
+	public TerrainChangeListener getTerrainChangeListener(){
+		return this.terrainChangeListener;
+	}
+	
+	/**
 	 *	A variable that references the terrainChangeListener of this world.
 	 */
 	private TerrainChangeListener terrainChangeListener;
@@ -139,17 +149,18 @@ public class World {
 	// ==================================================================================
 	// Destructor for worlds.
 	// ==================================================================================
+	
 	/**
 	 * Terminate this world.
 	 *
 	 * @post   This world  is terminated.
-	 *       | new.isTerminated()
-	 * @post   ...
-	 *       | ...
+	 *       | new.isTerminated() == true
+	 * @effect   All the entities in this world are terminated.
 	 */
-	// TODO breek associations met alle objecten.
 	public void terminate() {
-		for (Entity entity: this.entities){
+		HashSet<Entity> dummy = new HashSet<Entity>();
+		dummy.addAll(this.entities);
+		for (Entity entity: dummy){
 			entity.terminate();
 		}
 		this.isTerminated = true;
@@ -173,12 +184,7 @@ public class World {
 	// ==================================================================================
 	// Methods concerning the factions of this world.
 	// ==================================================================================
-	 
-	 /** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each world must have proper factions.
-	 *        | hasProperFactions()
-	 */
-
+	
 	/**
 	 * Check whether this world has the given faction as one of its
 	 * factions.
@@ -239,7 +245,7 @@ public class World {
 	 *        | result ==
 	 *        |   card({faction:Faction | hasAsFaction({faction)})
 	 */
-	public int getNbFactions() {
+	private int getNbFactions() {
 		return factions.size();
 	}
 	
@@ -267,8 +273,9 @@ public class World {
 	 * @post   This world has the given faction as one of its factions.
 	 *       | new.hasAsFaction(faction)
 	 */
-	public void addFaction(@Raw Faction faction) {
-		assert (faction != null) && (faction.getWorld() == this);
+	void addFaction(@Raw Faction faction) throws IllegalArgumentException{
+		if ((faction == null) || (faction.getWorld() != this))
+			throw new IllegalArgumentException();
 		factions.add(faction);
 	}
 
@@ -287,7 +294,7 @@ public class World {
 	 *       | ! new.hasAsFaction(faction)
 	 */
 	@Raw
-	public void removeFaction(Faction faction) {
+	void removeFaction(Faction faction) {
 		assert this.hasAsFaction(faction) && (faction.getWorld() == null);
 		factions.remove(faction);
 	}
@@ -318,31 +325,6 @@ public class World {
 		return new HashSet<Faction>(this.factions);
 	}
 	
-	//TODO remove and replace with faction in unit-constructor
-//	/**
-//	 * Adds this unit to a faction of this world. If possible, a new faction is created.
-//	 * Else the unit is added to the faction with the least amount of members.
-//	 * 
-//	 * @param 	unit
-//	 * 			The unit to add to a faction.
-//	 * @post	The unit is part of a faction of this world.
-//	 * @throws	IllegalStateException
-//	 * 			The world can create no new factions and all factions are full.
-//	 */
-//	private void addToFaction(Unit unit) throws IllegalStateException {
-//		if (this.getFactions().size() < MAX_FACTIONS)
-//			new Faction(unit);
-//		else {
-//			Faction availableFaction = this.getAvailableFactionWithLeastMembers();
-//			
-//			if (availableFaction != null){
-//				availableFaction.addUnit(unit);
-//			}
-//			// Units have to be rejected silently.
-//			else{}
-//		}
-//	}
-	
 	/**
 	 * Checks if this world is at its maximum active faction capacity.
 	 * @return	True if the amount of acitve factions is less than the maximum.
@@ -358,7 +340,7 @@ public class World {
 	 * @return 	The faction with the least amount of units and free space for new units.
 	 * 			If no such faction exists, return null.
 	 */
-	Faction getAvailableFactionWithLeastMembers() {
+	private Faction getAvailableFactionWithLeastMembers() {
 		Faction availableFactionWithLeastMembers = null;
 		for (Faction faction: this.getFactions()){
 			if (faction.getNbUnits() < MAX_UNITS_FACTION){
@@ -374,7 +356,7 @@ public class World {
 	 * Symbolic constant denoting the probability of
 	 * creating a boulder or rock after a cube collapses.
 	 */
-	public static final double DROP_CHANCE = 1.0;
+	public static final double DROP_CHANCE = 0.25;
 	
 	/**
 	 * Symbolic constant denoting the maximum amount of units in this world.
@@ -578,7 +560,7 @@ public class World {
 	 * 				and have valid coordinates for this world.
 	 */
 	public Set<int[]> getNeighbours(int x, int y, int z) {
-		return (this.getValidCubeCoordinatesInRange(new int[]{x,y,z}, 1));
+		return (this.getNeighbours(new int[]{x,y,z}));
 	}
 	
 	/**
@@ -591,6 +573,8 @@ public class World {
 	 * 				and have valid coordinates for this world.
 	 */
 	public Set<int[]> getNeighbours(int[] coordinates) {
+		Set<int[]> dummy = this.getValidCubeCoordinatesInRange(coordinates, 1);
+		dummy.remove(coordinates);
 		return (this.getValidCubeCoordinatesInRange(coordinates, 1));
 	}
 	
@@ -1218,428 +1202,6 @@ public class World {
 		else
 			return true;
 	}
-	
-//	// =================================================================================================
-//	// Methods concerning the units in this world. (bidirectional association)
-//	// =================================================================================================
-//
-//	/**
-//	 * Check whether this world has the given unit as one of its
-//	 * units.
-//	 * 
-//	 * @param  unit
-//	 *         The unit to check.
-//	 */
-//	@Basic
-//	@Raw
-//	public boolean hasAsUnit(@Raw Unit unit) {
-//		return units.contains(unit);
-//	}
-//
-//	/**
-//	 * Check whether this world can have the given unit
-//	 * as one of its units.
-//	 * 
-//	 * @param  unit
-//	 *         The unit to check.
-//	 * @return True if and only if the given unit is effective
-//	 *         and that unit is a valid unit for a world.
-//	 *       | result ==
-//	 *       |   (unit != null) &&
-//	 *       |   unit.canHaveAsWorld(this)
-//	 */
-//	@Raw
-//	public boolean canHaveAsUnit(Unit unit) {
-//		return (unit != null) && unit.canHaveAsWorld(this);
-//	}
-//
-//	/**
-//	 * Check whether this world has proper units attached to it.
-//	 * 
-//	 * @return True if and only if this world can have each of the
-//	 *         units attached to it as one of its units,
-//	 *         and if each of these units references this world as
-//	 *         the world to which they are attached.
-//	 *       | for each unit in Unit:
-//	 *       |   if (hasAsUnit(unit))
-//	 *       |     then canHaveAsUnit(unit) &&
-//	 *       |          (unit.getWorld() == this)
-//	 */
-//	public boolean hasProperUnits() {
-//		for (Unit unit : units) {
-//			if (!canHaveAsUnit(unit))
-//				return false;
-//			if (unit.getWorld() != this)
-//				return false;
-//		}
-//		return true;
-//	}
-//
-//	/**
-//	 * Return the number of units associated with this world.
-//	 *
-//	 * @return  The total number of units collected in this world.
-//	 */
-//	public int getNbUnits() {
-//		return units.size();
-//	}
-//
-//	/**
-//	 * Add the given unit to the set of units of this world.
-//	 * 
-//	 * @param  unit
-//	 *         The unit to be added.
-//	 * @pre    The given unit is effective and already references
-//	 *         this world.
-//	 *       | (unit != null) && (unit.getWorld() == this)
-//	 * @post   This world has the given unit as one of its units.
-//	 *       | new.hasAsUnit(unit)
-//	 */
-//	public void addUnit(@Raw Unit unit) throws IllegalArgumentException{
-//		if ( (unit == null) || (unit.getWorld() != this) )
-//			throw new IllegalArgumentException();
-//		units.add(unit);
-//	}
-//
-//	/**
-//	 * Remove the given unit from the set of units of this world.
-//	 * 
-//	 * @param  unit
-//	 *         The unit to be removed.
-//	 * @pre    This world has the given unit as one of
-//	 *         its units, and the given unit does not
-//	 *         reference any world.
-//	 *       | this.hasAsUnit(unit) &&
-//	 *       | (unit.getWorld() == null)
-//	 * @post   This world no longer has the given unit as
-//	 *         one of its units.
-//	 *       | ! new.hasAsUnit(unit)
-//	 */
-//	@Raw
-//	public void removeUnit(Unit unit) {
-//		assert this.hasAsUnit(unit) && (unit.getWorld() == null);
-//		units.remove(unit);
-//	}
-//
-//	/**
-//	 * Variable referencing a set collecting all the units
-//	 * of this world.
-//	 * 
-//	 * @invar  The referenced set is effective.
-//	 *       | units != null
-//	 * @invar  Each unit registered in the referenced list is
-//	 *         effective and not yet terminated.
-//	 *       | for each unit in units:
-//	 *       |   ( (unit != null) &&
-//	 *       |     (! unit.isTerminated()) )
-//	 */
-//	private final Set<Unit> units = new HashSet<Unit>();
-//	
-////	/**
-////	 * Returns a set collecting all the units of this world. 
-////	 * 
-////	 * @return	The resulting set does not contain a null reference.
-////	 * @return	Each unit in the resulting set is attached to this world,
-////	 * 			and vice versa.
-////	 */
-////	public Set<Unit> getUnits() {
-////		return new HashSet<Unit>(this.units);
-////	}
-//	
-//	// =================================================================================================
-//	// Methods concerning the logs in this world.
-//	// =================================================================================================
-//	
-//	/** TO BE ADDED TO THE CLASS INVARIANTS
-//	 * @invar   Each world must have proper logs.
-//	 *        | hasProperLogs()
-//	 */
-//
-//	/**
-//	 * Check whether this world has the given log as one of its logs.
-//	 * 
-//	 * @param  log
-//	 *         The log to check.
-//	 */
-//	@Basic
-//	@Raw
-//	public boolean hasAsLog(@Raw Log log) {
-//		return logs.contains(log);
-//	}
-//
-//	/**
-//	 * Check whether this world can have the given log as one of its logs.
-//	 * 
-//	 * @param  log
-//	 *         The log to check.
-//	 * @return True if and only if the given log is effective
-//	 *         and that log is a valid log for any world.
-//	 *       	| result ==
-//	 *       	|   (log != null) &&
-//	 *       	|   Log.canHaveAsWorld(this)
-//	 */
-//	@Raw
-//	public boolean canHaveAsLog(Log log) {
-//		return (log != null) && (log.canHaveAsWorld(this));
-//	}
-//
-//	/**
-//	 * Check whether this world has proper logs attached to it.
-//	 * 
-//	 * @return True if and only if this world can have each of the
-//	 *         logs attached to it as one of its logs,
-//	 *         and if each of these logs references this world as
-//	 *         the world to which they are attached.
-//	 *       	| for each log in Log:
-//	 *       	|   if (hasAsLog(log))
-//	 *       	|     then canHaveAsLog(log) &&
-//	 *       	|          (log.getWorld() == this)
-//	 */
-//	public boolean hasProperLogs() {
-//		for (Log log : logs) {
-//			if (!canHaveAsLog(log))
-//				return false;
-//			if (log.getWorld() != this)
-//				return false;
-//		}
-//		return true;
-//	}
-//
-//	/**
-//	 * Return the number of logs associated with this world.
-//	 *
-//	 * @return  The total number of logs collected in this world.
-//	 */
-//	public int getNbLogs() {
-//		return logs.size();
-//	}
-//	
-//	/**
-//	 * Add the given log to the set of logs of this world.
-//	 * 
-//	 * @param  log
-//	 *         	The log to be added.
-//	 *         
-//	 * @post   This world has the given log as one of its logs.
-//	 *       	| new.hasAsLog(log)
-//	 *       
-//	 *	@throws	NullPointerException
-//	 *			The given log is not an effective log.
-//	 *			| log == null
-//	 *@throws IllegalStateException
-//	 *			The given log could not properly set this world as its world.
-//	 *			| log.getWorld() != this
-//	 */
-//	public void addLog(@Raw Log log) throws NullPointerException, IllegalStateException {
-//		if (log == null)
-//			throw new NullPointerException("The given log is not an effective log.");
-//			
-//		logs.add(log);
-//		log.setWorld(this);
-//		
-//		if (log.getWorld() != this)
-//			throw new IllegalStateException("The log could not be connected to this world.");
-//		
-//	}
-//		
-//	/**
-//	 * Remove the given log from the set of logs of this world.
-//	 * 
-//	 * @param  log
-//	 *         The log to be removed.
-//	 *         
-//	 * @post   This world no longer has the given log as one of its logs.
-//	 *			| ! new.hasAsLog(log)
-//	 *	@post	The given log no longer has the given world as its world.
-//	 *			| log.getWorld() == null
-//	 *
-//	 *	@throws	NullPointerException
-//	 *			The given log is not an effective log.
-//	 *			| log == null
-//	 *	@throws	IllegalArgumentException
-//	 *			The given log does not exist in this world.
-//	 *			|  ! this.hasAsLog(log)
-//	 */
-//	@Raw
-//	public void removeLog(Log log) throws NullPointerException, IllegalArgumentException{
-//		if (log == null)
-//			throw new NullPointerException("The given log is not an effective unit.");
-//		if ( ! this.hasAsLog(log))
-//			throw new IllegalArgumentException("The given log does not exist in this world");
-//		
-//		log.setWorld(null);
-//		logs.remove(log);
-//	}
-//
-////	//	Warning the units in this copy are the original references and not copies.
-////	/**
-////	 * Returns a copy of the set collecting all the logs of this world.
-////	 * 
-////	 * @return	A set of logs which have this world as their world.
-////	 */
-////	public Set<Log> getLogs() {
-////		HashSet<Log> copy = new HashSet<>();
-////		for (Log log: this.logs)
-////			if (log.isBeingCarried())
-////				copy.remove(log);
-////		copy.addAll(logs);
-////		return copy;
-////	}
-//
-//	/**
-//	 * Variable referencing a set collecting all the logs of this world.
-//	 * 
-//	 * @invar  The referenced set is effective.
-//	 *       | logs != null
-//	 *	@note	Notice that though it can't be null, it can be empty.
-//	 * @invar  Each log registered in the referenced list is
-//	 *         effective and not yet terminated.
-//	 *       	| for each log in logs:
-//	 *       	|   ( (log != null) &&
-//	 *       	|     (! log.isTerminated()) )
-//	 *	De tweede invariant klopt niet bij het verwijderen van een log.
-//	 */
-//	private final Set<Log> logs = new HashSet<Log>();
-//	
-//	// =================================================================================================
-//	// Methods concerning the boulders in this world.
-//	// =================================================================================================
-//	
-//	/** TO BE ADDED TO THE CLASS INVARIANTS
-//	 * @invar   Each world must have proper boulders.
-//	 *        | hasProperBoulders()
-//	 */
-//
-//	/**
-//	 * Check whether this world has the given boulder as one of its boulders.
-//	 * 
-//	 * @param  boulder
-//	 *         The boulder to check.
-//	 */
-//	@Basic
-//	@Raw
-//	public boolean hasAsBoulder(@Raw Boulder boulder) {
-//		return boulders.contains(boulder);
-//	}
-//
-//	/**
-//	 * Check whether this world can have the given boulder as one of its boulders.
-//	 * 
-//	 * @param  boulder
-//	 *        	The boulder to check.
-//	 * @return True if and only if the given boulder is effective
-//	 *        	and that boulder is a valid boulder for any world.
-//	 *      	| result ==
-//	 *      	|   (boulder != null) &&
-//	 *      	|   Boulder.canHaveAsWorld(this)
-//	 */
-//	@Raw
-//	public boolean canHaveAsBoulder(Boulder boulder) {
-//		return (boulder != null) && (boulder.canHaveAsWorld(this));
-//	}
-//
-//	/**
-//	 * Check whether this world has proper boulders attached to it.
-//	 * 
-//	 * @return True if and only if this world can have each of the
-//	 *         boulders attached to it as one of its boulders,
-//	 *         and if each of these boulders references this world as
-//	 *         the world to which they are attached.
-//	 *      	| for each boulder in Boulder:
-//	 *      	|   if (hasAsBoulder(boulder))
-//	 *      	|     then canHaveAsBoulder(boulder) &&
-//	 *      	|          (boulder.getWorld() == this)
-//	 */
-//	public boolean hasProperBoulders() {
-//		for (Boulder boulder : boulders) {
-//			if (!canHaveAsBoulder(boulder))
-//				return false;
-//			if (boulder.getWorld() != this)
-//				return false;
-//		}
-//		return true;
-//	}
-//
-//	/**
-//	 * Return the number of boulders associated with this world.
-//	 *
-//	 * @return  The total number of boulders collected in this world.
-//	 */
-//	public int getNbBoulders() {
-//		return boulders.size();
-//	}
-//
-//	/**
-//	 * Add the given boulder to the set of boulders of this world.
-//	 * 
-//	 * @param  boulder
-//	 *         	The boulder to be added.
-//	 *         
-//	 * @post   This world has the given boulder as one of its boulders.
-//	 *       	| new.hasAsBoulders(boulder)
-//	 *       
-//	 *	@throws	NullPointerException
-//	 *			The given boulder is not an effective boulder.
-//	 *			| boulder == null
-//	 *@throws IllegalStateException
-//	 *			The given boulder could not properly set this world as its world.
-//	 *			| boulder.getWorld() != this
-//	 */
-//	public void addBoulder(@Raw Boulder boulder) throws NullPointerException, IllegalStateException {
-//		if (boulder == null)
-//			throw new NullPointerException("The given boulder is not an effective boulder.");
-//			
-//		boulders.add(boulder);
-//		boulder.setWorld(this);
-//		
-//		if (boulder.getWorld() != this)
-//			throw new IllegalStateException("The boulder could not be connected to this world.");
-//		
-//	}
-//
-//	/**
-//	 * Remove the given boulder from the set of boulders of this world.
-//	 * 
-//	 * @param  boulder
-//	 *         The boulder to be removed.
-//	 *         
-//	 * @post   This world no longer has the given boulder as one of its boulders.
-//	 *			| ! new.hasAsBoulder(boulder)
-//	 *	@post	The given boulder no longer has the given world as its world.
-//	 *			| boulder.getWorld() == null
-//	 *
-//	 *	@throws	NullPointerException
-//	 *			The given boulder is not an effective boulder.
-//	 *			| boulder == null
-//	 *	@throws	IllegalArgumentException
-//	 *			The given boulder does not exist in this world.
-//	 *			|  ! this.hasAsBoulder(boulder)
-//	 */
-//	@Raw
-//	public void removeBoulder(Boulder boulder) throws NullPointerException, IllegalArgumentException{
-//		if (boulder == null)
-//			throw new NullPointerException("The given boulder is not an effective unit.");
-//		if ( ! this.hasAsBoulder(boulder))
-//			throw new IllegalArgumentException("The given boulder does not exist in this world");
-//		
-//		boulder.setWorld(null);
-//		boulders.remove(boulder);
-//	}
-	
-//	//	Warning the units in this copy are the original references and not copies.
-//	/**
-//	 * Returns a copy of the set collecting all the boulders of this world.
-//	 * 
-//	 * @return	A set of boulders which have this world as their world.
-//	 */
-//	public Set<Boulder> getBoulders() {
-//		HashSet<Boulder> copy = new HashSet<>();
-//		copy.addAll(boulders);
-//		for (Boulder boulder: this.boulders)
-//			if (boulder.isBeingCarried())
-//				copy.remove(boulder);
-//		return copy;
-//	}
 	
 	// ===============================================================================================
 	// Methods for creating a new random unit.

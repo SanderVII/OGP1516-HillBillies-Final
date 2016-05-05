@@ -337,7 +337,7 @@ public class Faction {
 	 * 			| (! canHaveAsWorld(world)) || (world.getNbFactions() >= World.MAX_FACTIONS)
 	 */
 	public void setWorld(@Raw World world) throws IllegalArgumentException {
-		if ( (! this.canHaveAsWorld(world)) || (world.getNbFactions() >= World.MAX_FACTIONS) )
+		if ( (! this.canHaveAsWorld(world)) || (world.getNbActiveFactions() >= World.MAX_FACTIONS) )
 			throw new IllegalArgumentException();
 		this.world = world;
 	}

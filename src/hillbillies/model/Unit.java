@@ -2593,8 +2593,6 @@ public class Unit extends Entity{
 	private void setDefaultBehaviorEnabled(boolean value){
 		if (this.isTerminated())
 			throw new IllegalStateException("unit is terminated.");
-		if (!value){
-			throw new IllegalStateException("default behaviour should not turn of");}
 		this.defaultBehaviorEnabled = value;
 	}
 	
@@ -3106,9 +3104,8 @@ public class Unit extends Entity{
 			
 			// If default behavior is enabled, keep it running.
 			if (this.getDefaultBehaviorEnabled()){
-				System.out.println("default behaviour started again");
 				this.startDefaultBehavior();
-			}else{System.out.println("default behaviour failed");}
+			}else{}
 			
 		}
 	}
