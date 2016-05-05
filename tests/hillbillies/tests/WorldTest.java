@@ -10,10 +10,7 @@ import org.junit.Test;
 
 import hillbillies.model.Unit;
 import hillbillies.model.World;
-import hillbillies.part2.facade.IFacade;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
-import hillbillies.util.Position;
-import ogp.framework.util.ModelException;
 
 /**
  * 
