@@ -27,8 +27,7 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 
 	@Override
 	public Scheduler getScheduler(Faction faction) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return faction.getScheduler();
 	}
 
 	@Override

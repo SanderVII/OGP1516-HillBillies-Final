@@ -9,6 +9,8 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @invar	Each scheduler must have a proper faction.
  * 				| hasProperFaction()
+ * @invar   Each scheduler must have proper tasks.
+ *        		| hasProperTasks()
  * 
  * @author 	Sander Mergan, Thomas Vranken
  * @version	2.2
@@ -20,9 +22,18 @@ public class Scheduler {
 	
 	/**
 	 * Creates a new scheduler.
+	 * @param	faction
+	 * 			The faction of this new scheduler.
+	 * @post	This scheduler has the given faction as its faction.
+	 * 			| this.getFaction() == faction
+	 * @post	The faction has this scheduler as its scheduler.
+	 * 			| faction.getScheduler() == this
+	 * @throws	IllegalArgumentException
+	 * 			The faction is invalid.
 	 */
-	public Scheduler(Faction faction) {
-
+	public Scheduler(Faction faction) throws IllegalArgumentException {
+		this.setFaction(faction);
+		faction.setScheduler(this);
 	}
 	
 	// =================================================================================================
@@ -39,7 +50,13 @@ public class Scheduler {
 	 */
 	//TODO finish
 	 public void terminate() {
-		 this.isTerminated = true;
+		 if (! this.isTerminated()) {
+			 Faction formerFaction = this.getFaction();
+			 this.isTerminated = true;
+			 this.setFaction(null);
+			 formerFaction.setScheduler(null);
+		 }
+
 	 }
 	 
 	 /**
@@ -112,12 +129,17 @@ public class Scheduler {
 	 * @post	This scheduler references the given faction as the faction to which it is attached.
 	 * 			| new.getFaction() == faction
 	 * @throws	IllegalArgumentException
-	 * 			This scheduler cannot have the given faction as its faction.
-	 * 			| (! canHaveAsFaction(faction))
+	 * 			This scheduler cannot have the given faction as its faction,
+	 * 			or the faction is effective and already has a scheduler.
+	 * 			| (! canHaveAsFaction(faction)) ||
+	 * 			| ((faction != null) && (faction.getScheduler() != null))
 	 */
-	public void setFaction(@Raw Faction faction) throws IllegalArgumentException {
+	private void setFaction(@Raw Faction faction) throws IllegalArgumentException {
 		if (! this.canHaveAsFaction(faction))
 			throw new IllegalArgumentException();
+		if (faction != null)
+			if (faction.hasScheduler())
+				throw new IllegalArgumentException();
 		this.faction = faction;
 	}
 	
@@ -129,11 +151,6 @@ public class Scheduler {
 	// =================================================================================================
 	// Methods concerning the tasks.
 	// =================================================================================================
-	
-	/** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each scheduler must have proper tasks.
-	 *        | hasProperTasks()
-	 */
 
 	/**
 	 * Return the task associated with this scheduler at the
@@ -266,6 +283,7 @@ public class Scheduler {
 	 * 			The given task is either not effective, does not already reference 
 	 * 			this scheduler, or this scheduler already references the task.
 	 */
+	//TODO sort to priority
 	//NOTE: Task controls the association!
 	public void addTask(@Raw Task task) throws IllegalArgumentException {
 		if ( (task == null) || (! task.hasAsScheduler(this)) || (this.hasAsTask(task)) )

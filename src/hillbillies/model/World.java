@@ -33,8 +33,8 @@ import hillbillies.model.Terrain;
  *         world.
  *       	| isValidMaximumYValue(getMaximumYValue())
  * @invar  The maximum z-value of each world must be a valid maximum z-value for any
-	 *         world.
-	 *       | isValidMaximumZValue(getMaximumZValue())
+ *         world.
+ *       	| isValidMaximumZValue(getMaximumZValue())
  * 
  * @author Sander Mergan, Thomas Vranken
  */
@@ -48,7 +48,6 @@ public class World {
 	 * 					The terrain for this new world.
 	 * @param	modelListener
 	 * 					The terrainChangeListener for this new world
-
 	 * @post	This new world has no units yet.
 	 *				| new.getNbUnits() == 0
 	 * @post	The dimensions of this new world are equal to those of the given terrain.

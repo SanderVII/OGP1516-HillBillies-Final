@@ -61,10 +61,12 @@ public abstract class Entity {
 	 */
 	//TODO more posts?
 	public void terminate() {
-		if (this.getWorld() != null) {
-			World world = this.getWorld();
-			this.setWorld(null);
-			world.removeEntity(this);
+		if (! this.isTerminated()) {
+			if (this.getWorld() != null) {
+				World world = this.getWorld();
+				this.setWorld(null);
+				world.removeEntity(this);
+			}
 		}
 		this.isTerminated = true;
 	 }
