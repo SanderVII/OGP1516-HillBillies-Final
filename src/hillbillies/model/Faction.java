@@ -14,12 +14,14 @@ import be.kuleuven.cs.som.annotate.Raw;
  *        | hasProperUnits()
  * @invar	Each faction must have a proper world.
  * 		  | hasProperWorld()
+ * @invar	Each faction must have a proper scheduler.
+ * 		  | hasProperScheduler()
  * 
  * @author Sander Mergan, Thomas Vranken
- * @version 2.4
+ * @version 2.7
  */
 public class Faction {
-	// TODO change: factions can have zero units => solves many association problems.
+
 	/**
 	 * Creates a new faction with the given unit as a member, 
 	 * connected to the given world.
@@ -139,7 +141,6 @@ public class Faction {
 	  * Variable registering whether this faction is terminated.
 	  */
 	 private boolean isTerminated = false;
-	 
 	 
 	// =================================================================================================
 	// Methods concerning the units in this faction. (bidirectional association)
@@ -345,6 +346,67 @@ public class Faction {
 	 * A variable referencing the world to which this faction is attached.
 	 */
 	private World world;
-
-
+	
+	// =================================================================================================
+	// Methods concerning the scheduler of this faction.
+	// =================================================================================================
+	
+	/**
+	 * Return the scheduler of this faction.
+	 */
+	@Basic @Raw
+	public Scheduler getScheduler() {
+		return this.scheduler;
+	}
+	
+	/**
+	 * Check whether this faction has a scheduler.
+	 * @return	True if the scheduler of this faction is effective.
+	 * 			| result == (getScheduler() != null)
+	 */
+	public boolean hasScheduler() {
+		return this.getScheduler() != null;
+	}
+	
+	/**
+	 * Checks whether this faction has a proper scheduler attached to it.
+	 * 
+	 * @return	True if and only if the scheduler of this faction does not reference
+	 * 			an effective scheduler, or that scheduler references this faction
+	 * 			as its faction.
+	 * 			| result == ( (this.getScheduler() == null) || 
+	 * 			|				(this.getScheduler().getFaction() == this) )
+	 */
+	public boolean hasProperScheduler() {
+		return ( (this.getScheduler() == null) || (this.getScheduler().getFaction() == this) );
+	}
+	
+	/**
+	 * Sets the scheduler attached to this faction to to the given scheduler.
+	 * 
+	 * @param	scheduler
+	 * 			The scheduler to attach to this faction.
+	 * @post	This faction references the given scheduler as its scheduler.
+	 * 			| new.getScheduler() == scheduler
+	 * @throws	IllegalArgumentException
+	 * 			The given scheduler is effective but does not references
+	 * 			this faction as its faction.
+	 * 			| (scheduler != null) && (scheduler.getFaction() != this)
+	 * 			Or, the scheduler is not effective and this faction references
+	 * 			a scheduler which still references this faction as its faction.
+	 * 			| (scheduler == null) && (this.hasScheduler() && (this.getScheduler().getFaction() == this))
+	 */
+	public void setScheduler(@Raw Scheduler scheduler) throws IllegalArgumentException {
+		if ( (scheduler != null) && (scheduler.getFaction() != this) )
+			throw new IllegalArgumentException("Scheduler does not properly associate this faction.");
+		if ( (scheduler == null) && (this.hasScheduler() && (this.getScheduler().getFaction() == this)))
+			throw new IllegalArgumentException("Link with current scheduler not properly broken.");
+		this.scheduler = scheduler;
+	}
+	
+	/**
+	 * A variable referencing the scheduler attached to this faction.
+	 */
+	private Scheduler scheduler;
+	
 }

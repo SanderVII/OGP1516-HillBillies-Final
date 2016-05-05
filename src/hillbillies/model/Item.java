@@ -70,10 +70,13 @@ public abstract class Item extends Entity {
 			throw new IllegalStateException("not carried by a unit.");
 		if (this.getUnit().getWorld() == null)
 			throw new IllegalStateException();
-		this.setWorld(this.getUnit().getWorld());
 		this.getPosition().setCoordinates(this.getUnit().getPosition().getCoordinates());
-		this.getUnit().setItem(null);
+		World world = this.getUnit().getWorld();
+		Unit unit = this.getUnit();
 		this.setUnit(null);
+		unit.setItem(null);
+		this.setWorld(world);
+		world.addEntity(this);
 	}
 	
 	/**
@@ -133,6 +136,20 @@ public abstract class Item extends Entity {
 	 * A variable holding the maximal weight for an item.
 	 */
 	public static final int MAXIMAL_WEIGHT = 10;
+	
+	// ==========================================================================================
+	// Methods concerning the position of this item.
+	// ==========================================================================================
+	
+	//TODO doc
+	@Override
+	public boolean canHaveAsCoordinates(int[] coordinates) {
+		if ((this.getWorld() == null) && (this.getUnit() != null))
+			return (this.getUnit().getWorld().canHaveAsCoordinates(coordinates));
+		else
+			return super.canHaveAsCoordinates(coordinates);
+	}
+	
 	
 	// ==========================================================================================
 	// Methods concerning the unit carrying this item.
@@ -218,35 +235,6 @@ public abstract class Item extends Entity {
 			this.getPosition().setCoordinates((Position.getCubeCenter(this.getPosition().getCoordinates())));
 		}
 	}
-	
-	//================================================================================
-	// Methods concerning being carried.
-	//================================================================================
-	
-//	/**
-//	 * Sets whether this item is being carried by a unit.
-//	 * @param value
-//	 *				The value to set whether this item is being carried to.
-//	 * @post The value of this.isBeingCarried is equal to the given value
-//	 *				| new.isBeingCarried() == value 
-//	 */
-//	void setIsBeingCarried(boolean value){
-//		this.isBeingCarried = value;
-//	}
-//	
-//	/**
-//	 * Returns whether this item is being carried by a unit.
-//	 * 
-//	 * @return | result == this.isBeingCarried
-//	 */
-//	boolean isBeingCarried(){
-//		return this.isBeingCarried;
-//	}
-//	
-//	/**
-//	 * A variable that holds whether this item is being carried by a unit.
-//	 */
-//	private boolean isBeingCarried;
 	
 	// ==========================================================================================
 	// Methods concerning the gametime.
