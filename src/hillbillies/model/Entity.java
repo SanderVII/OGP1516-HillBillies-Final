@@ -291,20 +291,17 @@ public abstract class Entity {
 	/**
 	 * Initiates the falling behavior of this entity if possible.
 	 * If the entity does not fullfill the requirements to initiate it, nothing happens.
+	 * If this entity is already falling, nothing happens.
 	 * 
 	 * @post	If this entity fullfills the requirements to fall,
 	 * 				the is-falling property of this entity is set to true.
-	 * @throws	IllegalStateException
-	 * 				The entity is already falling.
 	 * @throws	IllegalStateException
 	 * 				This entity is terminated.
 	 */
 	public void initiateFalling() {
 		if (this.isTerminated())
 			throw new IllegalStateException();
-		if (this.getIsFalling())
-			throw new IllegalStateException("unit is already falling.");
-		if (this.isFalling())
+		if (this.isFalling() && (! this.getIsFalling()))
 			this.setIsFalling(true);
 	}
 	
