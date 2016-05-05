@@ -24,6 +24,8 @@ import hillbillies.model.Terrain;
  * 	 
  * @invar   Each world must have proper units.
  *        	| hasProperUnits()	 
+ * @invar   Each world must have proper factions.
+*        | hasProperFactions()
  * @invar   Each world must have proper items.
  *        	| hasProperItems()
  * @invar  The maximum x-value of each world must be a valid maximum x-value for any
@@ -127,6 +129,15 @@ public class World {
 	}
 	
 	/**
+	 * Returns the terrainChangeListener of this world.
+	 */
+	@Basic
+	@Raw
+	public TerrainChangeListener getTerrainChangeListener(){
+		return this.terrainChangeListener;
+	}
+	
+	/**
 	 *	A variable that references the terrainChangeListener of this world.
 	 */
 	private TerrainChangeListener terrainChangeListener;
@@ -139,17 +150,18 @@ public class World {
 	// ==================================================================================
 	// Destructor for worlds.
 	// ==================================================================================
+	
 	/**
 	 * Terminate this world.
 	 *
 	 * @post   This world  is terminated.
-	 *       | new.isTerminated()
-	 * @post   ...
-	 *       | ...
+	 *       | new.isTerminated() == true
+	 * @effect   All the entities in this world are terminated.
 	 */
-	// TODO breek associations met alle objecten.
 	public void terminate() {
-		for (Entity entity: this.entities){
+		HashSet<Entity> dummy = new HashSet<Entity>();
+		dummy.addAll(this.entities);
+		for (Entity entity: dummy){
 			entity.terminate();
 		}
 		this.isTerminated = true;
@@ -173,12 +185,7 @@ public class World {
 	// ==================================================================================
 	// Methods concerning the factions of this world.
 	// ==================================================================================
-	 
-	 /** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each world must have proper factions.
-	 *        | hasProperFactions()
-	 */
-
+	
 	/**
 	 * Check whether this world has the given faction as one of its
 	 * factions.
@@ -239,7 +246,7 @@ public class World {
 	 *        | result ==
 	 *        |   card({faction:Faction | hasAsFaction({faction)})
 	 */
-	public int getNbFactions() {
+	private int getNbFactions() {
 		return factions.size();
 	}
 	
@@ -267,8 +274,9 @@ public class World {
 	 * @post   This world has the given faction as one of its factions.
 	 *       | new.hasAsFaction(faction)
 	 */
-	public void addFaction(@Raw Faction faction) {
-		assert (faction != null) && (faction.getWorld() == this);
+	void addFaction(@Raw Faction faction) throws IllegalArgumentException{
+		if ((faction == null) || (faction.getWorld() != this))
+			throw new IllegalArgumentException();
 		factions.add(faction);
 	}
 
@@ -287,7 +295,7 @@ public class World {
 	 *       | ! new.hasAsFaction(faction)
 	 */
 	@Raw
-	public void removeFaction(Faction faction) {
+	void removeFaction(Faction faction) {
 		assert this.hasAsFaction(faction) && (faction.getWorld() == null);
 		factions.remove(faction);
 	}
@@ -318,31 +326,6 @@ public class World {
 		return new HashSet<Faction>(this.factions);
 	}
 	
-	//TODO remove and replace with faction in unit-constructor
-//	/**
-//	 * Adds this unit to a faction of this world. If possible, a new faction is created.
-//	 * Else the unit is added to the faction with the least amount of members.
-//	 * 
-//	 * @param 	unit
-//	 * 			The unit to add to a faction.
-//	 * @post	The unit is part of a faction of this world.
-//	 * @throws	IllegalStateException
-//	 * 			The world can create no new factions and all factions are full.
-//	 */
-//	private void addToFaction(Unit unit) throws IllegalStateException {
-//		if (this.getFactions().size() < MAX_FACTIONS)
-//			new Faction(unit);
-//		else {
-//			Faction availableFaction = this.getAvailableFactionWithLeastMembers();
-//			
-//			if (availableFaction != null){
-//				availableFaction.addUnit(unit);
-//			}
-//			// Units have to be rejected silently.
-//			else{}
-//		}
-//	}
-	
 	/**
 	 * Checks if this world is at its maximum active faction capacity.
 	 * @return	True if the amount of acitve factions is less than the maximum.
@@ -358,7 +341,7 @@ public class World {
 	 * @return 	The faction with the least amount of units and free space for new units.
 	 * 			If no such faction exists, return null.
 	 */
-	Faction getAvailableFactionWithLeastMembers() {
+	private Faction getAvailableFactionWithLeastMembers() {
 		Faction availableFactionWithLeastMembers = null;
 		for (Faction faction: this.getFactions()){
 			if (faction.getNbUnits() < MAX_UNITS_FACTION){
@@ -374,7 +357,7 @@ public class World {
 	 * Symbolic constant denoting the probability of
 	 * creating a boulder or rock after a cube collapses.
 	 */
-	public static final double DROP_CHANCE = 1.0;
+	public static final double DROP_CHANCE = 0.25;
 	
 	/**
 	 * Symbolic constant denoting the maximum amount of units in this world.
@@ -578,7 +561,7 @@ public class World {
 	 * 				and have valid coordinates for this world.
 	 */
 	public Set<int[]> getNeighbours(int x, int y, int z) {
-		return (this.getValidCubeCoordinatesInRange(new int[]{x,y,z}, 1));
+		return (this.getNeighbours(new int[]{x,y,z}));
 	}
 	
 	/**
@@ -591,6 +574,8 @@ public class World {
 	 * 				and have valid coordinates for this world.
 	 */
 	public Set<int[]> getNeighbours(int[] coordinates) {
+		Set<int[]> dummy = this.getValidCubeCoordinatesInRange(coordinates, 1);
+		dummy.remove(coordinates);
 		return (this.getValidCubeCoordinatesInRange(coordinates, 1));
 	}
 	
