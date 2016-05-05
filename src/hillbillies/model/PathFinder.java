@@ -1,0 +1,195 @@
+package hillbillies.model;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import hillbillies.util.Position;
+import hillbillies.util.UnitPosition;
+
+public class PathFinder {
+	
+	// TODO niet door de lucht lopen.
+	
+	public static List<int[]> getPath (int[] start, int[] destination, World world){
+//		Position start = new Position(world, startCoordinates);
+//		Position destination = new Position(world, destinationCoordinates);
+		
+		// The set of nodes already evaluated.
+		Set<int[]>closedSet = new HashSet<>();
+		// The set of currently discovered nodes still to be evaluated.
+		// Initially, only the start node is known.
+		Set<int[]>openSet = new HashSet<>();
+		openSet.add(start);
+		
+		// For each node, which node it can most efficiently be reached from.
+		// If a node can be reached from many nodes, cameFrom will eventually contain the
+		// most efficient previous step.
+		HashMap<int[], int[]> cameFrom=new HashMap<>();
+		
+		// For each node, the cost of getting from the start node to that node.
+		HashMap<int[], Double> gScore=new HashMap<>();
+		// The cost of going from start to start is zero.
+		gScore.put(start, 0.0);
+		
+		// For each node, the total cost of getting from the start node to the goal
+	    // by passing by that node. That value is partly known, partly heuristic.
+		HashMap<int[], Double> fScore=new HashMap<>();
+		// For the first node, that value is completely heuristic.
+		fScore.put(start, heuristicCostEstimate(start, destination));
+		
+		while ( openSet.size() != 0){
+			// current is the position in openSet having the lowest fScore[] value
+			int[] current = getCoordinatesWithLowestFScoreFrom(openSet, fScore);
+			
+			if (Position.equals(current, destination)){
+				return reconstruct_path(cameFrom, current);
+			}
+			
+			openSet.remove(current);
+			closedSet.add(current);
+			for(int[] neighbour:  getPassableDirectlyAdjacentCoordinates(current, world)){
+				if (closedSet.contains(neighbour)){
+					continue;		// Ignore the neighbour which is already evaluated.
+				}
+				if ( ! hasSolidNeighbours(neighbour, world)){
+					closedSet.add(neighbour);
+					continue;
+				}
+				// The distance from start to a neighbour.
+	            double tentative_gScore = gScore.get(current) + Position.getDistance(Position.getCubeCenter(current), Position.getCubeCenter(neighbour));
+			
+				if ( ! openSet.contains(neighbour) ) { // Discover a new node
+					openSet.add(neighbour);
+				}
+				else if (tentative_gScore >= gScore.get(neighbour)){
+					continue; // This is not a better path.
+				}
+				
+				// This path is the best until now. If it doesn't kill the unit: Record it!
+				cameFrom.put(neighbour, current);
+				gScore.put(neighbour, tentative_gScore);
+				fScore.put(neighbour, tentative_gScore + heuristicCostEstimate(neighbour, destination));
+				
+			}
+		}
+		// If no path is found.
+		return null;
+	}
+	
+	/**
+	 * Checks if the cube position with the given coordinates is adjacent
+	 * to at least one cube which is solid.
+	 * 
+	 * @param	coordinates
+	 * 			The coordinates to check neighbours for.
+	 * @param	world
+	 * 			The world in which to check.
+	 * @return	False if none of the neighbouring cubes is solid.
+	 * 			| for (int[] position: neighbours)
+	 *			|	if ( ! world.getCube(position).isPassable())
+	 * 			|		then result == true
+	 * 			| result == false
+	 */
+	private static boolean hasSolidNeighbours(int[] coordinates, World world) {
+		Set<int[]> neighbours = world.getNeighbours(coordinates);
+		for (int[] neighbour: neighbours)
+			if ( ! world.getCube(neighbour).isPassable())
+				return true;
+		return false;
+	}
+
+	/**
+	 * Reconstructs the path hidden in cameFrom.
+	 * @param cameFrom
+	 *				The map to reconstruct the path from
+	 * @param current
+	 *				The last part of the path.
+	 */
+	private static List<int[]> reconstruct_path(HashMap<int[], int[]> cameFrom, int[] current) {
+		List<int[]> totalPath = new ArrayList<int[]>();
+		totalPath.add(current);
+		while (cameFrom.containsKey(current)){
+			current = cameFrom.get(current);
+			totalPath.add(current);
+		}
+		Collections.reverse(totalPath);
+		return totalPath;
+	}
+
+	/**
+	 * Returns the position with the lowest fScore in openSet
+	 * TODO Maak hier een lamba functie van.
+	 * @param openSet
+	 * @param fScore
+	 * @return
+	 */
+	private static int[] getCoordinatesWithLowestFScoreFrom(Set<int[]> openSet, HashMap<int[], Double> fScore) {
+		int[] LowestFScoreCoordinates = null;
+		Double lowestFScore = null;
+		for (int[] coordinates : openSet){
+			if (lowestFScore == null){
+				LowestFScoreCoordinates = coordinates;
+				lowestFScore = fScore.get(coordinates);
+			} else if (lowestFScore > fScore.get(coordinates)){
+				LowestFScoreCoordinates = coordinates;
+				lowestFScore = fScore.get(coordinates);
+			}
+		}
+		return LowestFScoreCoordinates;
+	}
+	
+
+	/**
+	 * Returns a heuristic cost estimate for the path from start to destination
+	 * @param start
+	 *				The start position.
+	 * @param destination
+	 *				The destination position.
+	 * @return The distance between the start position and the destination position.
+	 */
+	private static Double heuristicCostEstimate(int[] start, int[] destination) {
+		return Position.getDistance(Position.getCubeCenter(start), Position.getCubeCenter(destination));
+	}
+	
+	/**
+	 * Return a set of positions which are directly adjacent to the given cube.
+	 * @param 	coordinates
+	 *				The coordinates to find directly adjacent coordinates for
+	 * @return	A set of cubes which are directly adjacent and not passable.
+	 * @throws	IllegalArgumentException
+	 * 			The given coordinates are illegal for this world.
+	 */
+	public static Set<int[]> getPassableDirectlyAdjacentCoordinates(int[] coordinates, World world) throws IllegalArgumentException{
+		int x = coordinates[0];
+		int y = coordinates[1];
+		int z = coordinates[2];
+		
+		if ( ! world.canHaveAsCoordinates(x, y, z))
+			throw new IllegalArgumentException();
+		Set<int[]> directlyAdjacentCoordinates = new HashSet<>();
+		
+		if ( (world.canHaveAsCoordinates(x-1,y,z)) && (world.getCube(new int[]{x-1,y,z}).isPassable()) ) 
+			directlyAdjacentCoordinates.add(new int[]{x-1,y,z});
+		if (world.canHaveAsCoordinates(x+1,y,z) && (world.getCube(new int[]{x+1,y,z}).isPassable()) )
+			directlyAdjacentCoordinates.add(new int[]{x+1,y,z});
+		
+		if (world.canHaveAsCoordinates(x,y-1,z) && (world.getCube(new int[]{x,y-1,z}).isPassable()) )
+			directlyAdjacentCoordinates.add(new int[]{x,y-1,z});
+		if (world.canHaveAsCoordinates(x,y+1,z) && (world.getCube(new int[]{x,y+1,z}).isPassable()) )
+			directlyAdjacentCoordinates.add(new int[]{x,y+1,z});
+		
+		if (world.canHaveAsCoordinates(x,y,z-1) && (world.getCube(new int[]{x,y,z-1}).isPassable()) )
+			directlyAdjacentCoordinates.add(new int[]{x,y,z-1});
+		if (world.canHaveAsCoordinates(x,y,z+1) && (world.getCube(new int[]{x,y,z+1}).isPassable()) )
+			directlyAdjacentCoordinates.add(new int[]{x,y,z+1});
+		
+		return directlyAdjacentCoordinates;
+	}
+	
+}
+	
+	
