@@ -383,7 +383,7 @@ public class Scheduler {
 	}
 	
 	// =================================================================================================
-	// Iterator and stream for all tasks of this scheduler.
+	// Iterator and stream methods for all tasks of this scheduler.
 	// =================================================================================================
 	
 	//TODO doc
@@ -430,6 +430,19 @@ public class Scheduler {
     //TODO check doc
     public List<Task> getTasksWithPredicate(Predicate<Task> predicate) {
 		return this.streamTasks().filter(predicate).collect(Collectors.toList());
+    }
+    
+    /**
+     * Return a list of tasks which are unassigned,
+     * using the task stream of this scheduler to build it.
+	 *
+     * @return	A list of task in which each task
+	 *			has no unit attached.
+     * 			| for each task in result:
+     * 			|	! task.hasUnit()
+     */
+    public List<Task> getUnassignedTasks() {
+    	return getTasksWithPredicate(x -> ! x.hasUnit());
     }
 
 	// =================================================================================================

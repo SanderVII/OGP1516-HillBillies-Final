@@ -2614,10 +2614,17 @@ public class Unit extends Entity{
 	 * @effect	The unit is doing one of the possible activities.
 	 * 					| new.getCurrentActivity == (MOVE || WORK || REST || ATTACK)
 	 */
-	public void startDefaultBehavior() throws IllegalArgumentException, NullPointerException{
+	public void startDefaultBehavior() throws IllegalArgumentException, NullPointerException {
+		this.setDefaultBehaviorEnabled(true);
 		// TODO default behaviour volgens part 3 implementeren.
+		Scheduler scheduler = this.getFaction().getScheduler();
+		List<Task> availableTasks = scheduler.getUnassignedTasks();
+		if (availableTasks.size() != 0) {
+			//TODO are we sure the availableTasksList is sorted?
+//			task.assignTo(this);
+		}
+		else {
 //		try {
-			this.setDefaultBehaviorEnabled(true);
 			int choice =  new Random().nextInt(4);
 			if (choice == 0){
 				// The unit chose to work. 
@@ -2645,6 +2652,7 @@ public class Unit extends Entity{
 //			// Do nothing
 //			System.out.println("I do nothing now because I failed at default behaviour.");
 //		}
+		}
 	}
 	
 	/**
