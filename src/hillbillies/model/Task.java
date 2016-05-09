@@ -27,8 +27,10 @@ import be.kuleuven.cs.som.annotate.*;
  */
 public class Task implements Comparable<Task> {
 	
+	//TODO finish
 	public Task(String name, int priority, List<Activity> activities) {
-		
+		this.setName(name);
+		this.setPriority(priority);
 	}
 	
 	// =================================================================================================
@@ -252,6 +254,21 @@ public class Task implements Comparable<Task> {
 	private Unit unit;
 	
 	/**
+	 * Assigns this task to the given unit.
+	 * 
+	 * @param 	unit
+	 * 			The unit to assign this task to.
+	 * @effect	This task references the unit as its unit.
+	 * 			| setUnit(unit)
+	 * 			The unit references this task as its task.
+	 * 			| unit.setTask(this)
+	 */
+	public void assignTo(Unit unit) throws IllegalArgumentException {
+		this.setUnit(unit);
+		unit.setTask(this);
+	}
+	
+	/**
 	 * Stop the execution of this task, if necessary.
 	 * @post	This task no longer references a unit.
 	 * 			| ! new.hasUnit()
@@ -259,7 +276,7 @@ public class Task implements Comparable<Task> {
 	 * 			| ! this.getUnit().hasTask()
 	 */
 	//NOTE: total programming is allowed.
-	public void stopExecuting() {
+	public void stopExecuting() throws IllegalArgumentException {
 		if (this.hasUnit()) {
 			Unit unit = this.getUnit();
 			this.setUnit(null);
