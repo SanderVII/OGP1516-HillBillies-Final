@@ -3186,7 +3186,7 @@ public class Unit extends Entity{
 	private void advanceTimeFall(double deltaT) {
 		double[] newPosition = new double[3];
 
-		double[] targetPosition = UnitPosition.getCubeCenter(this.getWorld().getCubeBelow(initialCoordinates).getPosition().getCoordinates());
+		double[] targetPosition = UnitPosition.getCubeCenter(this.getWorld().getCubeBelow(Position.getCubeCoordinates(initialCoordinates)).getPosition().getCoordinates());
 		this.setTargetCoordinates(targetPosition);
 
 		this.setCoordinates(this.getPosition().getSurfaceCenter());

@@ -287,7 +287,7 @@ public abstract class Entity {
 		else if (this.getPosition().getCubeCoordinates()[2] == 0)
 			return false;
 		else
-			return (this.getWorld().getCubeBelow(this.getPosition().getCoordinates()).isPassable());
+			return (this.getWorld().getCubeBelow(this.getPosition().getCubeCoordinates()).isPassable());
 	}
 	
 	/**
@@ -319,7 +319,7 @@ public abstract class Entity {
 	 * @return	True if all of the requirements are fullfilled.
 	 */
 	public boolean canEndFalling() {
-		return ( (this.getPosition().getCubeCoordinates()[2] == 0) || (! this.getWorld().getCubeBelow(this.getPosition().getCoordinates()).isPassable()))
+		return ( (this.getPosition().getCubeCoordinates()[2] == 0) || (! this.getWorld().getCubeBelow(this.getPosition().getCubeCoordinates()).isPassable()))
 					&& (Util.fuzzyLessThanOrEqualTo(
 							this.getPosition().getZCoordinate(), 
 							this.getPosition().getCubeCenter()[2]));

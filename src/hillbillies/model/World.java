@@ -586,8 +586,8 @@ public class World {
 	 * @throws 	IllegalArgumentException
 	 * 			The given array of coordinates is invalid.
 	 */
-	Cube getCubeBelow(double[] cubeCoordinates) throws IllegalArgumentException {
-		return this.getCube((int)cubeCoordinates[0], (int)cubeCoordinates[1], (int)cubeCoordinates[2]-1);
+	Cube getCubeBelow(int[] cubeCoordinates) throws IllegalArgumentException {
+		return this.getCube(cubeCoordinates[0], cubeCoordinates[1], cubeCoordinates[2]-1);
 	}
 	
 	/**
@@ -621,7 +621,7 @@ public class World {
 		int[]cubeCoordinates = {x,y,z};
 		
 		for (Unit unit: this.getUnits()){
-			if (unit.getPosition().getCubeCoordinates() == cubeCoordinates)
+			if (Position.equals(unit.getPosition().getCubeCoordinates(), cubeCoordinates))
 				unitsOnCube.add(unit);
 		}
 		return unitsOnCube;
