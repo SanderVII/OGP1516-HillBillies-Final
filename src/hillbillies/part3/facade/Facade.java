@@ -32,7 +32,11 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 
 	@Override
 	public void schedule(Scheduler scheduler, Task task) throws ModelException {
-		// TODO Auto-generated method stub
+		try {
+			scheduler.addTask(task);
+		} catch (IllegalArgumentException e) {
+			throw new ModelException();
+		}
 		
 	}
 
@@ -44,8 +48,7 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 
 	@Override
 	public boolean areTasksPartOf(Scheduler scheduler, Collection<Task> tasks) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return scheduler.hasAllTasks(tasks);
 	}
 
 	@Override
@@ -56,32 +59,27 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 
 	@Override
 	public Set<Scheduler> getSchedulersForTask(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return task.getSchedulers();
 	}
 
 	@Override
 	public Unit getAssignedUnit(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return task.getUnit();
 	}
 
 	@Override
 	public Task getAssignedTask(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return unit.getTask();
 	}
 
 	@Override
 	public String getName(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return task.getName();
 	}
 
 	@Override
 	public int getPriority(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return task.getPriority();
 	}
 
 }

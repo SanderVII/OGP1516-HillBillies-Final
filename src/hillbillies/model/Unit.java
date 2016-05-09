@@ -265,7 +265,7 @@ public class Unit extends Entity{
 			
 			// TODO unify in isCarryingItem and dropItem
 			if (this.hasItem())
-				this.dropItem(this.getCubePosition());
+				this.dropItem(this.getCubeCoordinates());
 	
 			this.isTerminated = true;
 		 }
@@ -1022,14 +1022,14 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Return the position of the cube this unit is standing in.
+	 * Return the coordinates of the cube this unit is standing in.
 	 * A cube coordinate corresponds to the coordinate of this unit, rounded down to the nearest integer.
 	 * 
-	 * @return	The cube position, given as an array of 3 integers.
-	 * 					| result ==  PositionUtil.getCubePosition(this.getPosition())
+	 * @return	The cube coordinates, given as an array of 3 integers.
+	 * 					| result ==  Position.getCubeCoordinates(this.getPosition())
 	 */
 	@Raw
-	public int[] getCubePosition(){
+	public int[] getCubeCoordinates(){
 		double[] unitPosition = this.getPosition().getCoordinates();
 		return (Position.getCubeCoordinates(unitPosition));
 	}
@@ -1690,7 +1690,7 @@ public class Unit extends Entity{
 		// It will break the code (not to mention it is bad practice to return and change values in one method).
 		if (this.getIsFalling())
 			return true;
-		else if (this.getCubePosition()[2] == 0)
+		else if (this.getCubeCoordinates()[2] == 0)
 			return false;
 		else
 			return (!hasSolidNeighbours(this.getPosition().getXCoordinate(), this.getPosition().getYCoordinate(), this.getPosition().getZCoordinate())

@@ -628,7 +628,7 @@ public class World {
 	}
 	
 	/**
-	 * Return a set of cubes which are the directly adjacent solid cubes
+	 * Return a set of cubes which are the directly adjacent cubes
 	 * (as defined in the assignment) of the given cube.
 	 * @param 	x
 	 * 			The x-coordinate of the cube.
@@ -636,7 +636,7 @@ public class World {
 	 * 			The y-coordinate of the cube.
 	 * @param 	z
 	 * 			The z-coordinate of the cube.
-	 * @return	A set of cubes which are directly adjacent and not passable.
+	 * @return	A set of cubes which are directly adjacent.
 	 * @throws	IllegalArgumentException
 	 * 			The given coordinates are illegal for this world.
 	 */
@@ -645,19 +645,19 @@ public class World {
 			throw new IllegalArgumentException();
 		Set<Cube> directlyAdjacentCubes = new HashSet<>();
 		
-		if ((this.canHaveAsCoordinates(x-1,y,z)) && (! this.isPassable(new int[]{x-1,y,z})) )
+		if (this.canHaveAsCoordinates(x-1,y,z))
 			directlyAdjacentCubes.add(this.getCube(x-1,y,z));
-		if ((this.canHaveAsCoordinates(x+1,y,z)) && (! this.isPassable(new int[]{x+1,y,z})) )
+		if (this.canHaveAsCoordinates(x+1,y,z))
 			directlyAdjacentCubes.add(this.getCube(x+1,y,z));
 		
-		if ((this.canHaveAsCoordinates(x,y-1,z)) && (! this.isPassable(new int[]{x,y-1,z})) )
+		if (this.canHaveAsCoordinates(x,y-1,z))
 			directlyAdjacentCubes.add(this.getCube(x,y-1,z));
-		if ((this.canHaveAsCoordinates(x,y+1,z)) && (! this.isPassable(new int[]{x,y+1,z})) )
+		if (this.canHaveAsCoordinates(x,y+1,z))
 			directlyAdjacentCubes.add(this.getCube(x,y+1,z));
 		
-		if ((this.canHaveAsCoordinates(x,y,z-1)) && (! this.isPassable(new int[]{x,y,z-1})) )
+		if (this.canHaveAsCoordinates(x,y,z-1))
 			directlyAdjacentCubes.add(this.getCube(x,y,z-1));
-		if ((this.canHaveAsCoordinates(x,y,z+1)) && (! this.isPassable(new int[]{x,y,z+1})) )
+		if (this.canHaveAsCoordinates(x,y,z+1))
 			directlyAdjacentCubes.add(this.getCube(x,y,z+1));
 		
 		return directlyAdjacentCubes;

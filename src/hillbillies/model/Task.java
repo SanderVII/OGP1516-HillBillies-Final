@@ -6,7 +6,8 @@ import be.kuleuven.cs.som.annotate.*;
 
 /**
  * A class of tasks, involving a name, a priority and 
- * a non-empty list of activities.
+ * a non-empty list of activities. Each task can be assigned to multiple schedulers,
+ * but only one unit can execute a certain task at a time.
  * 
  * @invar  The name of each task must be a valid name for any
  *         task.
@@ -16,13 +17,15 @@ import be.kuleuven.cs.som.annotate.*;
  *       | isValidPriority(getPriority())
  * @invar  Each task must have a proper unit.
  * 		 | hasProperUnit()
+ * @invar   Each task must have proper schedulers.
+ *        | hasProperSchedulers()
  *     		
  * @author 	Sander Mergan, Thomas Vranken
- * @version	2.2
+ * @version	2.3
  * 
  * @note	Must be documented both formally and informally.
  */
-public class Task {
+public class Task implements Comparable<Task> {
 	
 	public Task(String name, int priority, List<Activity> activities) {
 		
@@ -246,16 +249,27 @@ public class Task {
 	/**
 	 * A variable referencing the unit to which this task is attached.
 	 */
-	private Unit unit; 
+	private Unit unit;
+	
+	/**
+	 * Stop the execution of this task, if necessary.
+	 * @post	This task no longer references a unit.
+	 * 			| ! new.hasUnit()
+	 * @post	The unit of this task no longer references this task.
+	 * 			| ! this.getUnit().hasTask()
+	 */
+	//NOTE: total programming is allowed.
+	public void stopExecuting() {
+		if (this.hasUnit()) {
+			Unit unit = this.getUnit();
+			this.setUnit(null);
+			unit.setTask(null);
+		}
+	}
 	
 	// =================================================================================================
 	// Methods concerning the schedulers who have this task.
 	// =================================================================================================
-	
-	/** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each task must have proper schedulers.
-	 *        | hasProperSchedulers()
-	 */
 	
 	/**
 	 * Check whether this task has the given scheduler as one of its
@@ -374,4 +388,51 @@ public class Task {
 	 *       |     (! scheduler.isTerminated()) )
 	 */
 	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
+	
+	/**
+	 * Returns a set collecting all the schedulers of this task. 
+	 * 
+	 * @return	A set in which each scheduler is effective 
+	 * 			and not yet terminated.
+	 *       	| for each scheduler in result:
+	 *       	|   ( (scheduler != null) &&
+	 *       	|     (! scheduler.isTerminated()) )
+	 */
+	public Set<Scheduler> getSchedulers() {
+		return new HashSet<Scheduler>(this.schedulers);
+	}
+	
+	// =================================================================================================
+	// Compare method based on priority for tasks.
+	// =================================================================================================
+	
+	/**
+	 * Compares this task to the given task.
+	 * 
+	 * @param 	task
+	 * 			The task to compare this task to.
+	 * @return	An integer based on the difference in priority between the tasks.
+	 * 			If the priorities are equal, return 0.
+	 * 			| if (this.getPriority() == task.getPriority())
+	 * 			|	then result == 0
+	 * 			If this task has a lower priority than the given task, return -1.
+	 * 			| if (this.getPriority() < task.getPriority())
+	 * 			|	then result == -1
+	 * 			Else, return 1.
+	 * 			| else
+	 * 			|	then result == 1
+	 * @note	This class compares by using only PRIORITIES, and as such is incosistent
+	 * 			with the method 'equals'.
+	 */
+	@Override
+	public int compareTo(Task task) {
+		int myPriority = this.getPriority();
+		int otherPriority = task.getPriority();
+		if (myPriority == otherPriority)
+			return 0;
+		if (myPriority < otherPriority)
+			return -1;
+		else
+			return 1;
+	}
 }

@@ -8,12 +8,13 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class HereExpression extends CubePositionExpression {
 	
-	@Override
-	public int[] evaluate(World world, Unit unit,int[] selectedCubes, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public HereExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
+		// TODO Auto-generated constructor stub
 	}
 
-	
-
+	@Override
+	public int[] evaluate(World world, Unit unit,int[] selectedCubes, SourceLocation sourceLocation) {
+		return unit.getCubeCoordinates();
+	}
 }

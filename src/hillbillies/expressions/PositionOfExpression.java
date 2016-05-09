@@ -9,10 +9,22 @@ import hillbillies.part3.programs.SourceLocation;
 public class PositionOfExpression extends CubePositionExpression {
 
 
-	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public PositionOfExpression(Unit unit, SourceLocation sourceLocation) {
+		super(sourceLocation);
+		this.setUnit(unit);
 	}
 
+	@Override
+	public int[] evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
+		return this.getUnit().getPosition().getCubeCoordinates();
+	}
+	
+	private Unit unit;
+	
+	public Unit getUnit() {
+		return this.unit;
+	}
+	private void setUnit(Unit unit) {
+		this.unit = unit;
+	}
 }
