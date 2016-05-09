@@ -2,6 +2,9 @@ package hillbillies.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -10,14 +13,15 @@ import org.junit.Test;
 
 import hillbillies.model.Boulder;
 import hillbillies.model.Log;
+import hillbillies.model.Terrain;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 /**
  * 
- * @author Thomas Vranken
- * @version	2.0
+ * @author Thomas Vranken, Sander Mergan
+ * @version	2.1
  */
 public class WorldTest {
 	
@@ -224,6 +228,45 @@ public class WorldTest {
 		assertFalse(world.getNeighbours(new int[]{1,0,0}).contains(new int[]{1,0,0}));
 		assertTrue(world.getNeighbours(new int[]{0,1,0}).size() == 12);
 		assertFalse(world.getNeighbours(new int[]{1,1,1}).contains(new int[]{1,1,1}));
+		
+		Set<int[]> neighbours = world.getNeighbours(1, 1, 1);
+		assertFalse(neighbours.contains(new int[]{1,1,1}));
+	}
+	
+	@Test
+	public void getTerrainTest() {
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		assertTrue(world.getTerrain(1,1,1) == Terrain.WOOD);
+		assertFalse(world.getTerrain(1,1,1) == Terrain.AIR);
+		assertFalse(world.getTerrain(1,1,1) == Terrain.ROCK);
+		assertFalse(world.getTerrain(1,1,1) == Terrain.WORKSHOP);
+	}
+	
+	@Test
+	public void getUnitsInCubeTest() {
+		int[][][] terrain = new int[15][15][15];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world,  "Test a", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Unit unit2 = new Unit(world,  "Test b", new int[] { 5, 5, 0 }, 49, 50, 50, 50);
+		unit2.stopDefaultBehavior();
+		world.addEntity(unit2);
+		Unit unit3 = new Unit(world,  "Test c", new int[] { 5, 2, 0 }, 50, 50, 50, 50);
+		unit3.stopDefaultBehavior();
+		world.addEntity(unit3);
+		
+		assertTrue(world.getUnitsInCube(0,0,0).size() == 0);
+		assertTrue(world.getUnitsInCube(5,5,0).size() == 2);
+		assertTrue(world.getUnitsInCube(5,2,0).size() == 1);
 	}
 	
 	/**
