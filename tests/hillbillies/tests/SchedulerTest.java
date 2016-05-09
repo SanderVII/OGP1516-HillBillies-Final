@@ -2,6 +2,8 @@ package hillbillies.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.*;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -33,7 +35,7 @@ public class SchedulerTest {
 	private Unit unit2;
 	private Faction faction;
 	private Faction faction2;
-	private Scheduler scheduler;
+//	private Scheduler scheduler;
 
 	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
@@ -71,18 +73,18 @@ public class SchedulerTest {
 	
 	@Test
 	public void testSchedulerLifetime() throws Exception {
-		this.scheduler = new Scheduler(faction);
+		Scheduler scheduler = faction.getScheduler();
 		assertTrue(scheduler.getFaction() == faction);
 		assertTrue(scheduler.getNbTasks() == 0);
 		assertTrue(this.facade.getScheduler(faction) == scheduler);
 		assertTrue(scheduler.hasProperFaction());
 		assertTrue(faction.hasProperScheduler());
 		
-		this.scheduler.terminate();
-		assertTrue(this.scheduler.isTerminated());
-		assertTrue(this.scheduler.getFaction() == null);
-		assertFalse(this.faction.isTerminated());
-		assertTrue(this.faction.getScheduler() == null);
+		scheduler.terminate();
+		assertTrue(scheduler.isTerminated());
+		assertTrue(scheduler.getFaction() == null);
+		assertFalse(faction.isTerminated());
+		assertTrue(faction.getScheduler() == null);
 	}
 	
 	@Test
@@ -92,23 +94,57 @@ public class SchedulerTest {
 	}
 	
 	@Test
-	public void Scheduler_FactionWithScheduler() throws Exception {
-		Scheduler scheduler3 = new Scheduler(faction);
-		
+	public void Scheduler_FactionWithScheduler() throws Exception {	
 		exception.expect(IllegalArgumentException.class);
 		Scheduler scheduler4 = new Scheduler(faction);
-		assertTrue(faction.getScheduler() == scheduler3);
+		assertFalse(faction.getScheduler() == scheduler4);
 		assertTrue(null == scheduler4);
 	}
 	
+	//TODO move to faction test?
 	@Test
-	public void testSetScheduler_CurrentScheduler () {
-		Scheduler scheduler2 = new Scheduler(faction2);
-		exception.expect(IllegalArgumentException.class);
-		
+	public void SetScheduler_CurrentScheduler() {
+		Scheduler scheduler2 = faction2.getScheduler();
+
 		this.faction2.setScheduler(scheduler2);
 		assertTrue(scheduler2.hasProperFaction());
 		assertTrue(faction2.hasProperScheduler());
+	}
+	
+	@Test
+	public void addTasks() {
+		Scheduler scheduler = faction.getScheduler();
+		List<Task> tasks = new ArrayList<>();
+		List<Activity> noActivity = new ArrayList<>();
+		tasks.add(new Task("test0", 100, noActivity));
+		scheduler.addAllTasks(tasks);
+		
+		exception.expect(IllegalArgumentException.class);
+		scheduler.addTask(null);
+	}
+	
+	@Test
+	public void getTasksWithPredicate() {
+		Scheduler scheduler = faction.getScheduler();
+		List<Task> tasks = new ArrayList<>();
+		tasks.add(new Task("test1", 100, new ArrayList<>()));
+		tasks.add(new Task("test2", -5, new ArrayList<>()));
+		for (Task task: tasks)
+			task.addScheduler(scheduler);
+		scheduler.addAllTasks(tasks);
+		
+		// Test for negative priority
+		List<Task> result = scheduler.getTasksWithPredicate((Task x) -> (x.getPriority() < 0));
+		assertTrue(result.contains(tasks.get(1)));
+		assertFalse(result.contains(tasks.get(0)));
+		
+		// Test for names
+		List<Task> result2 = scheduler.getTasksWithPredicate((Task x) -> (x.getName().contains("test")));
+		assertTrue(result2.contains(tasks.get(1)));
+		assertTrue(result2.contains(tasks.get(0)));
+		List<Task> result3 = scheduler.getTasksWithPredicate((Task x) -> (x.getName().contains("test1")));
+		assertFalse(result3.contains(tasks.get(1)));
+		assertTrue(result3.contains(tasks.get(0)));
 	}
 	
 	
