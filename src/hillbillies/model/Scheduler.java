@@ -263,6 +263,27 @@ public class Scheduler {
 	public boolean hasAsTask(@Raw Task task) {
 		return tasks.contains(task);
 	}
+	
+	/**
+	 * Check if all tasks of the given collection can be found in
+	 * this scheduler.
+	 * @param 	tasks
+	 * 			The collection of tasks to check.
+	 * @return	False if at least one task does not exist in
+	 * 			this scheduler.
+	 * 			| for (task in tasks)
+	 *			|	if (! hasAsTask(task))
+	 *			|		then result == false
+	 *			Else, return true.
+	 *			| else
+	 *			| then result == true
+	 */
+	public boolean hasAllTasks(Collection<Task> tasks) {
+		for (Task task: tasks)
+			if (! this.hasAsTask(task))
+				return false;
+		return true;
+	}
 
 	/**
 	 * Add the given task to the list of tasks of this scheduler.
@@ -315,11 +336,42 @@ public class Scheduler {
 	 */
 	@Raw
 	//NOTE: Task controls the association!
-	public void removeTask(Task task) {
+	public void removeTask(Task task) throws IllegalArgumentException {
 		if ((task == null) || (! this.hasAsTask(task)) || (task.hasAsScheduler(this)))
 			throw new IllegalArgumentException();
 		tasks.remove(task);
 	}
+	
+	/**
+	 * Replace the original task by the given replacement task.
+	 * If the original task is being executed, it will stop executing first.
+	 * 
+	 * @param 	original
+	 * 			The task to replace.
+	 * @param 	replacement
+	 * 			The new task.
+	 * @effect	The original task stops executing.
+	 * 			| original.stopExecuting()
+	 * @post	The tasks list has the replacement task as its task
+	 * 			on the location of the original task.
+	 * 			| new.getTaskAt(this.getTasks.indexOf(original) == replacement
+	 * @post	This scheduler no longer has the original task as its task.
+	 * 			| ! new.hasAsTask(original)
+	 * @throws	IllegalArgumentException
+	 * 			The original task does not exists in this scheduler,
+	 * 			or the replacement task is invalid.
+	 * 			| (! this.hasAsTask(original)) || (! canHaveAsTask(replacement))
+	 */
+	public void replaceTask(Task original, Task replacement) throws IllegalArgumentException {
+		if( (! this.hasAsTask(original)) || (! canHaveAsTask(replacement)) )
+			throw new IllegalArgumentException();
+		original.stopExecuting();
+		//NOTE: tasks.set() can throw many exceptions, but these are already checked beforehand.
+		replacement.addScheduler(this);
+		tasks.set(tasks.indexOf(original), replacement);
+		original.removeScheduler(this);
+	}
+	
 
 	/**
 	 * Variable referencing a list collecting all the tasks
@@ -339,5 +391,49 @@ public class Scheduler {
 	 *       |     (tasks.get(I) != tasks.get(J))
 	 */
 	private final List<Task> tasks = new LinkedList<Task>();
+	
+	/**
+	 * Returns a list collecting all the tasks of this scheduler. 
+	 * 
+	 * @return	A list in which each task is effective 
+	 * 			and not yet terminated.
+	 *       	| for each task in result:
+	 *       	|   ( (task != null) &&
+	 *       	|     (! task.isTerminated()) )
+	 * 			No task is registered at several positions
+	 *         	in the referenced list.
+	 *       	| for each I,J in 0..tasks.size()-1:
+	 *       	|   ( (I == J) ||
+	 *       	|     (tasks.get(I) != tasks.get(J))
+	 */
+	public List<Task> getTasks() {
+		return new ArrayList<Task>(this.tasks);
+	}
+	
+	// =================================================================================================
+	// Iterator for schedulers.
+	// =================================================================================================
+	
+	public Iterator<Task> priorityIterator() {
+        return new Iterator<Task>() {
 
+            public boolean hasNext() {
+            	//TODO why no this?
+                return pos < getNbTasks();
+            }
+
+            public Task next() throws NoSuchElementException {
+                if (!hasNext())
+                    throw new NoSuchElementException();
+                return getTaskAt(pos++);
+            }
+
+            public void remove() throws UnsupportedOperationException {
+                throw new UnsupportedOperationException();
+            }
+
+            private int pos = 0;
+
+        };
+    }
 }
