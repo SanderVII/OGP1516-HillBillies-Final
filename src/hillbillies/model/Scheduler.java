@@ -304,12 +304,26 @@ public class Scheduler {
 	 * 			The given task is either not effective, does not already reference 
 	 * 			this scheduler, or this scheduler already references the task.
 	 */
-	//TODO sort to priority
 	//NOTE: Task controls the association!
 	public void addTask(@Raw Task task) throws IllegalArgumentException {
 		if ( (task == null) || (! task.hasAsScheduler(this)) || (this.hasAsTask(task)) )
 			throw new IllegalArgumentException();
-		tasks.add(task);
+		int size = this.getNbTasks();
+		if (size == 0)
+			tasks.add(task);
+		else {
+			int count = 0;
+			while (count < size) {
+				int highPriority = this.getTaskAt(count).getPriority();
+//				int lowPriority = this.getTaskAt(count+1).getPriority();
+				if (task.getPriority() >= highPriority)
+					tasks.add(count, task);
+				else if (count+1 == size)
+					tasks.add(task);
+				else
+					count ++;
+			}
+		}	
 	}
 
 	/**
@@ -368,8 +382,10 @@ public class Scheduler {
 		original.stopExecuting();
 		//NOTE: tasks.set() can throw many exceptions, but these are already checked beforehand.
 		replacement.addScheduler(this);
-		tasks.set(tasks.indexOf(original), replacement);
+//		tasks.set(tasks.indexOf(original), replacement);
+		this.addTask(replacement);
 		original.removeScheduler(this);
+		this.removeTask(original);
 	}
 	
 
@@ -390,7 +406,8 @@ public class Scheduler {
 	 *       |   ( (I == J) ||
 	 *       |     (tasks.get(I) != tasks.get(J))
 	 */
-	private final List<Task> tasks = new LinkedList<Task>();
+	//TODO search priorityqueue
+	private final LinkedList<Task> tasks = new LinkedList<Task>();
 	
 	/**
 	 * Returns a list collecting all the tasks of this scheduler. 
@@ -406,8 +423,8 @@ public class Scheduler {
 	 *       	|   ( (I == J) ||
 	 *       	|     (tasks.get(I) != tasks.get(J))
 	 */
-	public List<Task> getTasks() {
-		return new ArrayList<Task>(this.tasks);
+	public LinkedList<Task> getTasks() {
+		return new LinkedList<Task>(this.tasks);
 	}
 	
 	// =================================================================================================
@@ -418,7 +435,6 @@ public class Scheduler {
         return new Iterator<Task>() {
 
             public boolean hasNext() {
-            	//TODO why no this?
                 return pos < getNbTasks();
             }
 
@@ -427,11 +443,6 @@ public class Scheduler {
                     throw new NoSuchElementException();
                 return getTaskAt(pos++);
             }
-
-            public void remove() throws UnsupportedOperationException {
-                throw new UnsupportedOperationException();
-            }
-
             private int pos = 0;
 
         };

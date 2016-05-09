@@ -34,6 +34,7 @@ public class Faction {
 	 * @post	The given unit has this faction as its faction.
 	 * @post	This new faction has the given world as its world.
 	 * @post	The given world has this faction as its faction.
+	 * @effect	A new scheduler is created for this faction.
 	 * @throws	IllegalArgumentException
 	 * 			The given unit is invalid, or the unit has a proper world 
 	 * 			which is not the given world.
@@ -49,6 +50,9 @@ public class Faction {
 		this.setWorld(world);
 		this.addUnit(unit);
 		world.addFaction(this);
+		
+		Scheduler scheduler = new Scheduler(this);
+		this.setScheduler(scheduler);
 		
 		if (! world.hasAsEntity(unit))
 			world.addEntity(unit);

@@ -7,6 +7,7 @@ import java.util.Set;
 import hillbillies.model.Faction;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
+import hillbillies.model.TaskFactory;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.ITaskFactory;
 import ogp.framework.util.ModelException;
@@ -15,8 +16,7 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 
 	@Override
 	public ITaskFactory<?, ?, Task> createTaskFactory() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TaskFactory();
 	}
 
 	@Override

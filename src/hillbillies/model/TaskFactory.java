@@ -8,6 +8,10 @@ import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
+	
+	public TaskFactory() {
+		
+	}
 
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
