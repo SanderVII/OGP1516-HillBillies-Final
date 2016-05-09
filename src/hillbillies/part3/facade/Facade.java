@@ -42,8 +42,11 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 
 	@Override
 	public void replace(Scheduler scheduler, Task original, Task replacement) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		try {
+			scheduler.replaceTask(original, replacement);
+		} catch (IllegalArgumentException e) {
+			throw new ModelException();
+		}
 	}
 
 	@Override
