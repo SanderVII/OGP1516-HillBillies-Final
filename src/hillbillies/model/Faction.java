@@ -35,13 +35,14 @@ public class Faction {
 	 * @post	This new faction has the given world as its world.
 	 * @post	The given world has this faction as its faction.
 	 * @effect	A new scheduler is created for this faction.
+	 * 			The scheduler references this faction and vice-versa.
 	 * @throws	IllegalArgumentException
 	 * 			The given unit is invalid, or the unit has a proper world 
 	 * 			which is not the given world.
 	 */
 	@Raw
 	//TODO controleer association
-	public Faction( Unit unit, World world) throws IllegalArgumentException{	
+	public Faction(Unit unit, World world) throws IllegalArgumentException{	
 		if ((unit.hasProperWorld()) && (unit.getWorld() != world))
 			throw new IllegalArgumentException("the unit's world is not the given world.");
 		if (! this.canHaveAsUnit(unit))
@@ -65,6 +66,8 @@ public class Faction {
 	 * 				The given world.
 	 * @post	This new faction has the given world as its world.
 	 * @post	This faction has no units.
+	 * @effect	A new scheduler is created for this faction.
+	 * 			The scheduler references this faction and vice-versa.
 	 * @throws	IllegalArgumentException
 	 * 			The given world is invalid.
 	 */
@@ -72,6 +75,9 @@ public class Faction {
 	public Faction(World world) throws IllegalArgumentException {	
 		this.setWorld(world);
 		world.addFaction(this);
+		
+		Scheduler scheduler = new Scheduler(this);
+		this.setScheduler(scheduler);
 	}
 	
 	/**
