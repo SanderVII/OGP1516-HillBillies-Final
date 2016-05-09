@@ -1,6 +1,9 @@
 package hillbillies.model;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import be.kuleuven.cs.som.annotate.*;
 
@@ -263,46 +266,24 @@ public class Scheduler {
 	public boolean hasAsTask(@Raw Task task) {
 		return tasks.contains(task);
 	}
-	
-	/**
-	 * Check if all tasks of the given collection can be found in
-	 * this scheduler.
-	 * @param 	tasks
-	 * 			The collection of tasks to check.
-	 * @return	False if at least one task does not exist in
-	 * 			this scheduler.
-	 * 			| for (task in tasks)
-	 *			|	if (! hasAsTask(task))
-	 *			|		then result == false
-	 *			Else, return true.
-	 *			| else
-	 *			| then result == true
-	 */
-	public boolean hasAllTasks(Collection<Task> tasks) {
-		for (Task task: tasks)
-			if (! this.hasAsTask(task))
-				return false;
-		return true;
-	}
 
 	/**
 	 * Add the given task to the list of tasks of this scheduler.
+	 * The task is inserted in the list according to its priority.
+	 * Higher priorities will be inserted earlier.
 	 * 
-	 * @param  task
-	 *         The task to be added.
-	 * @pre    The given task is effective and already references
-	 *         this scheduler, and this scheduler does not yet have the given
-	 *         task as one of its tasks.
-	 *       | (task != null) && (task.getScheduler() == this) &&
-	 *       | (! this.hasAsTask(task))
-	 * @post   The number of tasks of this scheduler is
-	 *         incremented by 1.
-	 *       | new.getNbTasks() == getNbTasks() + 1
-	 * @post   This scheduler has the given task as its very last task.
-	 *       | new.getTaskAt(getNbTasks()+1) == task
+	 * @param  	task
+	 *         	The task to be added.
+	 * @post   	The number of tasks of this scheduler is
+	 *         	incremented by 1.
+	 *       	| new.getNbTasks() == getNbTasks() + 1
+	 * @post  	This scheduler has the given task as its task.
+	 * 			| new.hasAsTask(this)
 	 * @throws	IllegalArgumentException
 	 * 			The given task is either not effective, does not already reference 
 	 * 			this scheduler, or this scheduler already references the task.
+	 * 			| (task == null) || (! task.hasAsScheduler(this)) || 
+	 * 			|	(this.hasAsTask(task))
 	 */
 	//NOTE: Task controls the association!
 	public void addTask(@Raw Task task) throws IllegalArgumentException {
@@ -312,15 +293,16 @@ public class Scheduler {
 		if (size == 0)
 			tasks.add(task);
 		else {
-			int count = 0;
-			while (count < size) {
-				int highPriority = this.getTaskAt(count).getPriority();
-//				int lowPriority = this.getTaskAt(count+1).getPriority();
-				if (task.getPriority() >= highPriority)
+			int count = 1;
+			while (count < size+1) {
+				int priority = this.getTaskAt(count).getPriority();
+				if (task.getPriority() >= priority) {
 					tasks.add(count, task);
-				else if (count+1 == size)
+					count = size+1;
+				} else if (count == size) {
 					tasks.add(task);
-				else
+					count = size+1;
+				} else
 					count ++;
 			}
 		}	
@@ -329,24 +311,26 @@ public class Scheduler {
 	/**
 	 * Remove the given task from the list of tasks of this scheduler.
 	 * 
-	 * @param  task
-	 *         The task to be removed.
-	 * @post   The number of tasks of this scheduler is
-	 *         decremented by 1.
-	 *       | new.getNbTasks() == getNbTasks() - 1
-	 * @post   This scheduler no longer has the given task as
-	 *         one of its tasks.
-	 *       | ! new.hasAsTask(task)
-	 * @post   All tasks registered at an index beyond the index at
-	 *         which the given task was registered, are shifted
-	 *         one position to the left.
-	 *       | for each I,J in 1..getNbTasks():
-	 *       |   if ( (getTaskAt(I) == task) and (I < J) )
-	 *       |     then new.getTaskAt(J-1) == getTaskAt(J)
+	 * @param  	task
+	 *         	The task to be removed.
+	 * @post   	The number of tasks of this scheduler is
+	 *         	decremented by 1.
+	 *       	| new.getNbTasks() == getNbTasks() - 1
+	 * @post   	This scheduler no longer has the given task as
+	 *         	one of its tasks.
+	 *       	| ! new.hasAsTask(task)
+	 * @post  	All tasks registered at an index beyond the index at
+	 *         	which the given task was registered, are shifted
+	 *         	one position to the left.
+	 *       	| for each I,J in 1..getNbTasks():
+	 *       	|   if ( (getTaskAt(I) == task) and (I < J) )
+	 *       	|     then new.getTaskAt(J-1) == getTaskAt(J)
 	 * @throws	IllegalArgumentException
 	 * 			The given task is not effective, or this scheduler does not
 	 * 			reference that task, or that task still references this
 	 * 			scheduler as one of its scheduler.
+	 * 			| (task == null) || (! this.hasAsTask(task)) || 
+	 * 			|	(task.hasAsScheduler(this))
 	 */
 	@Raw
 	//NOTE: Task controls the association!
@@ -355,6 +339,102 @@ public class Scheduler {
 			throw new IllegalArgumentException();
 		tasks.remove(task);
 	}
+
+	/**
+	 * Variable referencing a list collecting all the tasks
+	 * of this scheduler.
+	 * 
+	 * @invar  	The referenced list is effective.
+	 *       	| tasks != null
+	 * @invar  	Each task registered in the referenced list is
+	 *         	effective and not yet terminated.
+	 *       	| for each task in tasks:
+	 *       	|   ( (task != null) &&
+	 *       	|     (! task.isTerminated()) )
+	 * @invar  	No task is registered at several positions
+	 *         	in the referenced list.
+	 *       	| for each I,J in 0..tasks.size()-1:
+	 *       	|   ( (I == J) ||
+	 *       	|     (tasks.get(I) != tasks.get(J))
+	 * @invar  	All tasks in the list are sorted in descending order.
+	 * 		 	| for each I in 0..tasks.size()-1:
+	 * 		 	| 	for each J in 0..I:
+	 *       	|   	tasks.getTaskAt(J).getPriority() >= 
+	 *       	|			tasks.getTaskAt(I).getPriority()
+	 */
+	private final LinkedList<Task> tasks = new LinkedList<Task>();
+	
+	/**
+	 * Returns a list collecting all the tasks of this scheduler. 
+	 * 
+	 * @return	A list in which each task is effective 
+	 * 			and not yet terminated.
+	 *       	| for each task in result:
+	 *       	|   ( (task != null) &&
+	 *       	|     (! task.isTerminated()) )
+	 * 			No task is registered at several positions
+	 *         	in the referenced list.
+	 *       	| for each I,J in 1..tasks.size():
+	 *       	|   ( (I == J) ||
+	 *       	|     (getTaskAt(I) != getTaskAt(J))
+	 */
+	public LinkedList<Task> getTasks() {
+		return new LinkedList<Task>(this.tasks);
+	}
+	
+	// =================================================================================================
+	// Iterator and stream for all tasks of this scheduler.
+	// =================================================================================================
+	
+	//TODO doc
+	public Iterator<Task> priorityIterator() {
+        return new Iterator<Task>() {
+
+            public boolean hasNext() {
+                return pos < getNbTasks();
+            }
+
+            public Task next() throws NoSuchElementException {
+                if (! hasNext())
+                    throw new NoSuchElementException();
+                return getTaskAt(pos++);
+            }
+            private int pos = 0;
+
+        };
+    }
+	
+	/**
+     * Return a stream that delivers all objects of this binary tree.
+     *    
+     * @return An effective stream that delivers all the elements in
+     *         this tree in the same order as the iterator for this tree.
+     */
+    public Stream<Task> streamTasks() {
+    	Stream.Builder<Task> builder = Stream.builder();
+    	for (Task element: this.getTasks())
+    		builder.accept(element);
+    	return builder.build();    		
+    }
+    
+    /**
+     * Return a list of tasks which satisfy a certain condition,
+     * using the task stream of this scheduler to build it.
+     * 
+     * @param 	predicate
+     * 			The filter condition.
+     * @return	A list of task in which each task satisfies the condition.
+     * 			| for each task in result:
+     * 			|	predicate(task) == true
+     */
+    //TODO check doc
+    public List<Task> getTasksWithPredicate(Predicate<Task> predicate) {
+		return this.streamTasks().filter(predicate).collect(Collectors.toList());
+    }
+
+	// =================================================================================================
+	// Extra methods as defined in the assignment.
+	// =================================================================================================
 	
 	/**
 	 * Replace the original task by the given replacement task.
@@ -376,75 +456,81 @@ public class Scheduler {
 	 * 			or the replacement task is invalid.
 	 * 			| (! this.hasAsTask(original)) || (! canHaveAsTask(replacement))
 	 */
-	public void replaceTask(Task original, Task replacement) throws IllegalArgumentException {
+	public void replaceTask(Task original, Task replacement) 
+			throws IllegalArgumentException, IllegalStateException {
 		if( (! this.hasAsTask(original)) || (! canHaveAsTask(replacement)) )
 			throw new IllegalArgumentException();
 		original.stopExecuting();
-		//NOTE: tasks.set() can throw many exceptions, but these are already checked beforehand.
 		replacement.addScheduler(this);
-//		tasks.set(tasks.indexOf(original), replacement);
 		this.addTask(replacement);
 		original.removeScheduler(this);
 		this.removeTask(original);
 	}
 	
-
 	/**
-	 * Variable referencing a list collecting all the tasks
-	 * of this scheduler.
-	 * 
-	 * @invar  The referenced list is effective.
-	 *       | tasks != null
-	 * @invar  Each task registered in the referenced list is
-	 *         effective and not yet terminated.
-	 *       | for each task in tasks:
-	 *       |   ( (task != null) &&
-	 *       |     (! task.isTerminated()) )
-	 * @invar  No task is registered at several positions
-	 *         in the referenced list.
-	 *       | for each I,J in 0..tasks.size()-1:
-	 *       |   ( (I == J) ||
-	 *       |     (tasks.get(I) != tasks.get(J))
+	 * Check if all tasks of the given collection can be found in
+	 * this scheduler.
+	 * @param 	tasks
+	 * 			The collection of tasks to check.
+	 * @return	False if at least one task does not exist in
+	 * 			this scheduler.
+	 * 			| for (task in tasks)
+	 *			|	if (! hasAsTask(task))
+	 *			|		then result == false
+	 *			Else, return true.
+	 *			| else
+	 *			| then result == true
 	 */
-	//TODO search priorityqueue
-	private final LinkedList<Task> tasks = new LinkedList<Task>();
-	
-	/**
-	 * Returns a list collecting all the tasks of this scheduler. 
-	 * 
-	 * @return	A list in which each task is effective 
-	 * 			and not yet terminated.
-	 *       	| for each task in result:
-	 *       	|   ( (task != null) &&
-	 *       	|     (! task.isTerminated()) )
-	 * 			No task is registered at several positions
-	 *         	in the referenced list.
-	 *       	| for each I,J in 0..tasks.size()-1:
-	 *       	|   ( (I == J) ||
-	 *       	|     (tasks.get(I) != tasks.get(J))
-	 */
-	public LinkedList<Task> getTasks() {
-		return new LinkedList<Task>(this.tasks);
+	public boolean hasAllTasks(Collection<Task> tasks) {
+		for (Task task: tasks)
+			if (! this.hasAsTask(task))
+				return false;
+		return true;
 	}
 	
-	// =================================================================================================
-	// Iterator for schedulers.
-	// =================================================================================================
+	/**
+	 * Add the given collection of tasks to this scheduler.
+	 * Only valid tasks will be added, with respect to the 
+	 * priority order of the task list. Invalid tasks are ignored.
+	 * 
+	 * @param 	tasks
+	 * 			The collection of tasks to add.
+	 * @effect	Each appropiate task of the collection is added 
+	 * 			to the task list of this scheduler.
+	 * 			| for each task in tasks:
+	 * 			|	this.addTask(task)
+	 */
+	public void addAllTasks(Collection<Task> tasks) {
+		for (Task task: tasks) {
+			try {
+				this.addTask(task);
+			} catch(Exception e) {
+				
+			}
+		}
+	}
 	
-	public Iterator<Task> priorityIterator() {
-        return new Iterator<Task>() {
-
-            public boolean hasNext() {
-                return pos < getNbTasks();
-            }
-
-            public Task next() throws NoSuchElementException {
-                if (!hasNext())
-                    throw new NoSuchElementException();
-                return getTaskAt(pos++);
-            }
-            private int pos = 0;
-
-        };
-    }
+	/**
+	 * Remove the given collection of tasks from this scheduler.
+	 * Only valid tasks will be removed. Invalid tasks are ignored.
+	 * 
+	 * @param 	tasks
+	 * 			The collection of tasks to remove.
+	 * @effect	Each appropiate task of the collection is removed 
+	 * 			from the task list of this scheduler.
+	 * 			| for each task in tasks:
+	 * 			|	this.removeTask(task)
+	 */
+	public void removeAllTasks(Collection<Task> tasks) {
+		for (Task task: tasks) {
+			try {
+				this.removeTask(task);
+			} catch(Exception e) {
+				
+			}
+		}
+	}
+	
+	
+	
 }
