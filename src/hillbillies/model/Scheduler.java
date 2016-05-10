@@ -426,6 +426,8 @@ public class Scheduler {
      * @return	A list of task in which each task satisfies the condition.
      * 			| for each task in result:
      * 			|	predicate(task) == true
+     * @note	This method does not change the order of elements.
+     * 			The resulting list will have the same order as the original list.
      */
     //TODO check doc
     public List<Task> getTasksWithPredicate(Predicate<Task> predicate) {

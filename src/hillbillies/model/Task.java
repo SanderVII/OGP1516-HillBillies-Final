@@ -33,6 +33,9 @@ public class Task implements Comparable<Task> {
 		//NOTE if multiple statements exist, these should be put together in one sequence statement.
 		this.setName(name);
 		this.setPriority(priority);
+		activities.setTask(this);
+		this.setStatement(activities);
+		this.setPosition(selectedCube);
 	}
 	
 	public Task(String name, int priority, Statement activities) {
@@ -176,6 +179,64 @@ public class Task implements Comparable<Task> {
 	private int priority;
 	
 	// =================================================================================================
+	// Methods concerning the selected position.
+	// =================================================================================================
+	
+	//TODO finish doc and code
+	/** TO BE ADDED TO CLASS HEADING
+	 * @invar  The position of each task must be a valid position for any
+	 *         task.
+	 *       | isValidPosition(getPosition())
+	 */
+	
+	/**
+	 * Return the position of this task.
+	 */
+	@Basic @Raw
+	public int[] getPosition() {
+		return this.position;
+	}
+	
+	/**
+	 * Check whether the given position is a valid position for
+	 * any task.
+	 *  
+	 * @param  position
+	 *         The position to check.
+	 * @return 
+	 *       | result == 
+	*/
+	public static boolean isValidPosition(int[] position) {
+		return true;
+	}
+	
+	/**
+	 * Set the position of this task to the given position.
+	 * 
+	 * @param  position
+	 *         The new position for this task.
+	 * @post   The position of this new task is equal to
+	 *         the given position.
+	 *       | new.getPosition() == position
+	 * @throws IllegalArgumentException
+	 *         The given position is not a valid position for any
+	 *         task.
+	 *       | ! isValidPosition(getPosition())
+	 */
+	@Raw
+	public void setPosition(int[] position) 
+			throws IllegalArgumentException {
+		if (! isValidPosition(position))
+			throw new IllegalArgumentException();
+		this.position = position;
+	}
+	
+	/**
+	 * Variable registering the position of this task.
+	 */
+	private int[] position;
+	
+	// =================================================================================================
 	// Methods concerning the unit which executes this task.
 	// =================================================================================================
 	
@@ -289,6 +350,71 @@ public class Task implements Comparable<Task> {
 			unit.setTask(null);
 		}
 	}
+	
+	// =================================================================================================
+	// Methods concerning the statement of this task.
+	// Assumtion: statement does not know its task.
+	// =================================================================================================
+	
+	//TODO check doc and code
+	/**
+	 * Return the statement of this task.
+	 */
+	@Basic @Raw
+	public Statement getStatement() {
+		return this.statement;
+	}
+	
+	/**
+	 * Check whether this task has a statement.
+	 * @return	True if the statement of this task is effective.
+	 * 			| result == (getStatement() != null)
+	 */
+	public boolean hasStatement() {
+		return this.getStatement() != null;
+	}
+	
+	/**
+	 * Checks whether this task has a proper statement attached to it.
+	 * 
+	 * @return	True if and only if the statement of this task does not reference
+	 * 			an effective statement, or that statement references this task
+	 * 			as its task.
+	 * 			| result == ( (this.getStatement() == null) || 
+	 * 			|				(this.getStatement().getTask() == this) )
+	 */
+	public boolean hasProperStatement() {
+		return ( (this.getStatement() == null) /*|| (this.getStatement().getTask() == this)*/ );
+	}
+	
+	/**
+	 * Sets the statement attached to this task to to the given statement.
+	 * 
+	 * @param	statement
+	 * 			The statement to attach to this task.
+	 * @post	This task references the given statement as its statement.
+	 * 			| new.getStatement() == statement
+	 * @throws	IllegalArgumentException
+	 * 			The given statement is effective but does not references
+	 * 			this task as its task.
+	 * 			| (statement != null) && (statement.getTask() != this)
+	 * 			Or, the statement is not effective and this task references
+	 * 			a statement which still references this task as its task.
+	 * 			| (statement == null) && (this.hasStatement() && (this.getStatement().getTask() == this))
+	 */
+	public void setStatement(@Raw Statement statement) throws IllegalArgumentException {
+		if ( (statement != null) && (statement.getTask() != this)  )
+			throw new IllegalArgumentException("Statement does not properly associate this task.");
+		if ( (statement == null) && (this.hasStatement() && (this.getStatement().getTask() == this)))
+			throw new IllegalArgumentException("Link with current statement not properly broken.");
+		this.statement = statement;
+	}
+	
+	/**
+	 * A variable referencing the statement attached to this task.
+	 */
+	private Statement statement;
+	
 	
 	// =================================================================================================
 	// Methods concerning the schedulers who have this task.
@@ -457,5 +583,9 @@ public class Task implements Comparable<Task> {
 			return -1;
 		else
 			return 1;
+	}
+	
+	public void readStatement() {
+		
 	}
 }
