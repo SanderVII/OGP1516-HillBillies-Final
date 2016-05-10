@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.expressions.*;
@@ -15,8 +16,15 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Task> result = new ArrayList<>();
+		if (selectedCubes.size() == 0) {
+			//TODO no selected expression may exist in the statement(s). return exactly one task.
+		}
+		else
+			for (int[]cube: selectedCubes)
+				result.add(new Task(name, priority, activity, cube));
+		return result;
+				
 	}
 
 	@Override
@@ -64,8 +72,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkAtStatement(position, sourceLocation);
 	}
 
 	@Override
@@ -166,8 +173,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createSelectedPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new SelectedPositionExpression(sourceLocation);
 	}
 
 	@Override
