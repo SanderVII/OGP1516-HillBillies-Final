@@ -481,6 +481,22 @@ public class Scheduler {
 	}
 	
 	/**
+	 * Schedules the given task for this scheduler.
+	 * The task does not need to reference this scheduler already.
+	 * 
+	 * @param 	task
+	 * 			The task to scheduler
+	 * @effect 	The task adds this scheduler to its schedulers.
+	 * 			| task.addSchedulers(this)
+	 * @effect	This scheduler adds the given task to its tasks.
+	 * 			| this.addTask(task)
+	 */
+	public void schedule(Task task) throws IllegalStateException, IllegalArgumentException {
+		task.addScheduler(this);
+		this.addTask(task);
+	}
+	
+	/**
 	 * Check if all tasks of the given collection can be found in
 	 * this scheduler.
 	 * @param 	tasks

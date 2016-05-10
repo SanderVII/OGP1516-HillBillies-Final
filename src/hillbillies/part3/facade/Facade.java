@@ -33,7 +33,7 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 	@Override
 	public void schedule(Scheduler scheduler, Task task) throws ModelException {
 		try {
-			scheduler.addTask(task);
+			scheduler.schedule(task);
 		} catch (IllegalArgumentException e) {
 			throw new ModelException();
 		}

@@ -115,20 +115,17 @@ public class SchedulerTest {
 	public void addTasks() {
 		Scheduler scheduler = faction.getScheduler();
 		List<Task> tasks = new ArrayList<>();
-		List<Activity> noActivity = new ArrayList<>();
-		tasks.add(new Task("test0", 100, noActivity));
+		tasks.add(new Task("test0", 100, null));
 		scheduler.addAllTasks(tasks);
-		
-		exception.expect(IllegalArgumentException.class);
-		scheduler.addTask(null);
+
 	}
 	
 	@Test
 	public void getTasksWithPredicate() {
 		Scheduler scheduler = faction.getScheduler();
 		List<Task> tasks = new ArrayList<>();
-		tasks.add(new Task("test1", 100, new ArrayList<>()));
-		tasks.add(new Task("test2", -5, new ArrayList<>()));
+		tasks.add(new Task("test1", 100, null));
+		tasks.add(new Task("test2", -5, null));
 		for (Task task: tasks)
 			task.addScheduler(scheduler);
 		scheduler.addAllTasks(tasks);
