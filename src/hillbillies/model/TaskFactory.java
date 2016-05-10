@@ -19,6 +19,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 		List<Task> result = new ArrayList<>();
 		if (selectedCubes.size() == 0) {
 			//TODO no selected expression may exist in the statement(s). return exactly one task.
+			result.add(new Task(name, priority, activity));
 		}
 		else
 			for (int[]cube: selectedCubes)

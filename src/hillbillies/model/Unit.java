@@ -2020,16 +2020,16 @@ public class Unit extends Entity{
 	 * @post	The new workTarget of this unit is equal to the given workTarget.
 	 * 				|new.getWorkTarget() == workTarget
 	 */
-	private void workAt(int[] workTarget, boolean thisIsDefaultBehaviour) throws NullPointerException, IllegalArgumentException{
+	public void workAt(int[] workTarget, boolean thisIsDefaultBehaviour) throws NullPointerException, IllegalArgumentException{
 		if (thisIsDefaultBehaviour)
 			System.out.println("workAt by defaultBehaviour");
-		try {
+//		try {
 			
 			if ( ! thisIsDefaultBehaviour)
 				this.setDefaultBehaviorEnabled(false);
 			
 			// MoveToAdjacent may not be interupted except by being attacked.
-			if ((this.getCurrentActivity() != Activity.MOVE) && (moveToPath.size() == 0)) {
+//			if ((this.getCurrentActivity() != Activity.MOVE) && (moveToPath.size() == 0)) {
 				int x = workTarget[0];
 				int y = workTarget[1];
 				
@@ -2041,11 +2041,12 @@ public class Unit extends Entity{
 					this.setPreviousActivity(this.getCurrentActivity());
 					this.setCurrentActivity(Activity.WORK);
 					this.setOrientation(Math.atan2((y - this.getPosition().getYCoordinate()), (x - this.getPosition().getXCoordinate())));
-				} else {
+//				} else {
 					// Do nothing.
-				}
+//				}
 			}
-		} catch(IllegalStateException e){}
+//		} catch(IllegalStateException e){}
+		System.out.println("workat started");
 	}
 	
 	/**
@@ -2620,8 +2621,8 @@ public class Unit extends Entity{
 		Scheduler scheduler = this.getFaction().getScheduler();
 		List<Task> availableTasks = scheduler.getUnassignedTasks();
 		if (availableTasks.size() != 0) {
-			//TODO are we sure the availableTasksList is sorted?
-//			task.assignTo(this);
+			availableTasks.get(0).assignTo(this);
+			this.getTask().getStatement().execute(getWorld(), this, this.getTask().getPosition());
 		}
 		else {
 //		try {
@@ -2947,7 +2948,7 @@ public class Unit extends Entity{
 		}
 
 		// Actual implementation of activities.
-		switch(this.getCurrentActivity()){
+		switch(this.getCurrentActivity()) {
 			case MOVE:
 				advanceTimeMove(deltaT);
 				break;
@@ -2969,6 +2970,7 @@ public class Unit extends Entity{
 		default:
 			break;
 		}
+		
 	}
 
 	private void advanceTimeRest(double deltaT) {
@@ -3070,6 +3072,7 @@ public class Unit extends Entity{
 		
 		// If the work time is over...
 		else if (this.getProgress() >= this.getWorkDuration()){
+			System.out.println(workTarget.toString());
 			//	Make the code more readable.
 			Cube workTargetCube = this.getWorld().getCube(workTarget[0], workTarget[1], workTarget[2]);
 
