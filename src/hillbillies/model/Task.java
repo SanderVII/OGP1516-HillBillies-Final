@@ -3,6 +3,7 @@ package hillbillies.model;
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.statements.Statement;
 
 /**
  * A class of tasks, involving a name, a priority and 
@@ -28,9 +29,14 @@ import be.kuleuven.cs.som.annotate.*;
 public class Task implements Comparable<Task> {
 	
 	//TODO finish
-	public Task(String name, int priority, List<Activity> activities) {
+	public Task(String name, int priority, Statement activities, int[] selectedCube) {
+		//NOTE if multiple statements exist, these should be put together in one sequence statement.
 		this.setName(name);
 		this.setPriority(priority);
+	}
+	
+	public Task(String name, int priority, Statement activities) {
+		this(name,priority,activities, null);
 	}
 	
 	// =================================================================================================
