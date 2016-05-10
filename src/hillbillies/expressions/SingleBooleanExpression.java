@@ -15,7 +15,7 @@ public abstract class SingleBooleanExpression extends BooleanExpression {
 		return this.expression;
 	}
 	
-	private void setExpression(Expression expression) {
+	protected void setExpression(Expression expression) {
 		this.expression = expression;
 	}
 

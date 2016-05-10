@@ -15,9 +15,17 @@ public class IsEnemyExpression extends SingleBooleanExpression{
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		return ! (unit.getFaction() == ((Unit) this.getExpression().evaluate(
-				world, unit, selectedCubes, sourceLocation)).getFaction());
+	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
+//		return ! (unit.getFaction() == ((Unit) this.getExpression().evaluate(
+//				world, unit, selectedCubes, sourceLocation)).getFaction());
+		return false;
+	}
+	
+	@Override
+	protected void setExpression(Expression expression) {
+		if (!(expression instanceof UnitExpression))
+			throw new IllegalArgumentException();
+		super.setExpression(expression);
 	}
 
 }

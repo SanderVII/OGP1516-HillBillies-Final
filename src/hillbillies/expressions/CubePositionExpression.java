@@ -11,6 +11,5 @@ public abstract class CubePositionExpression extends Expression {
 		// TODO Auto-generated constructor stub
 	}
 
-	public abstract int[] evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation);
-
+	public abstract int[] evaluate(World world, Unit unit, int[] selectedCubes);
 }

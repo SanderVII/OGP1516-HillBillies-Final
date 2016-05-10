@@ -10,7 +10,7 @@ public abstract class Expression {
 		this.setSourceLocation(sourceLocation);
 	}
 	
-	public abstract Object evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation);
+	public abstract Object evaluate(World world, Unit unit, int[] selectedCubes);
 	
 	public SourceLocation getSourceLocation() {
 		return this.sourceLocation;

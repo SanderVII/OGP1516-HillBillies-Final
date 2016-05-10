@@ -15,8 +15,7 @@ public class SelectedPositionExpression extends CubePositionExpression {
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes,SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
+	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
 		return selectedCubes;
 	}
 
