@@ -2649,7 +2649,7 @@ public class Unit extends Entity{
 			int choice =  new Random().nextInt(4);
 			if (choice == 0){
 				// The unit chose to work. 
-				this.workAt(this.getWorld().getRandomCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
+				this.workAt(this.getWorld().getRandomValidCubeCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
 			}
 			else if (choice == 1){
 				// The unit chose to rest.

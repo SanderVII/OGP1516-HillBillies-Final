@@ -472,7 +472,7 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void work(Unit unit) throws ModelException {
-		unit.workAt(unit.getWorld().getRandomSolidCoordinatesInRange(unit.getPosition().getCoordinates(), 1));
+		unit.workAt(unit.getWorld().getRandomSolidCubeCoordinatesInRange(unit.getPosition().getCoordinates(), 1));
 	}
 
 	/**

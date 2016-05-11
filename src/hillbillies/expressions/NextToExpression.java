@@ -19,15 +19,15 @@ public class NextToExpression extends CubePositionExpression{
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		int[] dummy = this.getPosition().evaluate(world, unit, selectedCubes, sourceLocation);
+	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
+		int[] dummy = this.getPosition().evaluate(world, unit, selectedCubes);
 		
-		Set<Cube> directlyAdjacent = world.getDirectlyAdjacentCubes(dummy[0], dummy[1], dummy[2]);
-		int random = new Random().nextInt(directlyAdjacent.size());
+		Set<int[]> directlyAdjacentCoordinates = world.getDirectlyAdjacentCoordinates(dummy[0], dummy[1], dummy[2]);
+		int random = new Random().nextInt(directlyAdjacentCoordinates.size());
 		int i = 0;
-		for (Cube cube: directlyAdjacent) {
+		for (int[] cubeCoordinate: directlyAdjacentCoordinates) {
 			if (random == i)
-				return cube.getPosition().getCubeCoordinates();
+				return cubeCoordinate;
 			i += 1;
 		}
 		// Only happens in a 1x1x1 world.
