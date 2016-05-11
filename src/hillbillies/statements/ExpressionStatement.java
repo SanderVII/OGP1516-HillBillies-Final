@@ -26,8 +26,13 @@ public abstract class ExpressionStatement extends Statement {
 		return this.expression;
 	}
 	
+	/*
+	 * NOTE: expressions are created without a statement.
+	 * setExpression assumes this and creates a bidirectional association.
+	 */
 	protected void setExpression(Expression expression) throws IllegalArgumentException {
 		this.expression = expression;
+		expression.setStatement(this);
 	}
 	
 	private Expression expression;

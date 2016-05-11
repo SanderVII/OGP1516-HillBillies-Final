@@ -19,8 +19,6 @@ public class WorkAtStatement extends ActionPositionStatement {
 	public void execute(World world, Unit unit, int[] selectedCubes) {
 		int[] dummy = (int[]) this.getExpression().evaluate(world, unit, selectedCubes);
 		this.getTask().getUnit().workAt(dummy,true);
-//		int[] position = (int[]) this.getExpression().evaluate(world, unit, selectedCubes.get(0));
-////		unit.workAt(position);
 	}
 	
 	@Override
