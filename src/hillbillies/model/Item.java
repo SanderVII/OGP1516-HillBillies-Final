@@ -124,7 +124,7 @@ public abstract class Item extends Entity {
 	*/
 	@Override @Raw
 	public boolean canHaveAsWeight(int weight) {
-		return ((weight >= 10) && (weight <= 50));
+		return ((weight >= MINIMAL_WEIGHT) && (weight <= MAXIMAL_WEIGHT));
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public abstract class Item extends Entity {
 	/**
 	 * A variable holding the maximal weight for an item.
 	 */
-	public static final int MAXIMAL_WEIGHT = 10;
+	public static final int MAXIMAL_WEIGHT = 50;
 	
 	// ==========================================================================================
 	// Methods concerning the position of this item.

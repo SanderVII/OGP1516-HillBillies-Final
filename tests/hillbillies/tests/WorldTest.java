@@ -28,7 +28,6 @@ import ogp.framework.util.Util;
  */
 public class WorldTest {
 	
-//	private int[][][] terrain = new int[20][40][10];
 	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
 	private static final int TYPE_TREE = 2;
@@ -149,6 +148,8 @@ public class WorldTest {
 		assertFalse(world.hasUnitAt(new int[]{5,5,0}));
 		assertTrue(world.isTerminated());
 		assertTrue(world.hasProperEntities());
+		
+		assertTrue(world.isTerminated());
 	}
 	
 	@Test
