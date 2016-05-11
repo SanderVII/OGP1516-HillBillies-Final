@@ -108,10 +108,7 @@ public abstract class Entity {
 	 * 
 	 * @param 	world
 	 *			The world to check.
-	 * @return	If this entity is terminated, true if the given world
-	 * 			is not effective.
-	 * 			Else, true if the given world is effective
-	 * 			and not yet terminated.
+	 * @return	False if and only if this entity is terminated
 	 */
 	//TODO fix doc
 	/* NOTE: items can be bound to a null world. According to the Liskov substitution principle,
@@ -121,8 +118,6 @@ public abstract class Entity {
 			return world == null;
 		else
 			return true;
-//		else
-//			return (world != null) && (! world.isTerminated());
 	}
 	
 	/**

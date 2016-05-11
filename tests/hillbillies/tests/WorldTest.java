@@ -11,12 +11,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import hillbillies.model.Boulder;
+import hillbillies.model.Entity;
 import hillbillies.model.Log;
 import hillbillies.model.Terrain;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.util.Position;
+import hillbillies.util.UnitPosition;
+import ogp.framework.util.Util;
 
 /**
  * 
@@ -31,21 +34,20 @@ public class WorldTest {
 	private static final int TYPE_TREE = 2;
 	private static final int TYPE_WORKSHOP = 3;
 	
-	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 
 	}
-
+	
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 	}
-
+	
 	@Before
 	public void setUp() throws Exception {
 
 	}
-
+	
 	@After
 	public void tearDown() throws Exception {
 	}
@@ -148,7 +150,7 @@ public class WorldTest {
 		assertTrue(world.isTerminated());
 		assertTrue(world.hasProperEntities());
 	}
-
+	
 	@Test
 	public void factionsTest() {
 		int[][][] terrain = new int[20][40][10];
@@ -173,7 +175,7 @@ public class WorldTest {
 		
 		assertFalse(world.hasRoomForFaction());
 	}
-
+	
 	@Test
 	public void coordinateBounderiesTest() {
 		int[][][] terrain = new int[3][3][3];
@@ -371,6 +373,343 @@ public class WorldTest {
 		assertFalse(world.hasAsEntity(log2));
 		
 	}
+	
+	@Test
+	public void canHaveAsEntityTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{0,0,0});
+		world.addEntity(log);
+		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		world.addEntity(boulder);
+		Log log2 = new Log(world, new int[]{19,39,9});
+		
+		assertTrue(world.canHaveAsEntity(unit));
+		assertTrue(world.canHaveAsEntity(log));
+		assertTrue(world.canHaveAsEntity(boulder));
+		assertFalse(world.canHaveAsEntity(null));
+		assertTrue(world.canHaveAsEntity(log2));
+		
+		unit.terminate();
+		
+		assertFalse(world.canHaveAsEntity(unit));
+	}
+	
+	@Test
+	public void hasProperEntitiesTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{0,0,0});
+		world.addEntity(log);
+		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		world.addEntity(boulder);
+		Log log2 = new Log(world, new int[]{19,39,9});
+		world.addEntity(log2);
+		
+		assertTrue(world.hasProperEntities());
+		world.terminate();
+		assertTrue(world.hasProperEntities());
+		
+	}
+	
+	@Test
+	public void getNbEntitiesTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{0,0,0});
+		world.addEntity(log);
+		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		world.addEntity(boulder);
+		Log log2 = new Log(world, new int[]{19,39,9});
+		world.addEntity(log2);
+		
+		assertTrue(world.getNbEntities() == 4);
+		
+		log2.terminate();
+		assertTrue(world.getNbEntities() == 3);
+		
+		unit.terminate();
+		assertTrue(world.getNbEntities() == 2);
+		
+		world.terminate();
+		assertTrue(world.getNbEntities() == 0);
+	}
+	
+	@Test
+	public void addEntity_removeEntityTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		assertTrue(world.getNbEntities() == 0);
+		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		assertTrue(world.hasAsEntity(unit));
+		Log log = new Log(world, new int[]{0,0,0});
+		world.addEntity(log);
+		assertTrue(world.hasAsEntity(log));
+		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		world.addEntity(boulder);
+		assertTrue(world.hasAsEntity(boulder));
+		Log log2 = new Log(world, new int[]{19,39,9});
+		world.addEntity(log2);
+		assertTrue(world.hasAsEntity(log2));
+		assertTrue(world.getNbEntities() == 4);
+		
+		world.removeEntity(unit);
+		assertTrue(world.getNbEntities() == 3);
+		assertFalse(world.hasAsEntity(unit));
+		world.removeEntity(boulder);
+		assertTrue(world.getNbEntities() == 2);
+		assertFalse(world.hasAsEntity(unit));
+		world.removeEntity(log);
+		assertTrue(world.getNbEntities() == 1);
+		assertFalse(world.hasAsEntity(unit));
+		world.removeEntity(log2);
+		assertTrue(world.getNbEntities() == 0);
+		assertFalse(world.hasAsEntity(unit));
+	}
+	
+	@Test
+	public void getItemAtTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world,  "Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{0,0,0});
+		world.addEntity(log);
+		assertTrue(world.getNbEntities() == 2);
+		
+		assertTrue(world.getItemAt(new int[]{0,0,0}) == log);
+		assertTrue(world.hasItemAt(new int[]{0,0,0}));
+		assertFalse(world.hasItemAt(new int[]{0,0,1}));
+	}
+	
+	@Test
+	public void UnitMethodsTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{0,0,0});
+		world.addEntity(log);
+		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		world.addEntity(boulder);
+		Log log2 = new Log(world, new int[]{19,39,9});
+		world.addEntity(log2);
+		Unit unit2 = new Unit(world,  "Test", new int[] { 5, 5, 1 }, 50, 50, 50, 50);
+		unit2.stopDefaultBehavior();
+		world.addEntity(unit2);
+		Unit unit3 = new Unit(world,  "Test", new int[] { 6, 5, 0 }, 50, 50, 50, 50);
+		unit3.stopDefaultBehavior();
+		world.addEntity(unit3);
+		
+		assertTrue(world.getNbUnits() == 3);
+		assertTrue(world.getUnitAt(new int[] { 5, 5, 0 }) == unit);
+		assertTrue(world.getUnitAt(new int[] { 5, 5, 1 }) == unit2);
+		assertTrue(world.getUnitAt(new int[] { 6, 5, 0 }) == unit3);
+		assertFalse(world.hasUnitAt(new int[] { 0, 0, 0 }));
+		assertTrue(world.hasUnitAt(new int[] { 5,5,1}));
+	}
+	
+	@Test
+	public void LogMethodsTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{5, 5, 0});
+		world.addEntity(log);
+		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
+		world.addEntity(boulder);
+		Log log2 = new Log(world, new int[]{5, 5, 1});
+		world.addEntity(log2);
+		Log log3 = new Log(world, new int[]{6, 5, 0});
+		world.addEntity(log3);
+		
+		assertTrue(world.getNbLogs() == 3);
+		assertTrue(world.getLogAt(new int[] { 5, 5, 0 }) == log);
+		assertTrue(world.getLogAt(new int[] { 5, 5, 1 }) == log2);
+		assertTrue(world.getLogAt(new int[] { 6, 5, 0 }) == log3);
+		assertFalse(world.hasLogAt(new int[] { 0, 0, 0 }));
+		assertTrue(world.hasLogAt(new int[] { 5,5,1}));
+	}
+	
+	@Test
+	public void BoulderMethodsTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{5, 5, 0});
+		world.addEntity(log);
+		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
+		world.addEntity(boulder);
+		Boulder boulder2 = new Boulder(world, new int[]{5, 5, 1});
+		world.addEntity(boulder2);
+		Boulder boulder3 = new Boulder(world, new int[]{6, 5, 0});
+		world.addEntity(boulder3);
+		
+		assertTrue(world.getNbBoulders() == 3);
+		assertTrue(world.getBoulderAt(new int[] { 5, 5, 0 }) == boulder);
+		assertTrue(world.getBoulderAt(new int[] { 5, 5, 1 }) == boulder2);
+		assertTrue(world.getBoulderAt(new int[] { 6, 5, 0 }) == boulder3);
+		assertFalse(world.hasBoulderAt(new int[] { 0, 0, 0 }));
+		assertTrue(world.hasBoulderAt(new int[] { 5,5,1}));
+	}
+	
+	@Test
+	public void spawnUnitTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		for (int i=0; i<=World.MAX_UNITS_WORLD+1; i++){
+			Unit unit =world.spawnUnit(false);
+			if (unit!=null){
+				assertTrue(Unit.isValidName(unit.getName()));
+				assertTrue(world.isValidInitialUnitCoordinates(unit.getPosition().getCubeCoordinates()));
+				assertTrue(unit.getWeight() >= Unit.getMinInitialBaseStat() && unit.getWeight() <= Unit.getMaxInitialBaseStat());
+				assertTrue(unit.getStrength() >= Unit.getMinInitialBaseStat() && unit.getStrength() <= Unit.getMaxInitialBaseStat());
+				assertTrue(unit.getAgility() >= Unit.getMinInitialBaseStat() && unit.getAgility() <= Unit.getMaxInitialBaseStat());
+				assertTrue(unit.getToughness() >= Unit.getMinInitialBaseStat() && unit.getToughness() <= Unit.getMaxInitialBaseStat());
+				assertTrue(unit.hasProperFaction());
+				assertTrue(unit.hasProperWorld());
+				assertTrue(unit.getDefaultBehaviorEnabled() == false);
+			}
+		}
+	}
+	
+	@Test
+	public void getRandomAvailableUnitCoordinatesTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		for (int i=0; i<=50; i++){
+			int[] randomCoordinates = world.getRandomAvailableUnitCoordinates();
+			assertTrue(world.canHaveAsCoordinates(randomCoordinates));
+			assertTrue(world.isValidInitialUnitCoordinates(randomCoordinates));
+		}
+	}
+	
+	@Test
+	public void isValidInitialUnitCoordinatesTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+
+		assertTrue(world.isValidInitialUnitCoordinates(new int[]{0,0,0}));
+		assertTrue(world.isValidInitialUnitCoordinates(new int[]{1,1,2}));
+		assertFalse(world.isValidInitialUnitCoordinates(new int[]{1,1,0}));
+		assertFalse(world.isValidInitialUnitCoordinates(new int[]{1,1,1}));
+		assertFalse(world.isValidInitialUnitCoordinates(new int[]{5,5,5}));
+	}
+	
+	@Test
+	public void isValidxYZCoordinateTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+
+		assertTrue(world.isValidXCoordinate(0));
+		assertTrue(world.isValidYCoordinate(0));
+		assertTrue(world.isValidZCoordinate(0));
+		assertFalse(world.isValidXCoordinate(-1));
+		assertFalse(world.isValidYCoordinate(-1));
+		assertFalse(world.isValidZCoordinate(-1));
+		assertTrue(world.isValidXCoordinate(19));
+		assertTrue(world.isValidYCoordinate(39));
+		assertTrue(world.isValidZCoordinate(9));
+		assertFalse(world.isValidXCoordinate(20));
+		assertFalse(world.isValidYCoordinate(40));
+		assertFalse(world.isValidZCoordinate(10));
+	}
+	
+	@Test
+	public void advanceTimeTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world,  "Test", new int[] { 0, 0, 0 }, 100, 100, 100, 100);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{5, 5, 0});
+		world.addEntity(log);
+		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
+		world.addEntity(boulder);
+		Log log2 = new Log(world, new int[]{5, 5, 1});
+		world.addEntity(log2);
+		Log log3 = new Log(world, new int[]{6, 5, 0});
+		world.addEntity(log3);
+		
+		assertTrue(world.isSolidConnectedToBorder(1, 1, 0));
+		assertTrue(world.isSolidConnectedToBorder(1, 1, 1));
+		unit.workAt(new int[]{1, 1, 0});
+		advanceTimeFor(world, 100, 0.02);
+		assertEquals(TYPE_AIR, world.getTerrain(1, 1, 0).ordinal());
+		//	The second one collapses because it is no longer connected to a solid cube or the border of the world.
+		assertEquals(TYPE_AIR, world.getTerrain(1, 1, 1).ordinal());
+		
+		for(Entity entity: world.getEntities()){
+			System.out.println(entity.getGametime());
+			assertTrue(Util.fuzzyEquals(entity.getGametime(), 100));
+		}
+	}
+	
 	
 	/**
 	 * Helper method to advance time for the given world by some time.

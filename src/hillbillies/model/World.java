@@ -729,13 +729,10 @@ public class World {
 		double dropChance = World.DROP_CHANCE;
 		double succesRate = Math.random();
 		if (succesRate <= dropChance){
-			// TODO unify to addItem instead of addLog and addBoulder.
 			if (cube.getTerrainType() == Terrain.WOOD)
 				this.addEntity(new Log(this, cubeCoordinates));
-//				this.addLog(new Log(this, cubeCoordinates));
 			if (cube.getTerrainType() == Terrain.ROCK)
 				this.addEntity(new Boulder(this, cubeCoordinates));
-//				this.addBoulder(new Boulder(this, cubeCoordinates));
 		}
 	}
 	
@@ -847,8 +844,8 @@ public class World {
 		int size = cubeSet.size();
 		if (size == 0)
 			throw new IllegalArgumentException("No valid coordinates within range.");
-		UnitPosition temp = new UnitPosition(this, coordinates);
 		
+		UnitPosition temp = new UnitPosition(this, coordinates);
 		for (int[] cubeCoordinates: cubeSet){
 			if (temp.canHaveAsUnitCoordinates(cubeCoordinates))
 				reducedSet.add(cubeCoordinates);
@@ -995,9 +992,11 @@ public class World {
 	 */
 	public Item getItemAt(int[] position){
 		for (Entity entity: this.getEntities()){
-			int[] entityPosition = entity.getPosition().getCubeCoordinates();
-			if ((entity instanceof Item) && (Position.equals(position, entityPosition)))
-				return (Item) entity;
+			if (entity instanceof Item){
+				int[] entityPosition = entity.getPosition().getCubeCoordinates();
+				if (Position.equals(position, entityPosition))
+					return (Item) entity;
+			}
 		}
 		return null;
 	}
@@ -1200,30 +1199,38 @@ public class World {
 	
 	/**
 	 * Creates a new unit with random attributes at a random location.
+	 * If the maximal amount of units for a world is reached, then null is returned
 	 * 
 	 * @return	A new unit with this world as its world and random valid name, weight, strength, agility, toughness and initial coordinates.
+	 *				If the maximal amount of units for a world is reched, then null is returned.
 	 */
 	public Unit spawnUnit(boolean enableDefaultBehavior) throws IllegalStateException, IllegalArgumentException, NullPointerException {
-		String randomName = nameGenerator();
-		int[] randomCoordinates = this.getRandomAvailableUnitCoordinates();
-		int randomWeight = new Random().nextInt(Unit.getMaxInitialBaseStat()-Unit.getMinInitialBaseStat()+1) + Unit.getMinInitialBaseStat();
-		int randomStrength = new Random().nextInt(Unit.getMaxInitialBaseStat()-Unit.getMinInitialBaseStat()+1) + Unit.getMinInitialBaseStat();
-		int randomAgility = new Random().nextInt(Unit.getMaxInitialBaseStat()-Unit.getMinInitialBaseStat()+1) + Unit.getMinInitialBaseStat();
-		int randomToughness = new Random().nextInt(Unit.getMaxInitialBaseStat()-Unit.getMinInitialBaseStat()+1) + Unit.getMinInitialBaseStat();
-		
-		Unit newRandomUnit = null;
-		if (this.hasRoomForFaction()) {
-			newRandomUnit = new Unit(this, randomName, randomCoordinates, randomWeight, randomStrength, randomAgility, randomToughness);
+		// Units should be silently rejected if there are to many.
+		if (this.getNbUnits()<World.MAX_UNITS_WORLD)	{
+			String randomName = nameGenerator();
+			int[] randomCoordinates = this.getRandomAvailableUnitCoordinates();
+			int randomWeight = new Random().nextInt(Unit.getMaxInitialBaseStat()-Unit.getMinInitialBaseStat()+1) + Unit.getMinInitialBaseStat();
+			int randomStrength = new Random().nextInt(Unit.getMaxInitialBaseStat()-Unit.getMinInitialBaseStat()+1) + Unit.getMinInitialBaseStat();
+			int randomAgility = new Random().nextInt(Unit.getMaxInitialBaseStat()-Unit.getMinInitialBaseStat()+1) + Unit.getMinInitialBaseStat();
+			int randomToughness = new Random().nextInt(Unit.getMaxInitialBaseStat()-Unit.getMinInitialBaseStat()+1) + Unit.getMinInitialBaseStat();
+			
+			Unit newRandomUnit = null;
+			if (this.hasRoomForFaction()) {
+				newRandomUnit = new Unit(this, randomName, randomCoordinates, randomWeight, randomStrength, randomAgility, randomToughness);
+			}
+			else {
+				Faction faction = this.getAvailableFactionWithLeastMembers();
+				newRandomUnit = new Unit(this, faction, randomName, randomCoordinates, randomWeight, randomStrength, randomAgility, randomToughness);
+			}
+			if (enableDefaultBehavior)
+				newRandomUnit.startDefaultBehavior();
+			
+	//		System.out.println(newRandomUnit.toString());
+			return newRandomUnit;
 		}
-		else {
-			Faction faction = this.getAvailableFactionWithLeastMembers();
-			newRandomUnit = new Unit(this, faction, randomName, randomCoordinates, randomWeight, randomStrength, randomAgility, randomToughness);
+		else{
+			return null;
 		}
-		if (enableDefaultBehavior)
-			newRandomUnit.startDefaultBehavior();
-		
-		System.out.println(newRandomUnit.toString());
-		return newRandomUnit;
 	}
 	
 	/**
@@ -1332,9 +1339,10 @@ public class World {
 	 *       			| result ==  ( this.isPassable(coordinates) && 
 	 *       			|		( (coordinates[2] == CUBE_COORDINATE_MIN) || (!this.isPassable(coordinatesRightUnderneath)) ) )
 	*/
-	private boolean isValidInitialUnitCoordinates(int[] coordinates){
+	public boolean isValidInitialUnitCoordinates(int[] coordinates){
 		int[] coordinatesRightUnderneath = {coordinates[0], coordinates[1], coordinates[2]-1};
-		return ( this.isPassable(coordinates) && ((coordinates[2] == CUBE_COORDINATE_MIN) || (!this.isPassable(coordinatesRightUnderneath))) );
+		return ( this.isPassable(coordinates) && ((coordinates[2] == CUBE_COORDINATE_MIN) || (!this.isPassable(coordinatesRightUnderneath))) 
+				&& this.canHaveAsCoordinates(coordinates));
 	}
 	
 	/**
