@@ -57,6 +57,13 @@ public class Task implements Comparable<Task> {
 	//TODO finish
 	 public void terminate() {
 		 this.isTerminated = true;
+		 for (Scheduler scheduler: this.getSchedulers()) {
+			 this.removeScheduler(scheduler);
+			 scheduler.removeTask(this);
+		 }
+		 Unit unit = this.getUnit();
+		 this.setUnit(null);
+		 unit.setTask(null);
 	 }
 	 
 	 /**
@@ -205,7 +212,8 @@ public class Task implements Comparable<Task> {
 	 *         The position to check.
 	 * @return 
 	 *       | result == 
-	*/
+	 */
+	//TODO doc
 	public static boolean isValidPosition(int[] position) {
 		return true;
 	}
@@ -235,6 +243,38 @@ public class Task implements Comparable<Task> {
 	 * Variable registering the position of this task.
 	 */
 	private int[] position;
+	
+	// =================================================================================================
+	// Methods concerning whether this task is finished.
+	// =================================================================================================
+	
+	/**
+	 * Return the finished property of this task.
+	 */
+	@Basic @Raw
+	public boolean getFinished() {
+		return this.finished;
+	}
+	
+	/**
+	 * Set the finished property of this task to the given finished property.
+	 * 
+	 * @param  finished
+	 *         The new finished property for this task.
+	 * @post   The finished property of this new task is equal to
+	 *         the given finished property.
+	 *       | new.getFinished() == finished
+	 */
+	@Raw
+	public void setFinished(boolean finished) {
+		this.finished = finished;
+	}
+	
+	/**
+	 * Variable registering the finished property of this task.
+	 * The default value is false.
+	 */
+	private boolean finished = false;
 	
 	// =================================================================================================
 	// Methods concerning the unit which executes this task.
@@ -337,6 +377,8 @@ public class Task implements Comparable<Task> {
 	
 	/**
 	 * Stop the execution of this task, if necessary.
+	 * The task is send back to the scheduler of the unit faction.
+	 * 
 	 * @post	This task no longer references a unit.
 	 * 			| ! new.hasUnit()
 	 * @post	The unit of this task no longer references this task.
@@ -353,7 +395,6 @@ public class Task implements Comparable<Task> {
 	
 	// =================================================================================================
 	// Methods concerning the statement of this task.
-	// Assumtion: statement does not know its task.
 	// =================================================================================================
 	
 	//TODO check doc and code
@@ -583,9 +624,5 @@ public class Task implements Comparable<Task> {
 			return -1;
 		else
 			return 1;
-	}
-	
-	public void readStatement() {
-		
 	}
 }

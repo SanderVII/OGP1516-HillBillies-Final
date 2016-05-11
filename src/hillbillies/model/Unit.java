@@ -20,6 +20,7 @@ import hillbillies.util.UnitPosition;
 //TODO orientation of work seems incorrect for east-north directions.
 //TODO do not award xp for failed task (i.e. working air)
 
+
 /** 
  * @version 2.17
  */
@@ -1813,7 +1814,7 @@ public class Unit extends Entity{
 	 *       		|   then new.getOrientation() == orientation
 	 */
 	@Raw
-	public void setOrientation(double orientation) {
+	private void setOrientation(double orientation) {
 		if (isValidOrientation(orientation))
 			this.orientation = orientation;
 	}
@@ -1899,6 +1900,24 @@ public class Unit extends Entity{
 	 * A variable referencing the task attached to this unit.
 	 */
 	private Task task;
+	
+	/**
+	 * Finish the task of this unit, if necessary.
+	 * 
+	 * @effect	The task of this unit is finished.
+	 * 			| if this.hasTask()
+	 *			|	then this.getTask().setFinished(true)
+	 * @post	The task of his unit references no scheduler and
+	 * 			its old schedulers no longer reference this task.
+	 * 			| new.getTask().getScheduler().size() == 0 &&
+	 * 			| for each scheduler in this.getTask().getSchedulers()
+	 * 			|	! scheduler.hasAsTask(new.getTask())
+	 */
+	//TODO fix doc, check code
+	private void finishTask() {
+		if (this.hasTask()) 
+			this.getTask().terminate();
+	}
 	
 	// ==================================================================================
 	// Methods for the different activities.
@@ -2027,13 +2046,18 @@ public class Unit extends Entity{
 	public void workAt(int[] workTarget, boolean thisIsDefaultBehaviour) throws NullPointerException, IllegalArgumentException{
 		if (thisIsDefaultBehaviour)
 			System.out.println("workAt by defaultBehaviour");
-//		try {
+		try {
 			
 			if ( ! thisIsDefaultBehaviour)
 				this.setDefaultBehaviorEnabled(false);
 			
+			if(this.hasItem())
+				if (! this.getItem().canHaveAsCoordinates(workTarget))
+					throw new IllegalArgumentException("cannot drop item here.");
+			
+			
 			// MoveToAdjacent may not be interupted except by being attacked.
-//			if ((this.getCurrentActivity() != Activity.MOVE) && (moveToPath.size() == 0)) {
+			if ((this.getCurrentActivity() != Activity.MOVE) && (moveToPath.size() == 0)) {
 				int x = workTarget[0];
 				int y = workTarget[1];
 				
@@ -2044,13 +2068,13 @@ public class Unit extends Entity{
 					this.setWorkTarget(workTarget);
 					this.setPreviousActivity(this.getCurrentActivity());
 					this.setCurrentActivity(Activity.WORK);
-					this.setOrientation(Math.atan2((y - this.getPosition().getYCoordinate()), (x - this.getPosition().getXCoordinate())));
-//				} else {
-					// Do nothing.
-//				}
+				}
 			}
-//		} catch(IllegalStateException e){}
-		System.out.println("workat started");
+		} 
+		catch(IllegalStateException e){
+		}
+		catch(IllegalArgumentException e) {
+		}
 	}
 	
 	/**
@@ -2680,12 +2704,17 @@ public class Unit extends Entity{
 	 * Stops the default behavior of this unit.
 	 * 
 	 * @post	The current activity of this unit equals NOTHING.
-	 * 				|this.getCurrentActivity() == Activity.NOTHING
+	 * 				| this.getCurrentActivity() == Activity.NOTHING
+	 * @effect	This unit stops executing its task.
+	 * 				| getTask().stopExecuting()
+	 * 			
 	 */
 	public void stopDefaultBehavior() {
 		try {
 			this.setDefaultBehaviorEnabled(false);
 			this.setCurrentActivity(Activity.NOTHING);
+			if (this.hasTask())
+				this.getTask().stopExecuting();
 		} catch (IllegalStateException e) {}
 	}
 	
@@ -2878,7 +2907,7 @@ public class Unit extends Entity{
 	 * 			| new.getIsInterrupted() == value
 	 */
 	@Raw
-	private void setisInterrupted(boolean value) {
+	private void setIsInterrupted(boolean value) {
 		this.isInterrupted = value;
 	}
 	
@@ -3060,6 +3089,10 @@ public class Unit extends Entity{
 	public void advanceTimeWorkAt(double deltaT, int[] workTarget) {
 		this.setProgress(this.getProgress() + deltaT);
 		
+		double[] cube = Position.getCubeCenter(workTarget);
+		this.setOrientation(cube[0] - this.getPosition().getXCoordinate(),
+				cube[1] - this.getPosition().getYCoordinate());
+		
 		// Dropping boulders and logs has to be instantaneous so it has to happen before the progress check.
 		// If this unit is carrying a log or a boulder:
 		if (this.hasItem()) {
@@ -3069,14 +3102,15 @@ public class Unit extends Entity{
 			
 			this.setCurrentActivity(Activity.NOTHING);
 			
+			this.addExperience(10);
+			
 			// If default behavior is enabled, keep it running.
 			if (this.getDefaultBehaviorEnabled())
 				this.startDefaultBehavior();
 		}
 		
 		// If the work time is over...
-		else if (this.getProgress() >= this.getWorkDuration()){
-			System.out.println(workTarget.toString());
+		else if (this.getProgress() >= this.getWorkDuration()) {
 			//	Make the code more readable.
 			Cube workTargetCube = this.getWorld().getCube(workTarget[0], workTarget[1], workTarget[2]);
 
@@ -3090,22 +3124,27 @@ public class Unit extends Entity{
 				//	...to raise its toughness and weight.
 				this.setWeight(this.getWeight() + 5);
 				this.setToughness(this.getToughness() + 5);
+				this.addExperience(10);
 			}
 			
 			// If there is a boulder at the workTarget...
-			 else if (this.getWorld().hasItemAt(workTarget)) 
+			 else if (this.getWorld().hasItemAt(workTarget)) {
 				this.pickUpItem(this.getWorld().getItemAt(workTarget));
+				this.addExperience(10);
+			 }
 			
 			// If there is wood at the workTarget...
 			else if (workTargetCube.getTerrainType() == Terrain.WOOD){
 				//	...then make the cube collapse.
 				this.getWorld().collapsCube(workTarget);
+				this.addExperience(10);
 			}
 			
 			//	If there is rock at the workTarget...
 			else if (workTargetCube.getTerrainType() == Terrain.ROCK){
 				//	...then make the cube collaps.
 				this.getWorld().collapsCube(workTarget);
+				this.addExperience(10);
 			}
 			
 			// Reset progress.
@@ -3114,13 +3153,12 @@ public class Unit extends Entity{
 			// the current activity is set to nothing.
 			this.setCurrentActivity(Activity.NOTHING);
 			
-			// Reward experience for the completed work order.
-			this.addExperience(10);
 			
 			// If default behavior is enabled, keep it running.
-			if (this.getDefaultBehaviorEnabled()){
+			if (this.getDefaultBehaviorEnabled()) {
+				this.finishTask();
 				this.startDefaultBehavior();
-			}else{}
+			}
 			
 		}
 	}
