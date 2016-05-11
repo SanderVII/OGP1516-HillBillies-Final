@@ -12,24 +12,24 @@ import hillbillies.util.Position;
 public class AnyExpression extends UnitExpression {
 
 
-	public AnyExpression(Unit unit, SourceLocation sourceLocation) {
-		super(unit, sourceLocation);
+	public AnyExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
 	}
 
 	@Override
-	public Unit evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		Set<Unit> units = world.getUnits();
+	public Unit evaluate(World world, Unit unit, int[] selectedCubes) {
+		
+		Set<Unit> units = this.getUnit().getWorld().getUnits();
 		double distance = Integer.MAX_VALUE;
 		Unit result = null;
 		for (Unit element : units) {
 			double newDistance = Position.getDistance(element.getPosition().getCoordinates(), 
-					unit.getPosition().getCoordinates());
-			if ((element != unit) && (newDistance < distance)) {
+					this.getUnit().getPosition().getCoordinates());
+			if ((element != this.getUnit()) && (newDistance < distance)) {
 				result = element;
 				distance = newDistance;
 			}
 		}
 		return result;
 	}
-
 }

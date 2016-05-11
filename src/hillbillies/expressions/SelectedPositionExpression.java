@@ -16,7 +16,7 @@ public class SelectedPositionExpression extends CubePositionExpression {
 
 	@Override
 	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
-		return selectedCubes;
+		return this.getStatement().getTask().getPosition();
 	}
 
 }

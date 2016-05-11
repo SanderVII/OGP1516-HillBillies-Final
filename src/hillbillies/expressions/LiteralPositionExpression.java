@@ -16,7 +16,7 @@ public class LiteralPositionExpression extends CubePositionExpression {
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
+	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
 		return new int[] {this.getX(), this.getY(), this.getZ()};
 	}
 	

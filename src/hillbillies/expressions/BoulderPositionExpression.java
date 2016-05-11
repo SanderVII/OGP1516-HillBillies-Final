@@ -14,17 +14,16 @@ public class BoulderPositionExpression extends CubePositionExpression {
 	
 	public BoulderPositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		Set<Boulder> boulders = world.getBoulders();
+	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
+		Set<Boulder> boulders = this.getUnit().getWorld().getBoulders();
 		double distance = Integer.MAX_VALUE;
 		int[] result = null;
 		for (Boulder element : boulders) {
 			double newDistance = Position.getDistance(element.getPosition().getCoordinates(), 
-					unit.getPosition().getCoordinates());
+					this.getUnit().getPosition().getCoordinates());
 			if (newDistance < distance) {
 				result = element.getPosition().getCubeCoordinates();
 				distance = newDistance;

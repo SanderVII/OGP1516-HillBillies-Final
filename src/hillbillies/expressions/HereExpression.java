@@ -14,7 +14,7 @@ public class HereExpression extends CubePositionExpression {
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit,int[] selectedCubes, SourceLocation sourceLocation) {
-		return unit.getCubeCoordinates();
+	public int[] evaluate(World world, Unit unit,int[] selectedCubes) {
+		return this.getUnit().getCubeCoordinates();
 	}
 }

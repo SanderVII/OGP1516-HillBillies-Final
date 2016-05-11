@@ -8,13 +8,13 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class ThisExpression extends UnitExpression {
 	
-	public ThisExpression(Unit unit, SourceLocation sourceLocation) {
-		super(unit, sourceLocation);
+	public ThisExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
 	}
 
 	@Override
-	public Unit evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		return this.getUnit();
+	public Unit evaluate(World world, Unit unit, int[] selectedCubes) {
+		return unit;
 	}
 
 }
