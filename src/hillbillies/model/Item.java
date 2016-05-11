@@ -145,10 +145,11 @@ public abstract class Item extends Entity {
 	@Override
 	public boolean canHaveAsCoordinates(int[] coordinates) {
 		if ((this.getWorld() == null) && (this.getUnit() != null))
-			return super.canHaveAsCoordinates(coordinates, this.getUnit().getWorld());
+			return (this.getUnit().getWorld().canHaveAsCoordinates(coordinates));
 		else
 			return super.canHaveAsCoordinates(coordinates);
 	}
+	
 	
 	// ==========================================================================================
 	// Methods concerning the unit carrying this item.

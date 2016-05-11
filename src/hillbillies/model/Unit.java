@@ -18,6 +18,7 @@ import hillbillies.util.UnitPosition;
 
 //TODO sprinting feature doesn't work.
 //TODO orientation of work seems incorrect for east-north directions.
+//TODO do not award xp for failed task (i.e. working air)
 
 
 /** 
@@ -1150,8 +1151,11 @@ public class Unit extends Entity{
 	 * 			| (! canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD)
 	 */
 	public void setWorld(@Raw World world) throws IllegalArgumentException {
-		if ( (! this.canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD) )
+		if ( (! this.canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD) ){
+			
 			throw new IllegalArgumentException();
+	}
+//		System.out.println("number of units in the world: " + world.getNbUnits()  );
 		this.world = world;
 	}
 	
@@ -1568,36 +1572,37 @@ public class Unit extends Entity{
 		// Cases we avoid with this: no adjacent solid cube (make a unit go to mid air), 
 		// 		target is unreachable because is is surrounded by solid cubes,
 		// 		this unit cannot move away from it's current position because it is locked in by solid cubes. 
-		if ( ( ! this.getPosition().canHaveAsUnitCoordinates(destinationCoordinates)) // Checking if the target cube is passable happens in canHaveAsUnitCoordinates.
-				|| ( ! this.hasSolidNeighbours(destinationCoordinates))
-				|| (! this.hasPassableNeighbours(destinationCoordinates))
-				|| (! this.hasPassableNeighbours(this.getPosition().getCubeCoordinates()))){
+		if ( ! this.getPosition().canHaveAsUnitCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
 			throw new IllegalArgumentException();
 		}
 		
-		if ( ! thisIsDefaultBehaviour)
-			this.setDefaultBehaviorEnabled(false);
+		if (( ! this.hasSolidNeighbours(destinationCoordinates))
+				|| ( ! this.hasPassableNeighbours(destinationCoordinates))
+				|| ( ! this.hasPassableNeighbours(this.getPosition().getCubeCoordinates()))){
 		
-		// Readability
-		int[] currentCoordinates =  this.getPosition().getCubeCoordinates();	
-		
- 		if (moveToPath.size() != 0){
- 			// Clear the moveToPath to interrupt an earlier moveTo. 
- 			// A moveToAdjacent should never be interrupted so keep the one next move in line (and only that one). 
- 			int[] dummy = moveToPath.get(0);
- 			moveToPath.clear();
- 			moveToPath.add(dummy);
-		}
-	 	try {
-	 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
-	 		this.setPreviousActivity(this.getCurrentActivity());
-	 		this.setCurrentActivity(Activity.MOVE);
-	 		this.setInitialCoordinates(this.getPosition().getCoordinates());
-	 		
-			moveToPath = searchPath(currentCoordinates, destinationCoordinates);
+			if ( ! thisIsDefaultBehaviour)
+				this.setDefaultBehaviorEnabled(false);
 			
-	 	} catch (Exception e) {}
-	 	
+			// Readability
+			int[] currentCoordinates =  this.getPosition().getCubeCoordinates();	
+			
+	 		if (moveToPath.size() != 0){
+	 			// Clear the moveToPath to interrupt an earlier moveTo. 
+	 			// A moveToAdjacent should never be interrupted so keep the one next move in line (and only that one). 
+	 			int[] dummy = moveToPath.get(0);
+	 			moveToPath.clear();
+	 			moveToPath.add(dummy);
+			}
+		 	try {
+		 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
+		 		this.setPreviousActivity(this.getCurrentActivity());
+		 		this.setCurrentActivity(Activity.MOVE);
+		 		this.setInitialCoordinates(this.getPosition().getCoordinates());
+		 		
+				moveToPath = searchPath(currentCoordinates, destinationCoordinates);
+				
+		 	} catch (Exception e) {}
+		}
 	}
 	
 	private List<int[]> searchPath(int[] startCoordinates, int[] destinationCoordinates) {

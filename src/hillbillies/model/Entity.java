@@ -108,10 +108,7 @@ public abstract class Entity {
 	 * 
 	 * @param 	world
 	 *			The world to check.
-	 * @return	If this entity is terminated, true if the given world
-	 * 			is not effective.
-	 * 			Else, true if the given world is effective
-	 * 			and not yet terminated.
+	 * @return	False if and only if this entity is terminated
 	 */
 	//TODO fix doc
 	/* NOTE: items can be bound to a null world. According to the Liskov substitution principle,
@@ -121,8 +118,6 @@ public abstract class Entity {
 			return world == null;
 		else
 			return true;
-//		else
-//			return (world != null) && (! world.isTerminated());
 	}
 	
 	/**
@@ -184,26 +179,12 @@ public abstract class Entity {
 	 *  
 	 * @param  	coordinates
 	 *         	The cube coordinates to check.
-	 * @param	world
-	 * 			The world to hold the item.
-	 * @return 	True if the cube coordinates are within the world boundaries
-	 * 			and the corresponding cube is passable. 
-	*/
-	public boolean canHaveAsCoordinates(int[] coordinates, World world) {
-		return world.canHaveAsCoordinates(coordinates) && 
-				world.getCube(coordinates).isPassable();
-	}
-	
-	/**
-	 * Check whether the given cube coordinates are valid for this entity.
-	 *  
-	 * @param  	coordinates
-	 *         	The cube coordinates to check.
 	 * @return 	True if the cube coordinates are within the world boundaries
 	 * 			of this entity, and the corresponding cube is passable. 
 	*/
 	public boolean canHaveAsCoordinates(int[] coordinates) {
-		return canHaveAsCoordinates(coordinates, this.getWorld());
+		return this.getWorld().canHaveAsCoordinates(coordinates) && 
+				this.getWorld().getCube(coordinates).isPassable();
 	}
 	
 	/**
