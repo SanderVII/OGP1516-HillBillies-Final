@@ -2,7 +2,6 @@ package hillbillies.tests;
 
 import static org.junit.Assert.*;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.After;
@@ -17,6 +16,7 @@ import hillbillies.model.Terrain;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import hillbillies.util.Position;
 
 /**
  * 
@@ -94,7 +94,6 @@ public class WorldTest {
 		for (int x=0; x<(world.getMaximumXValue());x++){
 			for (int y=0; y<(world.getMaximumYValue());y++){
 				for (int z=0; z<(world.getMaximumZValue());z++){
-					System.out.println(z);
 					assertTrue(world.getCube(x,y,z) != null);
 				}
 			}
@@ -212,21 +211,21 @@ public class WorldTest {
 		terrain[1][1][1] = TYPE_TREE;
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
-		assertTrue(world.getNeighbours(new int[]{1,1,1}).size() == 27);
+		assertTrue(world.getNeighbours(new int[]{1,1,1}).size() == 26);
 		assertFalse(world.getNeighbours(new int[]{1,1,1}).contains(new int[]{1,1,1}));
-		assertTrue(world.getNeighbours(new int[]{0,0,0}).size() == 8);
+		assertTrue(world.getNeighbours(new int[]{0,0,0}).size() == 7);
 		assertFalse(world.getNeighbours(new int[]{0,0,0}).contains(new int[]{0,0,0}));
-		assertTrue(world.getNeighbours(new int[]{1,1,0}).size() == 18);
+		assertTrue(world.getNeighbours(new int[]{1,1,0}).size() == 17);
 		assertFalse(world.getNeighbours(new int[]{1,1,0}).contains(new int[]{1,1,0}));
-		assertTrue(world.getNeighbours(new int[]{1,0,1}).size() == 18);
+		assertTrue(world.getNeighbours(new int[]{1,0,1}).size() == 17);
 		assertFalse(world.getNeighbours(new int[]{1,0,1}).contains(new int[]{1,0,1}));
-		assertTrue(world.getNeighbours(new int[]{0,1,1}).size() == 18);
+		assertTrue(world.getNeighbours(new int[]{0,1,1}).size() == 17);
 		assertFalse(world.getNeighbours(new int[]{0,1,1}).contains(new int[]{0,1,1}));
-		assertTrue(world.getNeighbours(new int[]{0,0,1}).size() == 12);
+		assertTrue(world.getNeighbours(new int[]{0,0,1}).size() == 11);
 		assertFalse(world.getNeighbours(new int[]{0,0,1}).contains(new int[]{0,0,1}));
-		assertTrue(world.getNeighbours(new int[]{1,0,0}).size() == 12);
+		assertTrue(world.getNeighbours(new int[]{1,0,0}).size() == 11);
 		assertFalse(world.getNeighbours(new int[]{1,0,0}).contains(new int[]{1,0,0}));
-		assertTrue(world.getNeighbours(new int[]{0,1,0}).size() == 12);
+		assertTrue(world.getNeighbours(new int[]{0,1,0}).size() == 11);
 		assertFalse(world.getNeighbours(new int[]{1,1,1}).contains(new int[]{1,1,1}));
 		
 		Set<int[]> neighbours = world.getNeighbours(1, 1, 1);
@@ -267,6 +266,110 @@ public class WorldTest {
 		assertTrue(world.getUnitsInCube(0,0,0).size() == 0);
 		assertTrue(world.getUnitsInCube(5,5,0).size() == 2);
 		assertTrue(world.getUnitsInCube(5,2,0).size() == 1);
+	}
+		
+	@Test
+	public void getDirectlyAdjecentCubesTest(){
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		assertTrue(world.getDirectlyAdjacentCoordinates(1,1,1).size() == 6);
+		assertFalse(world.getDirectlyAdjacentCoordinates(1,1,1).contains(new int[]{1,1,1}));
+		assertTrue(world.getDirectlyAdjacentCoordinates(0,0,0).size() == 3);
+		assertFalse(world.getDirectlyAdjacentCoordinates(0,0,0).contains(new int[]{0,0,0}));
+		assertTrue(world.getDirectlyAdjacentCoordinates(1,1,0).size() == 5);
+		assertFalse(world.getDirectlyAdjacentCoordinates(1,1,0).contains(new int[]{1,1,0}));
+		assertTrue(world.getDirectlyAdjacentCoordinates(1,0,1).size() == 5);
+		assertFalse(world.getDirectlyAdjacentCoordinates(1,0,1).contains(new int[]{1,0,1}));
+		assertTrue(world.getDirectlyAdjacentCoordinates(0,1,1).size() == 5);
+		assertFalse(world.getDirectlyAdjacentCoordinates(0,1,1).contains(new int[]{0,1,1}));
+		assertTrue(world.getDirectlyAdjacentCoordinates(0,0,1).size() == 4);
+		assertFalse(world.getDirectlyAdjacentCoordinates(0,0,1).contains(new int[]{0,0,1}));
+		assertTrue(world.getDirectlyAdjacentCoordinates(1,0,0).size() == 4);
+		assertFalse(world.getDirectlyAdjacentCoordinates(1,0,0).contains(new int[]{1,0,0}));
+		assertTrue(world.getDirectlyAdjacentCoordinates(0,1,0).size() == 4);
+		assertFalse(world.getDirectlyAdjacentCoordinates(1,1,1).contains(new int[]{1,1,1}));
+		
+		assertFalse(world.getDirectlyAdjacentCoordinates(1, 1, 1).contains(new int[]{1,1,1}));
+	}
+	
+	@Test
+	public void getValidCubeCoordinatesInRangeTest() {
+		int[][][] terrain = new int[10][10][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Set<int[]>temp = world.getValidCubeCoordinatesInRange(new int[]{1,1,1}, 3 );
+		for (int[] cubeCoordinates: temp){
+			assertTrue(world.canHaveAsCoordinates(cubeCoordinates));
+		}
+	}
+	
+	@Test
+	public void getRandomValidCubeCoordinatesInRangeTest() {
+		int[][][] terrain = new int[10][10][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		for (int i=0; i<50; i++){
+			int[] cubeCoordinates = world.getRandomValidCubeCoordinatesInRange(new double[]{1.5,1.5,1.5}, 3 );
+			
+			assertTrue(world.canHaveAsCoordinates(cubeCoordinates));
+			assertTrue(Position.getDistance(new double[]{1.5,1.5,1.5}, Position.getCubeCenter(cubeCoordinates)) <= Math.sqrt(3.0*3.0+3.0*3.0+3.0*3.0));
+			
+		}
+	}
+	
+	@Test
+	public void getRandomSolidCubeCoordinatesInRangeTest() {
+		int[][][] terrain = new int[10][10][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		for (int i=0; i<50; i++){
+			int[] cubeCoordinates = world.getRandomSolidCubeCoordinatesInRange(new double[]{1.5,1.5,1.5}, 3 );
+			assertTrue(world.canHaveAsCoordinates(cubeCoordinates));
+			assertTrue(Position.getDistance(new double[]{1.5,1.5,1.5}, Position.getCubeCenter(cubeCoordinates)) <= Math.sqrt(3.0*3.0+3.0*3.0+3.0*3.0));
+			assertFalse(world.getCube(cubeCoordinates).isPassable());
+			assertTrue(Position.equals(cubeCoordinates, new int[]{1,1,0}) || Position.equals(cubeCoordinates, new int[]{1,1,1}));
+		}
+		
+		for (int i=0; i<10; i++){
+			int[] cubeCoordinates = world.getRandomSolidCubeCoordinatesInRange(new double[]{9.5,9.5,9.5}, 3 );
+			assertTrue(cubeCoordinates == null);
+		}
+		
+	}
+	
+	@Test
+	public void hasAsEntityTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
+		unit.stopDefaultBehavior();
+		world.addEntity(unit);
+		Log log = new Log(world, new int[]{0,0,0});
+		world.addEntity(log);
+		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		world.addEntity(boulder);
+		Log log2 = new Log(world, new int[]{19,39,9});
+		
+		assertTrue(world.hasAsEntity(unit));
+		assertTrue(world.hasAsEntity(log));
+		assertTrue(world.hasAsEntity(boulder));
+		assertFalse(world.hasAsEntity(null));
+		assertFalse(world.hasAsEntity(log2));
+		
 	}
 	
 	/**

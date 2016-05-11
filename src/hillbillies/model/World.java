@@ -12,6 +12,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 import hillbillies.util.Position;
+import hillbillies.util.UnitPosition;
 import hillbillies.model.Cube;
 import hillbillies.model.Terrain;
 
@@ -21,13 +22,11 @@ import hillbillies.model.Terrain;
 
 /**
  * A class of worlds involving...
- * 	 
- * @invar   Each world must have proper units.
- *        	| hasProperUnits()	 
+ * 	
  * @invar   Each world must have proper factions.
-*        | hasProperFactions()
- * @invar   Each world must have proper items.
- *        	| hasProperItems()
+ * 			| hasProperFactions()
+ * @invar   Each world must have proper entities.
+ * 			| hasProperEntities()
  * @invar  The maximum x-value of each world must be a valid maximum x-value for any
  *         world.
  *      	| isValidMaximumXValue(getMaximumXValue())
@@ -94,7 +93,7 @@ public class World {
 					// Initialize connectedToBorder correctly.
 					List<int[]> temp = new ArrayList<>();
 					if ( isPassable(new int[]{x,y,z})){
-						temp = this.connectedToBorder.changeSolidToPassable(x, y, z);
+						temp = this.changeSolidToPassable(x, y, z);
 						if ( ! temp.isEmpty())
 							this.collapsingCubes.addAll(temp);
 						
@@ -573,8 +572,6 @@ public class World {
 	 * 				and have valid coordinates for this world.
 	 */
 	public Set<int[]> getNeighbours(int[] coordinates) {
-		Set<int[]> dummy = this.getValidCubeCoordinatesInRange(coordinates, 1);
-		dummy.remove(coordinates);
 		return (this.getValidCubeCoordinatesInRange(coordinates, 1));
 	}
 	
@@ -640,33 +637,32 @@ public class World {
 	 * @throws	IllegalArgumentException
 	 * 			The given coordinates are illegal for this world.
 	 */
-	public Set<Cube> getDirectlyAdjacentCubes(int x, int y, int z) throws IllegalArgumentException{
+	public Set<int[]> getDirectlyAdjacentCoordinates(int x, int y, int z) throws IllegalArgumentException{
 		if (! this.canHaveAsCoordinates(x, y, z))
 			throw new IllegalArgumentException();
-		Set<Cube> directlyAdjacentCubes = new HashSet<>();
+		Set<int[]> directlyAdjacentCoordinates = new HashSet<>();
 		
 		if (this.canHaveAsCoordinates(x-1,y,z))
-			directlyAdjacentCubes.add(this.getCube(x-1,y,z));
+			directlyAdjacentCoordinates.add(new int[]{x-1,y,z});
 		if (this.canHaveAsCoordinates(x+1,y,z))
-			directlyAdjacentCubes.add(this.getCube(x+1,y,z));
+			directlyAdjacentCoordinates.add(new int[]{x+1,y,z});
 		
 		if (this.canHaveAsCoordinates(x,y-1,z))
-			directlyAdjacentCubes.add(this.getCube(x,y-1,z));
+			directlyAdjacentCoordinates.add(new int[]{x,y-1,z});
 		if (this.canHaveAsCoordinates(x,y+1,z))
-			directlyAdjacentCubes.add(this.getCube(x,y+1,z));
+			directlyAdjacentCoordinates.add(new int[]{x,y+1,z});
 		
 		if (this.canHaveAsCoordinates(x,y,z-1))
-			directlyAdjacentCubes.add(this.getCube(x,y,z-1));
+			directlyAdjacentCoordinates.add(new int[]{x,y,z-1});
 		if (this.canHaveAsCoordinates(x,y,z+1))
-			directlyAdjacentCubes.add(this.getCube(x,y,z+1));
+			directlyAdjacentCoordinates.add(new int[]{x,y,z+1});
 		
-		return directlyAdjacentCubes;
+		return directlyAdjacentCoordinates;
 	}
 	
 	/**
-	 * Make the cube at the given coordinates passable instead of solid, and return
-	 * the list of coordinates that are no longer connected to a border of the
-	 * world due to this change.
+	 * Return the list of coordinates that are no longer connected to a border of the
+	 * world due to changing the cube at the given coordinates to passable.
 	 * @param 	x
 	 * 			The x-coordinate of the cube.
 	 * @param 	y
@@ -677,13 +673,11 @@ public class World {
 	 * @throws IllegalArgumentException
 	 * 			The given coordinates are invalid for this world.
 	 */
-	public List<int[]> changeSolidToPassable(int x, int y, int z) throws IllegalArgumentException {
+	private List<int[]> changeSolidToPassable(int x, int y, int z) throws IllegalArgumentException {
 		if (! this.canHaveAsCoordinates(x, y, z))
 			throw new IllegalArgumentException();
 		
-		List<int[]> noLongerConnected = this.connectedToBorder.changeSolidToPassable(x, y, z);
-		
-		return noLongerConnected;
+		return this.connectedToBorder.changeSolidToPassable(x, y, z);
 	}
 	
 	/**
@@ -710,7 +704,7 @@ public class World {
 	 * @param cubeCoordinates
 	 *				The cube coordinates to collaps a cube at.
 	 */
-	public void collapsCube(int[] cubeCoordinates){
+	protected void collapsCube(int[] cubeCoordinates){
 		int x =cubeCoordinates[0];
 		int y =cubeCoordinates[1];
 		int z =cubeCoordinates[2];
@@ -721,7 +715,7 @@ public class World {
 		
 		cube.setTerrainType(Terrain.AIR);
 		
-		collapsingCubes.addAll(this.connectedToBorder.changeSolidToPassable(x, y, z));
+		collapsingCubes.addAll(this.changeSolidToPassable(x, y, z));
 		this.terrainChangeListener.notifyTerrainChanged(x, y, z);
 	}
 	
@@ -774,7 +768,7 @@ public class World {
 		Set<int[]> result = new HashSet<>();
 		Set<int[]> allCubes = Position.getCubeCoordinatesInRange(coordinates, range);
 		for (int[] cubeCoordinates: allCubes)
-			if (this.canHaveAsCoordinates(cubeCoordinates))
+			if (this.canHaveAsCoordinates(cubeCoordinates) && ( ! Position.equals(coordinates, cubeCoordinates)))
 				result.add(cubeCoordinates);
 		return result ;
 	}
@@ -792,7 +786,7 @@ public class World {
 	 * @throws	IllegalArgumentException
 	 * 			There is no valid coordinates in range.
 	 */
-	public int[] getRandomCoordinatesInRange(double[] coordinates, int range) {
+	public int[] getRandomValidCubeCoordinatesInRange(double[] coordinates, int range) {
 		Set<int[]> cubeSet = this.getValidCubeCoordinatesInRange(Position.getCubeCoordinates(coordinates), range);
 		int size = cubeSet.size();
 		if (size == 0)
@@ -805,7 +799,7 @@ public class World {
 			else
 				count++;
 		}
-		// If for som reason no coordinates are found, return the original cube.
+		// If for some reason no coordinates are found, return the original cube.
 		// (This should almost never happen)
 		return Position.getCubeCoordinates(coordinates);
 	}
@@ -822,7 +816,7 @@ public class World {
 	 * @throws	IllegalArgumentException
 	 * 			There is no valid coordinates in range.
 	 */
-	public int[] getRandomSolidCoordinatesInRange(double[] coordinates, int range) {
+	public int[] getRandomSolidCubeCoordinatesInRange(double[] coordinates, int range) {
 		Set<int[]> cubeCoordinatesInRange = this.getValidCubeCoordinatesInRange(Position.getCubeCoordinates(coordinates), range);
 		for (int[] cubeCoordinates: cubeCoordinatesInRange){
 			if ( ! this.getCube(cubeCoordinates).isPassable())
@@ -853,10 +847,12 @@ public class World {
 		int size = cubeSet.size();
 		if (size == 0)
 			throw new IllegalArgumentException("No valid coordinates within range.");
-		for (int[] cubeCoordinates: cubeSet)
-			if (this.isValidInitialUnitCoordinates(cubeCoordinates))
-				reducedSet.add(cubeCoordinates);
+		UnitPosition temp = new UnitPosition(this, coordinates);
 		
+		for (int[] cubeCoordinates: cubeSet){
+			if (temp.canHaveAsUnitCoordinates(cubeCoordinates))
+				reducedSet.add(cubeCoordinates);
+		}
 		int randomIndex = new Random().nextInt(reducedSet.size());
 		int count = 0;
 		for (int[] cubeCoordinates: reducedSet) {
@@ -869,15 +865,10 @@ public class World {
 		return Position.getCubeCoordinates(coordinates);
 	}
 	
-	//TODO remove associations for units, logs and boulders.
+	
 	// =================================================================================================
 	// Methods concerning the entities in this world. (bidirectional association)
 	// =================================================================================================
-	
-	/** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each world must have proper entities.
-	 *        | hasProperEntities()
-	 */
 
 	/**
 	 * Check whether this world has the given entity as one of its
