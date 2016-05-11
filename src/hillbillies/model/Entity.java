@@ -184,12 +184,26 @@ public abstract class Entity {
 	 *  
 	 * @param  	coordinates
 	 *         	The cube coordinates to check.
+	 * @param	world
+	 * 			The world to hold the item.
+	 * @return 	True if the cube coordinates are within the world boundaries
+	 * 			and the corresponding cube is passable. 
+	*/
+	public boolean canHaveAsCoordinates(int[] coordinates, World world) {
+		return world.canHaveAsCoordinates(coordinates) && 
+				world.getCube(coordinates).isPassable();
+	}
+	
+	/**
+	 * Check whether the given cube coordinates are valid for this entity.
+	 *  
+	 * @param  	coordinates
+	 *         	The cube coordinates to check.
 	 * @return 	True if the cube coordinates are within the world boundaries
 	 * 			of this entity, and the corresponding cube is passable. 
 	*/
 	public boolean canHaveAsCoordinates(int[] coordinates) {
-		return this.getWorld().canHaveAsCoordinates(coordinates) && 
-				this.getWorld().getCube(coordinates).isPassable();
+		return canHaveAsCoordinates(coordinates, this.getWorld());
 	}
 	
 	/**

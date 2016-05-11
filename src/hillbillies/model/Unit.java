@@ -1809,7 +1809,7 @@ public class Unit extends Entity{
 	 *       		|   then new.getOrientation() == orientation
 	 */
 	@Raw
-	public void setOrientation(double orientation) {
+	private void setOrientation(double orientation) {
 		if (isValidOrientation(orientation))
 			this.orientation = orientation;
 	}
@@ -2041,10 +2041,15 @@ public class Unit extends Entity{
 	public void workAt(int[] workTarget, boolean thisIsDefaultBehaviour) throws NullPointerException, IllegalArgumentException{
 		if (thisIsDefaultBehaviour)
 			System.out.println("workAt by defaultBehaviour");
-//		try {
+		try {
 			
 			if ( ! thisIsDefaultBehaviour)
 				this.setDefaultBehaviorEnabled(false);
+			
+			if(this.hasItem())
+				if (! this.getItem().canHaveAsCoordinates(workTarget))
+					throw new IllegalArgumentException("cannot drop item here.");
+			
 			
 			// MoveToAdjacent may not be interupted except by being attacked.
 			if ((this.getCurrentActivity() != Activity.MOVE) && (moveToPath.size() == 0)) {
@@ -2058,15 +2063,13 @@ public class Unit extends Entity{
 					this.setWorkTarget(workTarget);
 					this.setPreviousActivity(this.getCurrentActivity());
 					this.setCurrentActivity(Activity.WORK);
-//					this.setOrientation(x,y);
-
-//					this.setOrientation(Math.atan2((y - this.getPosition().getYCoordinate()), (x - this.getPosition().getXCoordinate())));
-//				} else {
-					// Do nothing.
 				}
 			}
-//		} catch(IllegalStateException e){}
-		System.out.println("workat started");
+		} 
+		catch(IllegalStateException e){
+		}
+		catch(IllegalArgumentException e) {
+		}
 	}
 	
 	/**
@@ -3083,7 +3086,7 @@ public class Unit extends Entity{
 		
 		double[] cube = Position.getCubeCenter(workTarget);
 		this.setOrientation(cube[0] - this.getPosition().getXCoordinate(),
-				cube[0] - this.getPosition().getYCoordinate());
+				cube[1] - this.getPosition().getYCoordinate());
 		
 		// Dropping boulders and logs has to be instantaneous so it has to happen before the progress check.
 		// If this unit is carrying a log or a boulder:
