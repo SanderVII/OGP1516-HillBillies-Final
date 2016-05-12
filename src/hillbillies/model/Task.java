@@ -3,6 +3,7 @@ package hillbillies.model;
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.expressions.Expression;
 import hillbillies.statements.Statement;
 
 /**
@@ -460,21 +461,12 @@ public class Task implements Comparable<Task> {
 	// Methods concerning the variables used in this task.
 	// =================================================================================================
 	
+	//TODO finish doc of this segment!!
+	
 	/** TO BE ADDED TO THE CLASS INVARIANTS
 	 * @invar   Each task must have proper variables.
-	 *        | hasProperStrings()
+	 *        | hasProperVariables()
 	 */
-
-	/**
-	 * Initialize this new task as a non-terminated task with 
-	 * no variables yet.
-	 * 
-	 * @post   This new task has no variables yet.
-	 *       | new.getNbStrings() == 0
-	 */
-	@Raw
-	public Task() {
-	}
 
 	/**
 	 * Check whether this task has the given variable as one of its
@@ -485,8 +477,8 @@ public class Task implements Comparable<Task> {
 	 */
 	@Basic
 	@Raw
-	public boolean hasAsString(@Raw String variable) {
-		return variables.contains(variable);
+	public boolean hasAsVariable(@Raw String variable) {
+		return variables.containsKey(variable);
 	}
 
 	/**
@@ -495,15 +487,12 @@ public class Task implements Comparable<Task> {
 	 * 
 	 * @param  variable
 	 *         The variable to check.
-	 * @return True if and only if the given variable is effective
-	 *         and that variable is a valid variable for a task.
-	 *       | result ==
-	 *       |   (variable != null) &&
-	 *       |   String.isValidTask(this)
+	 * @return True if and only if the given variable is effective.
+	 *       | result == (variable != null)
 	 */
 	@Raw
-	public boolean canHaveAsString(String variable) {
-		return (variable != null) && (String.isValidTask(this));
+	public boolean canHaveAsVariable(String variable, Expression value) {
+		return value != null;
 	}
 
 	/**
@@ -511,18 +500,18 @@ public class Task implements Comparable<Task> {
 	 * 
 	 * @return True if and only if this task can have each of the
 	 *         variables attached to it as one of its variables,
-	 *         and if each of these variables references this task as
+	 *         and if the value(expression) of each variable references this task as
 	 *         the task to which they are attached.
-	 *       | for each variable in String:
-	 *       |   if (hasAsString(variable))
-	 *       |     then canHaveAsString(variable) &&
-	 *       |          (variable.getTask() == this)
+	 *       | for each variable in Variable:
+	 *       |   if (hasAsVariable(variable))
+	 *       |     then canHaveAsVariable(variable) &&
+	 *       |          (variables.get(variable).getStatement().getTask() == this)
 	 */
-	public boolean hasProperStrings() {
-		for (String variable : variables) {
-			if (!canHaveAsString(variable))
+	public boolean hasProperVariables() {
+		for (String variable : variables.keySet()) {
+			if (!canHaveAsVariable(variable,variables.get(variable)))
 				return false;
-			if (variable.getTask() != this)
+			if (variables.get(variable).getStatement().getTask() != this)
 				return false;
 		}
 		return true;
@@ -533,26 +522,27 @@ public class Task implements Comparable<Task> {
 	 *
 	 * @return  The total number of variables collected in this task.
 	 *        | result ==
-	 *        |   card({variable:String | hasAsString({variable)})
+	 *        |   card({variable:Variable | hasAsVariable({variable)})
 	 */
-	public int getNbStrings() {
+	public int getNbVariables() {
 		return variables.size();
 	}
 
 	/**
-	 * Add the given variable to the set of variables of this task.
+	 * Add the given variable with expression to the map of variables of this task.
 	 * 
-	 * @param  variable
-	 *         The variable to be added.
-	 * @pre    The given variable is effective and already references
-	 *         this task.
-	 *       | (variable != null) && (variable.getTask() == this)
-	 * @post   This task has the given variable as one of its variables.
-	 *       | new.hasAsString(variable)
+	 * @param  	variable
+	 *         	The variable to be added.
+	 * @param	The value to store for the variable.
+	 * @pre    	The given variable is effective and already references
+	 *         	this task.
+	 *       	| (variable != null) && (variable.getTask() == this)
+	 * @post   	This task has the given variable as one of its variables.
+	 *       	| new.hasAsVariable(variable)
 	 */
-	public void addString(@Raw String variable) {
-		assert (variable != null) && (variable.getTask() == this);
-		variables.add(variable);
+	public void addVariable(String variable, Expression value) {
+		assert (variable != null) && (value.getStatement().getTask() == this);
+		variables.put(variable, value);
 	}
 
 	/**
@@ -563,31 +553,57 @@ public class Task implements Comparable<Task> {
 	 * @pre    This task has the given variable as one of
 	 *         its variables, and the given variable does not
 	 *         reference any task.
-	 *       | this.hasAsString(variable) &&
+	 *       | this.hasAsVariable(variable) &&
 	 *       | (variable.getTask() == null)
 	 * @post   This task no longer has the given variable as
 	 *         one of its variables.
-	 *       | ! new.hasAsString(variable)
+	 *       | ! new.hasAsVariable(variable)
 	 */
 	@Raw
-	public void removeString(String variable) {
-		assert this.hasAsString(variable) && (variable.getTask() == null);
+	public void removeVariable(String variable) {
+		assert this.hasAsVariable(variable) && 
+			(variables.get(variable).getStatement().getTask() == null);
 		variables.remove(variable);
 	}
 
 	/**
-	 * Variable referencing a set collecting all the variables
-	 * of this task.
+	 * Variable referencing a map collecting all the variables
+	 * of this task and their values.
 	 * 
-	 * @invar  The referenced set is effective.
+	 * @invar  The referenced map is effective.
 	 *       | variables != null
-	 * @invar  Each variable registered in the referenced list is
+	 * @invar  Each variable registered in the referenced map is
 	 *         effective and not yet terminated.
 	 *       | for each variable in variables:
-	 *       |   ( (variable != null) &&
-	 *       |     (! variable.isTerminated()) )
+	 *       |   ( (variables.get(variable) != null) &&
+	 *       |     (! (variables.get(variable).isTerminated()) )
 	 */
-	private final Set<String> variables = new HashSet<String>();
+	private final Map<String, Expression> variables = new HashMap<>();
+	
+	/**
+	 * Returns a map collecting all the variables of this task. 
+	 * 
+	 * @return	A map in which each variable value is effective 
+	 * 			and not yet terminated.
+	 *       	| for each variable in result:
+	 *       	|   ( (variables.get(variable) != null) &&
+	 *       	|     (! (variables.get(variable).isTerminated()) )
+	 */
+	public Map<String, Expression> getVariables() {
+		return new HashMap<>(variables);
+	}
+	
+	/**
+	 * Return the value of the given variable.
+	 * 
+	 * @param 	variable
+	 * 			The variable which holds the value.
+	 * @return	The corresponding value of the variable.
+	 * 			| resull == variables.get(variable)
+	 */
+	public Expression getValue(String variable) {
+		return variables.get(variable);
+	}
 	
 	// =================================================================================================
 	// Methods concerning the schedulers who have this task.

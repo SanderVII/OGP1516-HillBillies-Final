@@ -13,10 +13,9 @@ public class ReadVariableExpression extends Expression {
 		this.setVariableName(variableName);
 	}
 	
-	//TODO finish
 	@Override
-	public Object evaluate() {
-		return null;
+	public Expression evaluate() {
+		return this.getStatement().getTask().getValue(this.getVariableName());
 	}
 	
 	private String variableName;

@@ -16,8 +16,8 @@ public class AssignmentStatement extends ExpressionStatement {
 
 	@Override
 	public void execute(World world, Unit unit, int[] selectedCubes) {
-		//TODO what to execute?
-		this.getExpression().evaluate(world, unit, selectedCubes);
+		this.getTask().addVariable(this.getVariableName(),this.getExpression());
+		this.setStatus(Status.DONE);
 	}
 	
 	private String variableName;
