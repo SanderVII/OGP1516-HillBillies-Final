@@ -11,7 +11,7 @@ public class FalseExpression extends BooleanExpression {
 	}
 	
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
+	public Boolean evaluate() {
 		return false;
 	}
 }

@@ -17,7 +17,7 @@ public class BoulderPositionExpression extends CubePositionExpression {
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
+	public int[] evaluate() {
 		Set<Boulder> boulders = this.getUnit().getWorld().getBoulders();
 		double distance = Integer.MAX_VALUE;
 		int[] result = null;

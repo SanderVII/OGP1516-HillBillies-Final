@@ -20,8 +20,8 @@ public class NextToExpression extends ExtendedPositionExpression{
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
-		int[] dummy = (int[]) this.getExpression().evaluate(world, unit, selectedCubes);
+	public int[] evaluate() {
+		int[] dummy = (int[]) this.getExpression().evaluate();
 		
 		Set<int[]> directlyAdjacentCoordinates = this.getUnit().getWorld().
 				getDirectlyAdjacentCoordinates(dummy[0], dummy[1], dummy[2]);

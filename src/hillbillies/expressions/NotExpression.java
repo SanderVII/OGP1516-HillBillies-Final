@@ -13,8 +13,8 @@ public class NotExpression extends SingleBooleanExpression{
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
-		return (! ((Boolean) getExpression().evaluate(world, unit, selectedCubes)));
+	public Boolean evaluate() {
+		return (! ((Boolean) getExpression().evaluate()));
 	}
 	
 	@Override

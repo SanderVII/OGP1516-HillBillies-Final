@@ -21,7 +21,7 @@ public class EnemyExpression extends UnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(World world, Unit unit, int[] selectedCubes) {
+	public Unit evaluate() {
 		Set<Unit> units = this.getUnit().getWorld().getUnits();
 		double distance = Integer.MAX_VALUE;
 		Unit result = null;

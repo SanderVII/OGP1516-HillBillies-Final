@@ -17,7 +17,9 @@ public class SequenceStatement extends Statement {
 	
 	@Override
 	public void execute(World world, Unit unit, int[] selectedCubes) {
-		//TODO probably no direct iteration, so how to do?
+		this.getStatementAt(getCursor()).execute(world, unit, selectedCubes);
+		
+		this.setCursor(getCursor()+1);
 	}
 	
 	public int getNbStatements() {
@@ -30,5 +32,15 @@ public class SequenceStatement extends Statement {
 
 	protected void setStatements(List<Statement> statements) {
 		this.statements = statements;
+	}
+	
+	private int cursor=0;
+	
+	public int getCursor() {
+		return this.cursor;
+	}
+	
+	protected void setCursor(int cursor) {
+		this.cursor = cursor;
 	}
 }

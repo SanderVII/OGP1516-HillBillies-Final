@@ -14,8 +14,8 @@ public class IsAliveExpression extends SingleBooleanUnitExpression {
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
-		return ! ((Unit) this.getExpression().evaluate(world, unit, selectedCubes)).isTerminated();
+	public Boolean evaluate() {
+		return ! ((Unit) this.getExpression().evaluate()).isTerminated();
 	}
 
 }

@@ -14,9 +14,8 @@ public class IsFriendExpression extends SingleBooleanUnitExpression {
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
-		return this.getUnit().getFaction() == ((Unit) this.getExpression().evaluate(
-				world, unit, selectedCubes)).getFaction();
+	public Boolean evaluate() {
+		return this.getUnit().getFaction() == ((Unit) this.getExpression().evaluate()).getFaction();
 	}
 
 }

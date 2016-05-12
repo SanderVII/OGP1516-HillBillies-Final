@@ -13,8 +13,8 @@ public class IsSolidExpression extends SingleBooleanPositionExpression {
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCube) {
+	public Boolean evaluate() {
 		return ! this.getUnit().getWorld().getCube(
-				(int[]) this.getExpression().evaluate(world, unit, selectedCube)).isPassable();
+				(int[]) this.getExpression().evaluate()).isPassable();
 	}
 }

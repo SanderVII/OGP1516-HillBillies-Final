@@ -12,6 +12,6 @@ public abstract class BooleanExpression extends Expression {
 	}
 	
 	@Override
-	public abstract Boolean evaluate(World world, Unit unit, int[] selectedCubes);
+	public abstract Boolean evaluate();
 	
 }

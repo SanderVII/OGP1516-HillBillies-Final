@@ -9,17 +9,19 @@ import hillbillies.part3.programs.SourceLocation;
 
 //TODO finish
 public class WhileStatement extends ExtendedExpressionStatement {
-	
-	private Statement setStatement;
 
 	public WhileStatement(Expression condition, Statement body, SourceLocation sourceLocation) {
 		super(condition, body, sourceLocation);
-		
 	}
 
 	@Override
 	public void execute(World world, Unit unit,int[] selectedCubes) {
-		// TODO Auto-generated method stub
 		
+		if ((boolean) this.getExpression().evaluate(world, unit, selectedCubes)) {
+			this.getStatement().execute(world, unit, selectedCubes);
+			this.setStatus(Status.WHILE);
+		}
+		else
+			this.setStatus(Status.DONE);
 	}
 }

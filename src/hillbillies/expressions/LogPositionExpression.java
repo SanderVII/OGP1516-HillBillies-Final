@@ -16,7 +16,7 @@ public class LogPositionExpression extends CubePositionExpression {
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
+	public int[] evaluate() {
 		Set<Log> logs = this.getUnit().getWorld().getLogs();
 		double distance = Integer.MAX_VALUE;
 		int[] result = null;

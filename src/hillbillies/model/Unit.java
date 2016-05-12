@@ -10,8 +10,10 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.exception.UnitMaxedOutException;
+import hillbillies.statements.Statement;
 import hillbillies.util.Position;
 import hillbillies.util.UnitPosition;
+import ogp.framework.util.Util;
 
 //TODO de fout zoeken in defaultBehaviour. (kan onder andere niet meer uitgezet worden).
 //TODO isvalidposition veranderen naar canHaveAsUnitCoordinates indien het over units gaat.
@@ -2921,6 +2923,12 @@ public class Unit extends Entity{
 	// Methods concerning game time.
 	//============================================================================
 	
+	/**
+	 * Registers the time needed to execute a statement.
+	 * If less time is used, exactly one statement is executed.
+	 */
+	public static final double STATEMENT_EXECUTION_TIME = 0.001;
+	
 	// No formal documentation required.
 	/**
 	 * Advances the game time of this unit with a given deltaT.
@@ -2978,6 +2986,10 @@ public class Unit extends Entity{
 			// The unit has to rest every 3 minutes.
 			if ( (this.getGametime() - this.getTimeOfLastRest()) >= 180.0 ) 
 				this.rest(this.getDefaultBehaviorEnabled());
+		}
+		
+		if (this.hasTask()) {
+			this.advanceTimeTask(deltaT);
 		}
 
 		// Actual implementation of activities.
@@ -3279,5 +3291,13 @@ public class Unit extends Entity{
 		} else {
 			this.setCoordinates(newPosition); 				
 		}	
+	}
+	
+	private void advanceTimeTask(double deltaT) {
+		Statement statement = this.getTask().getStatement();
+		double time = Unit.STATEMENT_EXECUTION_TIME;
+		while (Util.fuzzyLessThanOrEqualTo(time, deltaT)) {
+			statement.execute(world, unit, selectedCubes);
+		}
 	}
 }

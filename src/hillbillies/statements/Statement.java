@@ -33,6 +33,16 @@ public abstract class Statement {
 		return this.getTask().getUnit();
 	}
 	
+	private Status status;
+	
+	public Status getStatus() {
+		return this.status;
+	}
+	
+	protected void setStatus(Status status) {
+		this.status = status;
+	}
+	
 	// =================================================================================================
 	// Methods concerning the task which holds this statement.
 	// =================================================================================================

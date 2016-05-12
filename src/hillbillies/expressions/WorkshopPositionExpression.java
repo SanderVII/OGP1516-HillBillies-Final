@@ -17,7 +17,7 @@ public class WorkshopPositionExpression extends CubePositionExpression{
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit,int[] selectedCubes) {
+	public int[] evaluate() {
 		int[] result = null;
 		World unitWorld = this.getUnit().getWorld();
 		double distance = Integer.MAX_VALUE;
@@ -25,7 +25,7 @@ public class WorkshopPositionExpression extends CubePositionExpression{
 			for (int y = World.CUBE_COORDINATE_MIN; y < unitWorld.getMaximumYValue(); y++) {
 				for (int z = World.CUBE_COORDINATE_MIN; z < unitWorld.getMaximumZValue(); z++) {
 					int[] newCoordinates = new int[]{x,y,z};
-					double newDistance = Position.getDistance(Position.getCubeCenter(selectedCubes), 
+					double newDistance = Position.getDistance(this.getUnit().getCubeCenter(), 
 							Position.getCubeCenter(newCoordinates));
 					if ((newDistance < distance) && 
 							(unitWorld.getCube(x, y, z).getTerrainType() == Terrain.WORKSHOP)) {

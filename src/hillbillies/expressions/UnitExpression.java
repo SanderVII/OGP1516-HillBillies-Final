@@ -13,5 +13,5 @@ public abstract class UnitExpression extends Expression {
 		super(sourceLocation);
 	}
 
-	public abstract Unit evaluate(World world, Unit unit, int[] selectedCubes);
+	public abstract Unit evaluate();
 }

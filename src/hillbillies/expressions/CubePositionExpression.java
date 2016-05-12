@@ -11,5 +11,5 @@ public abstract class CubePositionExpression extends Expression {
 	}
 	
 	@Override
-	public abstract int[] evaluate(World world, Unit unit, int[] selectedCubes);
+	public abstract int[] evaluate();
 }

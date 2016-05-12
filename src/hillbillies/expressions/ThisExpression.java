@@ -13,7 +13,7 @@ public class ThisExpression extends UnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(World world, Unit unit, int[] selectedCubes) {
+	public Unit evaluate() {
 		return this.getUnit();
 	}
 

@@ -16,7 +16,7 @@ public class FriendExpression extends UnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(World world, Unit unit, int[] selectedCubes) {
+	public Unit evaluate() {
 		Faction faction = this.getUnit().getFaction();
 		Set<Unit> units = faction.getUnits();
 		double distance = Integer.MAX_VALUE;

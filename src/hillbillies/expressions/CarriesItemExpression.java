@@ -14,7 +14,7 @@ public class CarriesItemExpression extends SingleBooleanExpression {
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
+	public Boolean evaluate() {
 		return this.getUnit().hasItem();
 	}
 	

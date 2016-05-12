@@ -14,7 +14,7 @@ public class PositionOfExpression extends ExtendedPositionExpression {
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
+	public int[] evaluate() {
 		return this.getUnit().getPosition().getCubeCoordinates();
 	}
 	

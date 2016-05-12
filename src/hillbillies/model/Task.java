@@ -456,6 +456,138 @@ public class Task implements Comparable<Task> {
 	 */
 	private Statement statement;
 	
+	// =================================================================================================
+	// Methods concerning the variables used in this task.
+	// =================================================================================================
+	
+	/** TO BE ADDED TO THE CLASS INVARIANTS
+	 * @invar   Each task must have proper variables.
+	 *        | hasProperStrings()
+	 */
+
+	/**
+	 * Initialize this new task as a non-terminated task with 
+	 * no variables yet.
+	 * 
+	 * @post   This new task has no variables yet.
+	 *       | new.getNbStrings() == 0
+	 */
+	@Raw
+	public Task() {
+	}
+
+	/**
+	 * Check whether this task has the given variable as one of its
+	 * variables.
+	 * 
+	 * @param  variable
+	 *         The variable to check.
+	 */
+	@Basic
+	@Raw
+	public boolean hasAsString(@Raw String variable) {
+		return variables.contains(variable);
+	}
+
+	/**
+	 * Check whether this task can have the given variable
+	 * as one of its variables.
+	 * 
+	 * @param  variable
+	 *         The variable to check.
+	 * @return True if and only if the given variable is effective
+	 *         and that variable is a valid variable for a task.
+	 *       | result ==
+	 *       |   (variable != null) &&
+	 *       |   String.isValidTask(this)
+	 */
+	@Raw
+	public boolean canHaveAsString(String variable) {
+		return (variable != null) && (String.isValidTask(this));
+	}
+
+	/**
+	 * Check whether this task has proper variables attached to it.
+	 * 
+	 * @return True if and only if this task can have each of the
+	 *         variables attached to it as one of its variables,
+	 *         and if each of these variables references this task as
+	 *         the task to which they are attached.
+	 *       | for each variable in String:
+	 *       |   if (hasAsString(variable))
+	 *       |     then canHaveAsString(variable) &&
+	 *       |          (variable.getTask() == this)
+	 */
+	public boolean hasProperStrings() {
+		for (String variable : variables) {
+			if (!canHaveAsString(variable))
+				return false;
+			if (variable.getTask() != this)
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Return the number of variables associated with this task.
+	 *
+	 * @return  The total number of variables collected in this task.
+	 *        | result ==
+	 *        |   card({variable:String | hasAsString({variable)})
+	 */
+	public int getNbStrings() {
+		return variables.size();
+	}
+
+	/**
+	 * Add the given variable to the set of variables of this task.
+	 * 
+	 * @param  variable
+	 *         The variable to be added.
+	 * @pre    The given variable is effective and already references
+	 *         this task.
+	 *       | (variable != null) && (variable.getTask() == this)
+	 * @post   This task has the given variable as one of its variables.
+	 *       | new.hasAsString(variable)
+	 */
+	public void addString(@Raw String variable) {
+		assert (variable != null) && (variable.getTask() == this);
+		variables.add(variable);
+	}
+
+	/**
+	 * Remove the given variable from the set of variables of this task.
+	 * 
+	 * @param  variable
+	 *         The variable to be removed.
+	 * @pre    This task has the given variable as one of
+	 *         its variables, and the given variable does not
+	 *         reference any task.
+	 *       | this.hasAsString(variable) &&
+	 *       | (variable.getTask() == null)
+	 * @post   This task no longer has the given variable as
+	 *         one of its variables.
+	 *       | ! new.hasAsString(variable)
+	 */
+	@Raw
+	public void removeString(String variable) {
+		assert this.hasAsString(variable) && (variable.getTask() == null);
+		variables.remove(variable);
+	}
+
+	/**
+	 * Variable referencing a set collecting all the variables
+	 * of this task.
+	 * 
+	 * @invar  The referenced set is effective.
+	 *       | variables != null
+	 * @invar  Each variable registered in the referenced list is
+	 *         effective and not yet terminated.
+	 *       | for each variable in variables:
+	 *       |   ( (variable != null) &&
+	 *       |     (! variable.isTerminated()) )
+	 */
+	private final Set<String> variables = new HashSet<String>();
 	
 	// =================================================================================================
 	// Methods concerning the schedulers who have this task.
