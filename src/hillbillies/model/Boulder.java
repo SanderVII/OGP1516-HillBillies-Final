@@ -54,33 +54,4 @@ public class Boulder extends Item{
 		super(world, Position.getCubeCenter(coordinates), new Random().nextInt(41)+10);
 	}
 	
-	//================================================================================
-	// Methods concerning being carried.
-	//================================================================================
-	
-//	/**
-//	 * Sets whether this boulder is being carried by a unit.
-//	 * @param value
-//	 *				The value to set whether this boulder is being carried to.
-//	 * @post The value of this.isBeingCarried is equal to the given value
-//	 *				| new.isBeingCarried() == value 
-//	 */
-//	void setIsBeingCarried(boolean value){
-//		this.isBeingCarried = value;
-//	}
-//	
-//	/**
-//	 * Returns whether this boulder is being carried by a unit.
-//	 * 
-//	 * @return | result == this.isBeingCarried
-//	 */
-//	boolean isBeingCarried(){
-//		return this.isBeingCarried;
-//	}
-//	
-//	/**
-//	 * A variable that holds whether this boulder is being carried by a unit.
-//	 */
-//	private boolean isBeingCarried;
-	
 }

@@ -361,7 +361,7 @@ public abstract class Entity {
 		//		wordt er dan de canHaveAsWeight van Log gebruikt?
 		if (this.isTerminated())
 			throw new IllegalStateException();
-		if (! this.canHaveAsWeight(weight))
+		if (! canHaveAsWeight(weight))
 			throw new IllegalArgumentException();
 		this.weight = weight;
 		
