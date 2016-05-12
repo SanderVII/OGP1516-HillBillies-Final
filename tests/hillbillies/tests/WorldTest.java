@@ -124,11 +124,11 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{0,0,0});
+		Log log = new Log(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		Boulder boulder = new Boulder(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(boulder);
-		Log log2 = new Log(world, new int[]{19,39,9});
+		Log log2 = new Log(world, new double[]{19.5,39.5,9.5});
 		world.addEntity(log2);
 		
 		assertFalse(world.isTerminated());
@@ -359,11 +359,12 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{0,0,0});
+		Log log = new Log(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		Boulder boulder = new Boulder(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(boulder);
-		Log log2 = new Log(world, new int[]{19,39,9});
+		Log log2 = new Log(world, new double[]{19.5,39.5,9.5});
+		world.addEntity(log2);
 		
 		assertTrue(world.hasAsEntity(unit));
 		assertTrue(world.hasAsEntity(log));
@@ -384,11 +385,12 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{0,0,0});
+		Log log = new Log(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		Boulder boulder = new Boulder(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(boulder);
-		Log log2 = new Log(world, new int[]{19,39,9});
+		Log log2 = new Log(world, new double[]{19.5,39.5,9.5});
+		world.addEntity(log2);
 		
 		assertTrue(world.canHaveAsEntity(unit));
 		assertTrue(world.canHaveAsEntity(log));
@@ -412,11 +414,11 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{0,0,0});
+		Log log = new Log(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		Boulder boulder = new Boulder(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(boulder);
-		Log log2 = new Log(world, new int[]{19,39,9});
+		Log log2 = new Log(world, new double[]{19.5,39.5,9.5});
 		world.addEntity(log2);
 		
 		assertTrue(world.hasProperEntities());
@@ -436,11 +438,11 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{0,0,0});
+		Log log = new Log(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		Boulder boulder = new Boulder(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(boulder);
-		Log log2 = new Log(world, new int[]{19,39,9});
+		Log log2 = new Log(world, new double[]{19.5,39.5,9.5});
 		world.addEntity(log2);
 		
 		assertTrue(world.getNbEntities() == 4);
@@ -467,13 +469,13 @@ public class WorldTest {
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
 		assertTrue(world.hasAsEntity(unit));
-		Log log = new Log(world, new int[]{0,0,0});
+		Log log = new Log(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(log);
 		assertTrue(world.hasAsEntity(log));
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		Boulder boulder = new Boulder(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(boulder);
 		assertTrue(world.hasAsEntity(boulder));
-		Log log2 = new Log(world, new int[]{19,39,9});
+		Log log2 = new Log(world, new double[]{19.5,39.5,9.5});
 		world.addEntity(log2);
 		assertTrue(world.hasAsEntity(log2));
 		assertTrue(world.getNbEntities() == 4);
@@ -502,7 +504,7 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{0,0,0});
+		Log log = new Log(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(log);
 		assertTrue(world.getNbEntities() == 2);
 		
@@ -522,11 +524,11 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{0,0,0});
+		Log log = new Log(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		Boulder boulder = new Boulder(world, new double[]{0.5,0.5,0.5});
 		world.addEntity(boulder);
-		Log log2 = new Log(world, new int[]{19,39,9});
+		Log log2 = new Log(world, new double[]{19.5,39.5,9.5});
 		world.addEntity(log2);
 		Unit unit2 = new Unit(world,  "Test", new int[] { 5, 5, 1 }, 50, 50, 50, 50);
 		unit2.stopDefaultBehavior();
@@ -554,13 +556,13 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{5, 5, 0});
+		Log log = new Log(world, new double[]{5.5, 5.5, 0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
+		Boulder boulder = new Boulder(world, new double[]{.55, 5.5, 0.5});
 		world.addEntity(boulder);
-		Log log2 = new Log(world, new int[]{5, 5, 1});
+		Log log2 = new Log(world, new double[]{5.5, 5.5, 1.5});
 		world.addEntity(log2);
-		Log log3 = new Log(world, new int[]{6, 5, 0});
+		Log log3 = new Log(world, new double[]{6.5, 5.5, 0.5});
 		world.addEntity(log3);
 		
 		assertTrue(world.getNbLogs() == 3);
@@ -582,13 +584,13 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{5, 5, 0});
+		Log log = new Log(world, new double[]{5.5, 5.5, 0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
+		Boulder boulder = new Boulder(world, new double[]{5.5, 5.5, 0.5});
 		world.addEntity(boulder);
-		Boulder boulder2 = new Boulder(world, new int[]{5, 5, 1});
+		Boulder boulder2 = new Boulder(world, new double[]{5.5, 5.5, 1.5});
 		world.addEntity(boulder2);
-		Boulder boulder3 = new Boulder(world, new int[]{6, 5, 0});
+		Boulder boulder3 = new Boulder(world, new double[]{6.5, 5.5, 0.5});
 		world.addEntity(boulder3);
 		
 		assertTrue(world.getNbBoulders() == 3);
@@ -686,13 +688,13 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 0, 0, 0 }, 100, 100, 100, 100);
 		unit.stopDefaultBehavior();
 		world.addEntity(unit);
-		Log log = new Log(world, new int[]{5, 5, 0});
+		Log log = new Log(world, new double[]{5.5, 5.5, 0.5});
 		world.addEntity(log);
-		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
+		Boulder boulder = new Boulder(world, new double[]{5.5, 5.5, 0.5});
 		world.addEntity(boulder);
-		Log log2 = new Log(world, new int[]{5, 5, 1});
+		Log log2 = new Log(world, new double[]{5.5, 5.5, 1.5});
 		world.addEntity(log2);
-		Log log3 = new Log(world, new int[]{6, 5, 0});
+		Log log3 = new Log(world, new double[]{6.5, 5.5, 0.5});
 		world.addEntity(log3);
 		
 		assertTrue(world.isSolidConnectedToBorder(1, 1, 0));
