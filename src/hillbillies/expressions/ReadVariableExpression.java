@@ -15,7 +15,7 @@ public class ReadVariableExpression extends Expression {
 	
 	@Override
 	public Expression evaluate() {
-		return this.getStatement().getTask().getValue(this.getVariableName());
+		return this.getStatement().getSuperTask().getValue(this.getVariableName());
 	}
 	
 	private String variableName;

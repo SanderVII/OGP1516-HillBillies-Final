@@ -10,6 +10,7 @@ public abstract class ExtendedExpressionStatement extends ExpressionStatement {
 	public ExtendedExpressionStatement(Expression expression, Statement body, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 		this.setStatement(body);
+		body.setSuperStatement(this);
 	}
 	
 	public Statement getStatement() {

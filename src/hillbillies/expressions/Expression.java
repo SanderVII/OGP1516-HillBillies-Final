@@ -49,9 +49,7 @@ public abstract class Expression {
 	 * 			No unit connected.
 	 */
 	public Unit getUnit() {
-		Unit result = this.getStatement().getTask().getUnit();
-		if (result == null)
-			throw new IllegalStateException("not connected to unit.");
+		Unit result = this.getStatement().getSuperTask().getUnit();
 		return result;
 	}
 }

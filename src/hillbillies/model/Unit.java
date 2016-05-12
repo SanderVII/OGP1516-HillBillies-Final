@@ -1576,9 +1576,9 @@ public class Unit extends Entity{
 			throw new IllegalArgumentException();
 		}
 		
-		if (( ! this.hasSolidNeighbours(destinationCoordinates))
-				|| ( ! this.hasPassableNeighbours(destinationCoordinates))
-				|| ( ! this.hasPassableNeighbours(this.getPosition().getCubeCoordinates()))){
+		if ((this.hasSolidNeighbours(destinationCoordinates))
+				&& (this.hasPassableNeighbours(destinationCoordinates))
+				&& (this.hasPassableNeighbours(this.getPosition().getCubeCoordinates()))){
 		
 			if ( ! thisIsDefaultBehaviour)
 				this.setDefaultBehaviorEnabled(false);
@@ -1593,7 +1593,7 @@ public class Unit extends Entity{
 	 			moveToPath.clear();
 	 			moveToPath.add(dummy);
 			}
-		 	try {
+//		 	try {
 		 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
 		 		this.setPreviousActivity(this.getCurrentActivity());
 		 		this.setCurrentActivity(Activity.MOVE);
@@ -1601,7 +1601,7 @@ public class Unit extends Entity{
 		 		
 				moveToPath = searchPath(currentCoordinates, destinationCoordinates);
 				
-		 	} catch (Exception e) {}
+//		 	} catch (Exception e) {}
 		}
 	}
 	
@@ -3292,10 +3292,10 @@ public class Unit extends Entity{
 	}
 	
 	private void advanceTimeTask(double deltaT) {
-		Statement statement = this.getTask().getStatement();
-		double time = Unit.STATEMENT_EXECUTION_TIME;
-		while (Util.fuzzyLessThanOrEqualTo(time, deltaT)) {
-			statement.execute();
-		}
+//		Statement statement = this.getTask().getStatement();
+//		double time = Unit.STATEMENT_EXECUTION_TIME;
+//		while (Util.fuzzyLessThanOrEqualTo(time, deltaT)) {
+//			statement.execute();
+//		}
 	}
 }
