@@ -2,6 +2,7 @@ package hillbillies.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import org.junit.After;
@@ -15,6 +16,7 @@ import hillbillies.model.Log;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import hillbillies.util.Position;
 
 /**
  * @author Sander Mergan, Thomas Vranken
@@ -136,21 +138,58 @@ public class ItemTest {
 	}
 	
 	@Test
-	public void canHaveAsUnitTest() {
+	public void canHaveAsUnit_hasProperUnitTest() {
 		int[][][] terrain = new int[20][40][10];
 		terrain[1][1][0] = TYPE_ROCK;
 		terrain[1][1][1] = TYPE_TREE;
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
+		World world2 = new World(terrain, new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "TestUnit",new int[]{0,0,0}, 100, 100, 100, 100);
 		world.addEntity(unit);
+		Unit unit2 = new Unit(world2, "TestUnit",new int[]{0,0,0}, 100, 100, 100, 100);
+		world2.addEntity(unit2);
+		
 		Log log = new Log(world, new double[]{0.5,0.5,0.5}, Item.MINIMAL_WEIGHT);
 		world.addEntity(log);
 		assertTrue(world.hasAsEntity(unit));
 		assertTrue(world.hasAsEntity(log));
-		
+		assertTrue(log.canHaveAsUnit(null));
+		assertFalse(log.canHaveAsUnit(unit2));
+		assertTrue(log.hasProperUnit());
 		log.terminate();
-		assertTrue(log.getUnit() == null);
+		assertTrue(log.canHaveAsUnit(null));
+		assertFalse(log.canHaveAsUnit(unit));
+		assertTrue(log.hasProperUnit());
+		
+		Log log2 = new Log(world, new double[]{1.5,0.5,0.5}, Item.MINIMAL_WEIGHT);
+		world.addEntity(log2);
+		unit.workAt(new int[]{1,0,0});
+		advanceTimeFor(world, 100, 0.15);
+		assertTrue(unit.getItem() == log2);
+		assertTrue(log2.getUnit() == unit);
+		assertTrue(log2.getWorld() == null);
+		assertFalse(world.hasAsEntity(log2));
+		assertTrue(log2.canHaveAsUnit(unit));
+		assertTrue(log2.canHaveAsUnit(null));
+		assertTrue(log2.hasProperUnit());
+	}
+	
+	@Test
+	public void advanceTimeTest(){
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Log log = new Log(world, new double[]{0.5,0.5,3.5}, Item.MINIMAL_WEIGHT);
+		world.addEntity(log);
+		System.out.println(Arrays.toString(log.getPosition().getCubeCoordinates()));
+		assertTrue(Position.equals(log.getPosition().getCubeCoordinates(), new int[]{0,0,3}));
+		advanceTimeFor(world, 20, 0.1);
+		System.out.println(Arrays.toString(log.getPosition().getCubeCoordinates()));
+		assertTrue(Position.equals(log.getPosition().getCubeCoordinates(), new int[]{0,0,0}));
 	}
 	
 	/**
