@@ -20,7 +20,7 @@ import ogp.framework.util.ModelException;
 
 /**
  * 
- * @author Thomas Vranken
+ * @author Sander Mergan, Thomas Vranken
  * @version	2.0
  */
 @SuppressWarnings("all")

@@ -1,10 +1,6 @@
 package hillbillies.statements;
 
-import java.util.List;
-
 import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 public abstract class ActionStatement extends SingleExpressionStatement {
@@ -15,7 +11,7 @@ public abstract class ActionStatement extends SingleExpressionStatement {
 	}
 
 	@Override
-	public void execute(World world, Unit unit, int[] selectedCubes) {
+	public void execute() {
 		// TODO Auto-generated method stub
 
 	}

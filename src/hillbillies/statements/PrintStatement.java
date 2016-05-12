@@ -14,8 +14,8 @@ public class PrintStatement extends ExpressionStatement{
 	}
 
 	@Override
-	public void execute(World world, Unit unit, int[] selectedCubes) {
-		System.out.println(this.getExpression().evaluate(world, unit, selectedCubes));
+	public void execute() {
+		System.out.println(this.getExpression().evaluate());
 	}
 
 }

@@ -16,12 +16,11 @@ import hillbillies.part2.internal.map.GameMap;
 import hillbillies.part2.internal.map.GameMapReader;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part2.listener.TerrainChangeListener;
-import hillbillies.part3.facade.IFacade;
 import hillbillies.util.Position;
-import ogp.framework.util.ModelException;
 import ogp.framework.util.Util;
 
 /**
+ * @author Sander Mergan, Thomas Vranken
  * @version 2.1
  */
 public class UnitTest {

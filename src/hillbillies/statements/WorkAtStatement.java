@@ -1,10 +1,6 @@
 package hillbillies.statements;
 
-import java.util.List;
-
 import hillbillies.expressions.*;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 public class WorkAtStatement extends ActionPositionStatement {
@@ -16,8 +12,8 @@ public class WorkAtStatement extends ActionPositionStatement {
 
 	//TODO fix lists
 	@Override
-	public void execute(World world, Unit unit, int[] selectedCubes) {
-		int[] dummy = (int[]) this.getExpression().evaluate(world, unit, selectedCubes);
+	public void execute() {
+		int[] dummy = (int[]) this.getExpression().evaluate();
 		this.getTask().getUnit().workAt(dummy,true);
 	}
 	

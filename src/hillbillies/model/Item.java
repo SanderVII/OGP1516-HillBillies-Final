@@ -215,26 +215,7 @@ public abstract class Item extends Entity {
 			throw new IllegalArgumentException();
 		this.unit = unit;
 	}
-	
-	// ==========================================================================================
-	// Methods concerning the falling behavior.
-	// ==========================================================================================
-	
-	/**
-	 * Ends the falling behavior of this item, if possible.
-	 * Also places the item in the center of its current cube if it is done falling.
-	 * 
-	 * @effect	If the requirements are fullfilled,
-	 * 				The is-falling property is set to false
-	 * 				and the coordinates are set to the center of the cube. 
-	 */
-	@Override
-	public void endFalling() throws IllegalArgumentException, IllegalStateException {
-		if (this.canEndFalling()) {
-			super.endFalling();
-			this.getPosition().setCoordinates((Position.getCubeCenter(this.getPosition().getCoordinates())));
-		}
-	}
+
 	
 	// ==========================================================================================
 	// Methods concerning the gametime.

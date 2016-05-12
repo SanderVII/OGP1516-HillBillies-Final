@@ -2,8 +2,6 @@ package hillbillies.statements;
 
 import java.util.List;
 
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 public class SequenceStatement extends Statement {
@@ -16,8 +14,8 @@ public class SequenceStatement extends Statement {
 	}
 	
 	@Override
-	public void execute(World world, Unit unit, int[] selectedCubes) {
-		this.getStatementAt(getCursor()).execute(world, unit, selectedCubes);
+	public void execute() {
+		this.getStatementAt(getCursor()).execute();
 		
 		this.setCursor(getCursor()+1);
 	}

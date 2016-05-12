@@ -324,12 +324,15 @@ public abstract class Entity {
 	 * End the falling behavior of this entity if possible.
 	 * If the entity does not fullfill the requirements to end it, nothing happens.
 	 * 
-	 * @post	If this entity fullfills the requirements to stop falling,
-	 * 				The is-falling property of this entity is set to false.
+	 * @effect	If this entity fullfills the requirements to stop falling,
+	 * 				The is-falling property of this entity is set to false
+	 *				and the coordinates are set to the center of the cube. .
 	 */
 	public void endFalling() {
-		if (this.canEndFalling())
+		if (this.canEndFalling()){
 			this.setIsFalling(false);
+			this.getPosition().setCoordinates((Position.getCubeCenter(this.getPosition().getCoordinates())));
+		}
 	}
 	
 	

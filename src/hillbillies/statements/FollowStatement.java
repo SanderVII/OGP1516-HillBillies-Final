@@ -1,10 +1,6 @@
 package hillbillies.statements;
 
-import java.util.List;
-
 import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 public class FollowStatement extends ActionUnitStatement {
@@ -14,16 +10,8 @@ public class FollowStatement extends ActionUnitStatement {
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * @deprecated Use {@link #execute(World,Unit,int[])} instead
-	 */
 	@Override
-	public void execute(World world, Unit unit,List<int[]> selectedCubes) {
-		execute(world, unit, selectedCubes);
-	}
-
-	@Override
-	public void execute(World world, Unit unit,int[] selectedCubes) {
+	public void execute() {
 		// TODO Auto-generated method stub
 		
 	}

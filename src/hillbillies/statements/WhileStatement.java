@@ -1,10 +1,6 @@
 package hillbillies.statements;
 
-import java.util.List;
-
 import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 //TODO finish
@@ -15,10 +11,10 @@ public class WhileStatement extends ExtendedExpressionStatement {
 	}
 
 	@Override
-	public void execute(World world, Unit unit,int[] selectedCubes) {
+	public void execute() {
 		
-		if ((boolean) this.getExpression().evaluate(world, unit, selectedCubes)) {
-			this.getStatement().execute(world, unit, selectedCubes);
+		if ((boolean) this.getExpression().evaluate()) {
+			this.getStatement().execute();
 			this.setStatus(Status.WHILE);
 		}
 		else

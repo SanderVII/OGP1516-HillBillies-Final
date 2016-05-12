@@ -15,8 +15,8 @@ public class MoveToStatement extends ActionPositionStatement {
 
 
 	@Override
-	public void execute(World world, Unit unit, int[] selectedCubes) {
-		this.getUnit().moveTo((int[]) this.getExpression().evaluate(world, unit, selectedCubes));
+	public void execute() {
+		this.getUnit().moveTo((int[]) this.getExpression().evaluate());
 		
 	}
 

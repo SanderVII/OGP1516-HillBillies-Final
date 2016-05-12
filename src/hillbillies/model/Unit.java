@@ -16,10 +16,8 @@ import hillbillies.util.UnitPosition;
 import ogp.framework.util.Util;
 
 //TODO de fout zoeken in defaultBehaviour. (kan onder andere niet meer uitgezet worden).
-//TODO isvalidposition veranderen naar canHaveAsUnitCoordinates indien het over units gaat.
 
-//TODO sprinting feature doesn't work.
-//TODO orientation of work seems incorrect for east-north directions.
+//TODO moving feature doesn't work.
 //TODO do not award xp for failed task (i.e. working air)
 
 
@@ -2652,7 +2650,7 @@ public class Unit extends Entity{
 		List<Task> availableTasks = scheduler.getUnassignedTasks();
 		if (availableTasks.size() != 0) {
 			availableTasks.get(0).assignTo(this);
-			this.getTask().getStatement().execute(getWorld(), this, this.getTask().getPosition());
+			this.getTask().getStatement().execute();
 		}
 		else {
 //		try {
@@ -3297,7 +3295,7 @@ public class Unit extends Entity{
 		Statement statement = this.getTask().getStatement();
 		double time = Unit.STATEMENT_EXECUTION_TIME;
 		while (Util.fuzzyLessThanOrEqualTo(time, deltaT)) {
-			statement.execute(world, unit, selectedCubes);
+			statement.execute();
 		}
 	}
 }
