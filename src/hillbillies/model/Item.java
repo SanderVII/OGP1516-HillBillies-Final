@@ -3,7 +3,6 @@ package hillbillies.model;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.*;
-import hillbillies.util.ItemPosition;
 import hillbillies.util.Position;
 
 /**
@@ -137,11 +136,16 @@ public abstract class Item extends Entity {
 	 */
 	public static final int MAXIMAL_WEIGHT = 50;
 	
+	
 	// ==========================================================================================
 	// Methods concerning the position of this item.
 	// ==========================================================================================
 	
-	//TODO doc
+	/**
+	 * Checks whether the given coordinates are valid coordinates for this item.
+	 * 
+	 * @return True if and only if 
+	 */
 	@Override
 	public boolean canHaveAsCoordinates(int[] coordinates) {
 		if ((this.getWorld() == null) && (this.getUnit() != null))
@@ -176,15 +180,14 @@ public abstract class Item extends Entity {
 	 * @return	If this item is terminated, true if the given unit
 	 * 			is not effective.
 	 * 			If this item's world is effective, true if the world of this
-	 * 			item and the given unit's world are the same.
+	 * 			item and the given unit's world are the same or the given unit is not effective.
 	 * 			Else, return true.
 	 */
-	//TODO also can have null as unit.
 	public boolean canHaveAsUnit(Unit unit) {
 		if (this.isTerminated())
 			return unit == null;
 		else if (this.getWorld() != null)
-			return (this.getWorld() == unit.getWorld());
+			return ( (unit==null) || (this.getWorld() == unit.getWorld()) );
 		else
 			return true;
 	}

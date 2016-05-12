@@ -47,7 +47,7 @@ public class Log extends Item {
 	 * 				a random valid weight. 
 	 * 				The log is placed in the center of the given cube.
 	 */
-	public Log(World world, int[] coordinates) {
+	public Log(World world, double[] coordinates) {
 		super(world, Position.getCubeCenter(coordinates), new Random().nextInt(41)+10);
 	}
 }

@@ -10,6 +10,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.Item;
+import hillbillies.model.Log;
+import hillbillies.model.World;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
+
 /**
  * @author Sander Mergan, Thomas Vranken
  * @version	2.1
@@ -41,7 +46,24 @@ public class ItemTest {
 	
 	@Test
 	public void constructorTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		try{
+			new Log(world, new double[]{0.5,0.5,0.5}, Item.MAXIMAL_WEIGHT+1);
+			assertFalse(true);}
+		catch(IllegalArgumentException e){	assertTrue(true);}
 		
+		try{
+			new Log(world, new double[]{0.5,0.5,0.5}, Item.MINIMAL_WEIGHT-1);
+			assertFalse(true);}
+		catch(IllegalArgumentException e){	assertTrue(true);}
+		
+		Log log = new Log(world, new double[]{0.5,0.5,0.5}, (Item.MAXIMAL_WEIGHT-Item.MAXIMAL_WEIGHT)/2+Item.MINIMAL_WEIGHT);
+		assertTrue(log.canHaveAsWeight(log.getWeight()));
+	
 	}
 	
 }
