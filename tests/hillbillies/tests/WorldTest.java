@@ -18,12 +18,10 @@ import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.util.Position;
-import hillbillies.util.UnitPosition;
 import ogp.framework.util.Util;
 
 /**
- * 
- * @author Thomas Vranken, Sander Mergan
+ * @author Sander Mergan, Thomas Vranken
  * @version	2.1
  */
 public class WorldTest {
@@ -52,7 +50,7 @@ public class WorldTest {
 	}
 	
 	@Test
-	public void caveIn() {
+	public void caveInTest() {
 		int[][][] terrain = new int[3][3][3];
 		terrain[1][1][0] = TYPE_ROCK;
 		terrain[1][1][1] = TYPE_TREE;
@@ -72,7 +70,7 @@ public class WorldTest {
 	}
 	
 	@Test
-	public void constructor() {
+	public void constructorTest() {
 		int[][][] terrain = new int[20][40][10];
 		terrain[1][1][0] = TYPE_ROCK;
 		terrain[1][1][1] = TYPE_TREE;

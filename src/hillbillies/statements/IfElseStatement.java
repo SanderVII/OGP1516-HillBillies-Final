@@ -14,11 +14,11 @@ public class IfElseStatement extends ExtendedExpressionStatement {
 	}
 
 	@Override
-	public void execute(World world, Unit unit,int[] selectedCubes) {
-		if ((boolean) this.getExpression().evaluate(world, unit, selectedCubes))
-			this.getStatement().execute(world, unit, selectedCubes);
+	public void execute() {
+		if ((boolean) this.getExpression().evaluate())
+			this.getStatement().execute();
 		else
-			this.getElseBody().execute(world, unit, selectedCubes);
+			this.getElseBody().execute();
 		this.setStatus(Status.DONE);
 	}
 	

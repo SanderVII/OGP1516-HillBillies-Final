@@ -10,19 +10,17 @@ import org.junit.Test;
 
 import hillbillies.model.Boulder;
 import hillbillies.model.Item;
-import hillbillies.model.Boulder;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
-import hillbillies.util.Position;
 
 /**
- * 
- * @author Thomas Vranken
+ * @author Sander Mergan, Thomas Vranken
  * @version	2.0
  */
 public class BoulderTest {
 	
 	
+	@SuppressWarnings("unused")
 	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
 	private static final int TYPE_TREE = 2;

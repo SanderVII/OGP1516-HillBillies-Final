@@ -1,10 +1,6 @@
 package hillbillies.statements;
 
-import java.util.List;
-
 import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 public class AssignmentStatement extends ExpressionStatement {
@@ -15,9 +11,9 @@ public class AssignmentStatement extends ExpressionStatement {
 	}
 
 	@Override
-	public void execute(World world, Unit unit, int[] selectedCubes) {
+	public void execute() {
 		//TODO what to execute?
-		this.getExpression().evaluate(world, unit, selectedCubes);
+		this.getExpression().evaluate();
 	}
 	
 	private String variableName;

@@ -1,12 +1,9 @@
 package hillbillies.statements;
 
-import java.util.List;
-
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 public abstract class Statement {
@@ -27,7 +24,7 @@ public abstract class Statement {
 	
 	private SourceLocation sourceLocation;
 
-	public abstract void execute(World world, Unit unit, int[] selectedCubes);
+	public abstract void execute();
 	
 	public Unit getUnit() {
 		return this.getTask().getUnit();

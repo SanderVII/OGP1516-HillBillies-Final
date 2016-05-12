@@ -14,8 +14,7 @@ import hillbillies.util.Position;
 import ogp.framework.util.Util;
 
 /**
- * 
- * @author Thomas Vranken
+ * @author Sander Mergan, Thomas Vranken
  * @version	2.0
  */
 public class PositionTest {
