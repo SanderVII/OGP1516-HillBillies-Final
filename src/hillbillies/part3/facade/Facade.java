@@ -7,9 +7,9 @@ import java.util.Set;
 import hillbillies.model.Faction;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
-import hillbillies.model.TaskFactory;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.ITaskFactory;
+import hillbillies.tasks.TaskFactory;
 import ogp.framework.util.ModelException;
 
 public class Facade  extends hillbillies.part2.facade.Facade implements hillbillies.part3.facade.IFacade{

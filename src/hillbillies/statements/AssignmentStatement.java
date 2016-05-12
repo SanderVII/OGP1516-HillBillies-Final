@@ -2,6 +2,7 @@ package hillbillies.statements;
 
 import hillbillies.expressions.Expression;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.expressionType.ExpressionStatement;
 
 public class AssignmentStatement extends ExpressionStatement {
 	
