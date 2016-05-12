@@ -10,7 +10,7 @@ public class AssignmentStatement extends ExpressionStatement {
 		this.setVariableName(variableName);
 	}
 
-	public void execute(World world, Unit unit, int[] selectedCubes) {
+	public void execute() {
 		this.getTask().addVariable(this.getVariableName(),this.getExpression());
 		this.setStatus(Status.DONE);
 	}
