@@ -8,10 +8,27 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class SequenceStatement extends Statement {
 
+	private List<Statement> statements;
+
+	public SequenceStatement(List<Statement> statements, SourceLocation sourceLocation) {
+		super(sourceLocation);
+		this.setStatements(statements);
+	}
+	
 	@Override
-	public void execute(World world, Unit unit, List<int[]> selectedCubes,SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		
+	public void execute(World world, Unit unit, int[] selectedCubes) {
+		//TODO probably no direct iteration, so how to do?
+	}
+	
+	public int getNbStatements() {
+		return this.statements.size();
+	}
+	
+	public Statement getStatementAt(int index) {
+		return statements.get(index);
 	}
 
+	protected void setStatements(List<Statement> statements) {
+		this.statements = statements;
+	}
 }

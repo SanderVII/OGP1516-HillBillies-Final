@@ -10,7 +10,6 @@ public class HereExpression extends CubePositionExpression {
 	
 	public HereExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

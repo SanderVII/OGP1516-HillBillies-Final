@@ -13,17 +13,16 @@ public class LogPositionExpression extends CubePositionExpression {
 
 	public LogPositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public int[] evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		Set<Log> logs = world.getLogs();
+	public int[] evaluate(World world, Unit unit, int[] selectedCubes) {
+		Set<Log> logs = this.getUnit().getWorld().getLogs();
 		double distance = Integer.MAX_VALUE;
 		int[] result = null;
 		for (Log element : logs) {
 			double newDistance = Position.getDistance(element.getPosition().getCoordinates(), 
-					unit.getPosition().getCoordinates());
+					this.getUnit().getPosition().getCoordinates());
 			if (newDistance < distance) {
 				result = element.getPosition().getCubeCoordinates();
 				distance = newDistance;

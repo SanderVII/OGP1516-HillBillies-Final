@@ -6,17 +6,16 @@ import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
-public class IsAliveExpression extends BooleanExpression{
+public class IsAliveExpression extends SingleBooleanUnitExpression {
 
 
-	public IsAliveExpression(SourceLocation sourceLocation) {
-		super(sourceLocation);
-		// TODO Auto-generated constructor stub
+	public IsAliveExpression(Expression unit, SourceLocation sourceLocation) {
+		super(unit, sourceLocation);
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		return ! unit.isTerminated();
+	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
+		return ! ((Unit) this.getExpression().evaluate(world, unit, selectedCubes)).isTerminated();
 	}
 
 }

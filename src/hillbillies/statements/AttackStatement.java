@@ -10,22 +10,13 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class AttackStatement extends ActionUnitStatement {
 	
-	public AttackStatement(Expression expression, SourceLocation sourceLocation) {
-		super(expression, sourceLocation);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @deprecated Use {@link #execute(World,Unit,int[])} instead
-	 */
-	@Override
-	public void execute(World world, Unit unit,List<int[]> selectedCubes) {
-		execute(world, unit, selectedCubes);
+	public AttackStatement(Expression unit, SourceLocation sourceLocation) {
+		super(unit, sourceLocation);
 	}
 
 	@Override
 	public void execute(World world, Unit unit,int[] selectedCubes) {
-		// TODO Auto-generated method stub
+		this.getUnit().attack((Unit) this.getExpression().evaluate(world, unit, selectedCubes));
 	}
 
 }

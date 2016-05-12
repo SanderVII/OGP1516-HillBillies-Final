@@ -8,12 +8,10 @@ public class TrueExpression extends BooleanExpression {
 	
 	public TrueExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
+	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
 		return true;
 	}
 

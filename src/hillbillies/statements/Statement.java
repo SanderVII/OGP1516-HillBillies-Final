@@ -29,6 +29,10 @@ public abstract class Statement {
 
 	public abstract void execute(World world, Unit unit, int[] selectedCubes);
 	
+	public Unit getUnit() {
+		return this.getTask().getUnit();
+	}
+	
 	// =================================================================================================
 	// Methods concerning the task which holds this statement.
 	// =================================================================================================

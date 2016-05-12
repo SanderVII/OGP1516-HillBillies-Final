@@ -14,12 +14,8 @@ public abstract class CombinedBooleanExpression extends BooleanExpression {
 
 	public CombinedBooleanExpression(Expression left, Expression right, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		if ((! (left instanceof BooleanExpression)) || (! (right instanceof BooleanExpression)))
-			throw new IllegalArgumentException();
-		else {
-			this.setLeft((BooleanExpression)left);
-			this.setRight((BooleanExpression)right);
-		}
+		this.setLeft((BooleanExpression)left);
+		this.setRight((BooleanExpression)right);
 	}
 	
 	private BooleanExpression left;
@@ -30,6 +26,8 @@ public abstract class CombinedBooleanExpression extends BooleanExpression {
 	}
 	
 	private void setLeft(BooleanExpression left) {
+		if (! (left instanceof BooleanExpression))
+			throw new IllegalArgumentException();
 		this.left = left;
 	}
 	
@@ -38,6 +36,8 @@ public abstract class CombinedBooleanExpression extends BooleanExpression {
 	}
 	
 	private void setRight(BooleanExpression right) {
+		if (! (right instanceof BooleanExpression))
+			throw new IllegalArgumentException();
 		this.right = right;
 	}
 

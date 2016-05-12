@@ -6,17 +6,17 @@ import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
-public class IsFriendExpression extends SingleBooleanExpression {
+public class IsFriendExpression extends SingleBooleanUnitExpression {
 
 
-	public IsFriendExpression(UnitExpression expression, SourceLocation sourceLocation) {
-		super(expression, sourceLocation);
+	public IsFriendExpression(Expression unit, SourceLocation sourceLocation) {
+		super(unit, sourceLocation);
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		return unit.getFaction() == ((Unit) this.getExpression().evaluate(
-				world, unit, selectedCubes, sourceLocation)).getFaction();
+	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
+		return this.getUnit().getFaction() == ((Unit) this.getExpression().evaluate(
+				world, unit, selectedCubes)).getFaction();
 	}
 
 }

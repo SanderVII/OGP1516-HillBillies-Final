@@ -16,20 +16,19 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class EnemyExpression extends UnitExpression {
 
-	public EnemyExpression(Unit unit, SourceLocation sourceLocation) {
-		super(unit, sourceLocation);
-		// TODO Auto-generated constructor stub
+	public EnemyExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
 	}
 
 	@Override
-	public Unit evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		Set<Unit> units = world.getUnits();
+	public Unit evaluate(World world, Unit unit, int[] selectedCubes) {
+		Set<Unit> units = this.getUnit().getWorld().getUnits();
 		double distance = Integer.MAX_VALUE;
 		Unit result = null;
 		for (Unit element : units) {
 			double newDistance = Position.getDistance(element.getPosition().getCoordinates(), 
-					unit.getPosition().getCoordinates());
-			if ((element.getFaction() != unit.getFaction()) && (newDistance < distance)) {
+					this.getUnit().getPosition().getCoordinates());
+			if ((element.getFaction() != this.getUnit().getFaction()) && (newDistance < distance)) {
 				result = element;
 				distance = newDistance;
 			}

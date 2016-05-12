@@ -14,9 +14,9 @@ public class OrExpression extends CombinedBooleanExpression{
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		boolean leftBoolean = ((Boolean) this.getLeft().evaluate(world, unit, selectedCubes, sourceLocation)).booleanValue();
-		boolean rightBoolean = ((Boolean) this.getRight().evaluate(world, unit, selectedCubes, sourceLocation)).booleanValue();
+	public Boolean evaluate(World world, Unit unit, int[] selectedCubes) {
+		boolean leftBoolean = ((Boolean) this.getLeft().evaluate(world, unit, selectedCubes)).booleanValue();
+		boolean rightBoolean = ((Boolean) this.getRight().evaluate(world, unit, selectedCubes)).booleanValue();
 		if (leftBoolean || rightBoolean)
 			return true;
 		else

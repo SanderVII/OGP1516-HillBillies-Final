@@ -8,17 +8,16 @@ import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.util.Position;
 
-public class IsPassableExpression extends BooleanExpression{
+public class IsPassableExpression extends SingleBooleanPositionExpression{
 
 
-	public IsPassableExpression(SourceLocation sourceLocation) {
-		super(sourceLocation);
-		// TODO Auto-generated constructor stub
+	public IsPassableExpression(Expression position, SourceLocation sourceLocation) {
+		super(position, sourceLocation);
 	}
 
 	@Override
-	public Boolean evaluate(World world, Unit unit, int[] selectedCubes, SourceLocation sourceLocation) {
-		return world.getCube(selectedCubes).isPassable();
+	public Boolean evaluate(World world, Unit unit, int[] selectedCube) {
+		return this.getUnit().getWorld().getCube(
+				(int[]) this.getExpression().evaluate(world, unit, selectedCube)).isPassable();
 	}
-
 }

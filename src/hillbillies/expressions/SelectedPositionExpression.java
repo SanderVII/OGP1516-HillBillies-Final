@@ -11,7 +11,6 @@ public class SelectedPositionExpression extends CubePositionExpression {
 	
 	public SelectedPositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

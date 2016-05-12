@@ -14,7 +14,7 @@ public class ThisExpression extends UnitExpression {
 
 	@Override
 	public Unit evaluate(World world, Unit unit, int[] selectedCubes) {
-		return unit;
+		return this.getUnit();
 	}
 
 }
