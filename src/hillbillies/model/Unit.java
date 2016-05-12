@@ -1503,8 +1503,15 @@ public class Unit extends Entity{
 	 * 				| 
 	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalArgumentException{
+		this.moveToAdjacent(dx, dy, dz, false);
+ 	}	
+	
+	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
 		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling.
 		try {
+			if ( ! thisIsDefaultBehaviour)
+				this.setDefaultBehaviorEnabled(false);
+			
 			if ((this.getCurrentActivity() == Activity.MOVE))
 				throw new IllegalStateException("Unit is already moving.");
 			
@@ -1525,9 +1532,9 @@ public class Unit extends Entity{
 	 		this.setInitialCoordinates(this.getPosition().getCoordinates());
 		} 
 		catch (Exception e) {
-//			this.resetPositions();
+//					this.resetPositions();
 		}
- 	}	
+	}
 	
 	// TODO finish + documentation
 	public boolean canDoMoveToAdjacent() {

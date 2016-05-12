@@ -61,7 +61,6 @@ public abstract class Item extends Entity {
 	 * 			This item is terminated, does not reference an effective unit, or that
 	 * 			unit does not reference an effective world.
 	 */
-	//TODO terminated unit
 	public void moveToWorld() throws IllegalStateException {
 		if (this.isTerminated())
 			throw new IllegalStateException();
@@ -105,7 +104,6 @@ public abstract class Item extends Entity {
 		World world = this.getWorld();
 		this.setWorld(null);
 		world.removeEntity(this);
-		System.out.println();
 		
 	}
 	
@@ -149,7 +147,7 @@ public abstract class Item extends Entity {
 	@Override
 	public boolean canHaveAsCoordinates(int[] coordinates) {
 		if ((this.getWorld() == null) && (this.getUnit() != null))
-			return (this.getUnit().getWorld().canHaveAsCoordinates(coordinates));
+			return ( (this.getUnit().getWorld().canHaveAsCoordinates(coordinates)) && (this.getUnit().getWorld().getCube(coordinates).isPassable()) );
 		else
 			return super.canHaveAsCoordinates(coordinates);
 	}
