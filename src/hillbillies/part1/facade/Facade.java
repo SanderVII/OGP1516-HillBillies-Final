@@ -345,7 +345,8 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 			unit.moveToAdjacent(dx, dy, dz);
 		}
 		catch (IllegalArgumentException e){
-			unit.cancelMoveTo();
+//			unit.cancelMoveTo();
+			throw e;
 		}
 	}
 

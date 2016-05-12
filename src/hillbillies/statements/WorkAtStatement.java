@@ -14,7 +14,7 @@ public class WorkAtStatement extends ActionPositionStatement {
 	@Override
 	public void execute() {
 		int[] dummy = (int[]) this.getExpression().evaluate();
-		this.getTask().getUnit().workAt(dummy,true);
+		this.getSuperTask().getUnit().workAt(dummy,true);
 	}
 	
 	@Override

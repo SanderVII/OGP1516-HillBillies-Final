@@ -11,7 +11,7 @@ public class AssignmentStatement extends ExpressionStatement {
 	}
 
 	public void execute() {
-		this.getTask().addVariable(this.getVariableName(),this.getExpression());
+		this.getSuperTask().addVariable(this.getVariableName(),this.getExpression());
 		this.setStatus(Status.DONE);
 	}
 	

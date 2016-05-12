@@ -8,6 +8,7 @@ public abstract class ExpressionStatement extends Statement {
 	public ExpressionStatement(Expression expression, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		this.setExpression(expression);
+		expression.setStatement(this);
 		// TODO Auto-generated constructor stub
 	}
 

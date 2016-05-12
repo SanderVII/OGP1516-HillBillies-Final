@@ -10,6 +10,9 @@ public class SequenceStatement extends Statement {
 
 	public SequenceStatement(List<Statement> statements, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		for (Statement statement: statements)
+			statement.setSuperStatement(this);
+			
 		this.setStatements(statements);
 	}
 	

@@ -6,13 +6,11 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
-public abstract class Statement {
+public abstract class Statement implements ISuperStatement {
 	
 	public Statement(SourceLocation sourceLocation) {
 		this.setSourceLocation(sourceLocation);
 	}
-	
-//	public abstract void execute(World world, Unit unit,List<int[]> selectedCubes, SourceLocation sourceLocation);
 	
 	public SourceLocation getSourceLocation() {
 		return this.sourceLocation;
@@ -27,10 +25,12 @@ public abstract class Statement {
 	public abstract void execute();
 	
 	public Unit getUnit() {
-		return this.getTask().getUnit();
+		return this.getSuperTask().getUnit();
 	}
 	
 	private Status status;
+	
+	private Statement superStatement;;
 	
 	public Status getStatus() {
 		return this.status;
@@ -38,6 +38,28 @@ public abstract class Statement {
 	
 	protected void setStatus(Status status) {
 		this.status = status;
+	}
+	
+	@Override
+	public Statement getSuperStatement() {
+		return this.superStatement;
+	}
+	
+	@Override
+	public void setSuperStatement(Statement statement) {
+		this.superStatement = statement;
+	}
+	
+	/**
+	 * Returns the super task of this statement. This is either the
+	 * associated task, or the super task of the super statement.
+	 * @return 
+	 */
+	public Task getSuperTask() {
+		if (this.hasTask())
+			return this.getTask();
+		else
+			return this.getSuperStatement().getSuperTask();
 	}
 	
 	// =================================================================================================

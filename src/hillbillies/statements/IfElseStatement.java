@@ -11,13 +11,15 @@ public class IfElseStatement extends ExtendedExpressionStatement {
 
 	public IfElseStatement(Expression condition, Statement ifBody, Statement elseBody, SourceLocation sourceLocation) {
 		super(condition, ifBody, sourceLocation);
+		if (elseBody != null)
+			elseBody.setSuperStatement(this);
 	}
 
 	@Override
 	public void execute() {
 		if ((boolean) this.getExpression().evaluate())
 			this.getStatement().execute();
-		else
+		else if (this.getElseBody() != null)
 			this.getElseBody().execute();
 		this.setStatus(Status.DONE);
 	}
