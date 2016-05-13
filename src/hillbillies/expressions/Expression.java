@@ -2,8 +2,8 @@ package hillbillies.expressions;
 
 import hillbillies.model.*;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.statements.ExpressionStatement;
 import hillbillies.statements.Statement;
+import hillbillies.statements.expressionType.ExpressionStatement;
 
 public abstract class Expression {
 
