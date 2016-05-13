@@ -34,7 +34,7 @@ public class Boulder extends Item{
 	 * @effect	The coordinates of this boulder is set to the given coordinates.
 	 * @effect	The weight of this boulder is set to the given weight.
 	 */
-	public Boulder(World world, double[] coordinates, int weight) throws IllegalArgumentException{
+	public Boulder(World world, int[] coordinates, int weight) throws IllegalArgumentException{
 		super(world, coordinates,weight);
 	}
 		
@@ -50,8 +50,8 @@ public class Boulder extends Item{
 	 * 				a random valid weight. 
 	 * 				The log is placed in the center of the given cube.
 	 */
-	public Boulder(World world, double[] coordinates) {
-		super(world, Position.getCubeCenter(coordinates), new Random().nextInt(41)+10);
+	public Boulder(World world, int[] coordinates) {
+		super(world, coordinates, new Random().nextInt(41)+10);
 	}
 	
 }

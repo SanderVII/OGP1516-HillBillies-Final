@@ -29,7 +29,7 @@ public abstract class Item extends Entity {
 	 * @throws	IllegalArgumentException
 	 * 				The given weight is invalid.
 	 */
-	protected Item(World world, double[] coordinates, int weight) {
+	protected Item(World world, int[] coordinates, int weight) {
 		super(world, coordinates, weight);
 	}
 	
@@ -45,7 +45,7 @@ public abstract class Item extends Entity {
 	 * @throws	IllegalArgumentException
 	 * 				The given weight is invalid.
 	 */
-	protected Item(World world, double[] coordinates) {
+	protected Item(World world, int[] coordinates) {
 		this(world, coordinates, new Random().nextInt(41)+10);
 	}
 	

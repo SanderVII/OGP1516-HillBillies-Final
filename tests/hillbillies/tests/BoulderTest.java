@@ -52,16 +52,16 @@ public class BoulderTest {
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		try{
-			new Boulder(world, new double[]{0.5,0.5,0.5}, Item.MAXIMAL_WEIGHT+1);
+			new Boulder(world, new int[]{0,0,0}, Item.MAXIMAL_WEIGHT+1);
 			assertFalse(true);}
 		catch(IllegalArgumentException e){	assertTrue(true);}
 		
 		try{
-			new Boulder(world, new double[]{0.5,0.5,0.5}, Item.MINIMAL_WEIGHT-1);
+			new Boulder(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT-1);
 			assertFalse(true);}
 		catch(IllegalArgumentException e){	assertTrue(true);}
 		
-		Boulder boulder = new Boulder(world, new double[]{0.5,0.5,0.5}, (Item.MAXIMAL_WEIGHT-Item.MAXIMAL_WEIGHT)/2+Item.MINIMAL_WEIGHT);
+		Boulder boulder = new Boulder(world, new int[]{0,0,0}, (Item.MAXIMAL_WEIGHT-Item.MAXIMAL_WEIGHT)/2+Item.MINIMAL_WEIGHT);
 		assertTrue(boulder.canHaveAsWeight(boulder.getWeight()));
 	}
 

@@ -31,7 +31,7 @@ public class Log extends Item {
 	 * 			- The world is not a valid world for this log, or
 	 * 			- The position is not valid for this log in the given world.
 	 */
-	public Log(World world, double[] coordinates, int weight) throws IllegalArgumentException{
+	public Log(World world, int[] coordinates, int weight) throws IllegalArgumentException{
 		super(world, coordinates,weight);
 	}
 	
@@ -47,7 +47,7 @@ public class Log extends Item {
 	 * 				a random valid weight. 
 	 * 				The log is placed in the center of the given cube.
 	 */
-	public Log(World world, double[] coordinates) {
-		super(world, Position.getCubeCenter(coordinates), new Random().nextInt(41)+10);
+	public Log(World world, int[] coordinates) {
+		super(world, coordinates, new Random().nextInt(41)+10);
 	}
 }

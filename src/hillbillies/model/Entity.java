@@ -26,7 +26,7 @@ public abstract class Entity {
 	 * @throws	IllegalArgumentException
 	 * 				The given position is invalid.
 	 */
-	protected Entity(World world, double[] coordinates, int weight) throws IllegalArgumentException, IllegalStateException{
+	protected Entity(World world, int[] coordinates, int weight) throws IllegalArgumentException, IllegalStateException{
 		this.setWorld(world);
 		this.setPosition(new Position(world, coordinates));
 		this.setWeight(weight);
@@ -58,14 +58,13 @@ public abstract class Entity {
 	 * @post	This entity  is terminated.
 	 *				| new.isTerminated()
 	 * @effect 	The world of this entity is set to null.
+	 * @effect If this entity has an effective world, then the world of this entity is set to null.
 	 */
-	//TODO more posts?
 	public void terminate() {
 		if (! this.isTerminated()) {
 			if (this.getWorld() != null) {
-				World world = this.getWorld();
+				this.getWorld().removeEntity(this);
 				this.setWorld(null);
-				world.removeEntity(this);
 			}
 		}
 		this.isTerminated = true;
@@ -108,9 +107,8 @@ public abstract class Entity {
 	 * 
 	 * @param 	world
 	 *			The world to check.
-	 * @return	False if and only if this entity is terminated
+	 * @return	False if and only if this entity is terminated and its world is not null at the same time.
 	 */
-	//TODO fix doc
 	/* NOTE: items can be bound to a null world. According to the Liskov substitution principle,
 	entities then also have to support this feature. */
 	public boolean canHaveAsWorld(World world) {
@@ -182,7 +180,7 @@ public abstract class Entity {
 	 * @return 	True if the cube coordinates are within the world boundaries
 	 * 			of this entity, and the corresponding cube is passable. 
 	*/
-	public boolean canHaveAsCoordinates(int[] coordinates) {
+	protected boolean canHaveAsCoordinates(int[] coordinates) {
 		return this.getWorld().canHaveAsCoordinates(coordinates) && 
 				this.getWorld().getCube(coordinates).isPassable();
 	}
@@ -212,7 +210,7 @@ public abstract class Entity {
 	 *       | ! canHaveAsPosition(getPosition())
 	 */
 	@Raw
-	public void setPosition(Position position) 
+	protected void setPosition(Position position) 
 			throws IllegalArgumentException {
 		if (! canHaveAsPosition(position))
 			throw new IllegalArgumentException();
