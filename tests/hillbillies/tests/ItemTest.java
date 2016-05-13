@@ -3,7 +3,6 @@ package hillbillies.tests;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,6 +23,7 @@ import hillbillies.util.Position;
  */
 public class ItemTest {
 	
+	@SuppressWarnings("unused")
 	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
 	private static final int TYPE_TREE = 2;
