@@ -64,26 +64,6 @@ public class EntityTest {
 	}
 	
 	@Test
-	public void canHaveAsPosition_canHaveAsCoordinatesTest() {
-		int[][][] terrain = new int[20][40][10];
-		terrain[1][1][0] = TYPE_ROCK;
-		terrain[1][1][1] = TYPE_TREE;
-		terrain[1][1][2] = TYPE_WORKSHOP;
-		World world = new World(terrain, new DefaultTerrainChangeListener());
-		World world2 = new World(terrain, new DefaultTerrainChangeListener());
-		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
-		Position position = new Position(world, new int[]{0,0,0});
-		Position position2 = new Position(world2, new int[]{0,0,0});
-		Position position3 = new Position(world, new int[]{1,1,0});
-		
-		assertTrue(log.canHaveAsPosition(position));
-		assertFalse(log.canHaveAsPosition(position2));
-		assertTrue(log.canHaveAsPosition(position3));
-		assertTrue(log.canHaveAsCoordinates(position.getCoordinates()));
-		assertFalse(log.canHaveAsCoordinates(position3.getCoordinates()));
-	}
-	
-	@Test
 	public void canHaveAsWorld_hasProperWorldTest() {
 		int[][][] terrain = new int[20][40][10];
 		terrain[1][1][0] = TYPE_ROCK;
@@ -106,6 +86,76 @@ public class EntityTest {
 		assertTrue(log.canHaveAsWorld(null));
 		assertFalse(log.canHaveAsWorld(world));
 		assertTrue(log.hasProperWorld());
+	}
+	
+	@Test
+	public void canHaveAsPosition_canHaveAsCoordinatesTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		World world2 = new World(terrain, new DefaultTerrainChangeListener());
+		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
+		Position position = new Position(world, new int[]{0,0,0});
+		Position position2 = new Position(world2, new int[]{0,0,0});
+		Position position3 = new Position(world, new int[]{1,1,0});
+		
+		assertTrue(log.canHaveAsPosition(position));
+		assertFalse(log.canHaveAsPosition(position2));
+		assertTrue(log.canHaveAsPosition(position3));
+		assertTrue(log.canHaveAsCoordinates(position.getCoordinates()));
+		assertFalse(log.canHaveAsCoordinates(position3.getCoordinates()));
+	}
+	
+	@Test
+	public void isFalling_initiateFalling_endFalling_canEndFallingTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
+		Log log2 = new Log(world, new int[]{0,0,1}, Item.MINIMAL_WEIGHT);
+		Log log3 = new Log(world, new int[]{1,1,2}, Item.MINIMAL_WEIGHT);
+		Log log4 = new Log(world, new int[]{1,1,3}, Item.MINIMAL_WEIGHT);
+		world.addEntity(log);
+		world.addEntity(log2);
+		world.addEntity(log3);
+		world.addEntity(log4);
+		assertFalse(log.isFalling());
+		assertFalse(log.getIsFalling());
+		assertTrue(log2.isFalling());
+		assertFalse(log2.getIsFalling());
+		assertFalse(log3.isFalling());
+		assertFalse(log3.getIsFalling());
+		assertTrue(log4.isFalling());
+		assertFalse(log4.getIsFalling());
+		
+		advanceTimeFor(world, 0.1, 0.02);
+		assertFalse(log.isFalling());
+		assertFalse(log.getIsFalling());
+		assertTrue(log2.isFalling());
+		assertTrue(log2.getIsFalling());
+		assertFalse(log3.isFalling());
+		assertFalse(log3.getIsFalling());
+		assertTrue(log4.isFalling());
+		assertTrue(log4.getIsFalling());
+		
+		advanceTimeFor(world, 10, 0.2);
+		assertFalse(log.isFalling());
+		assertFalse(log.getIsFalling());
+		assertTrue(Position.equals(log.getPosition().getCubeCoordinates(), new int []{0,0,0}));
+		assertFalse(log2.isFalling());
+		assertFalse(log2.getIsFalling());
+		assertTrue(Position.equals(log2.getPosition().getCubeCoordinates(), new int []{0,0,0}));
+		assertFalse(log3.isFalling());
+		assertFalse(log3.getIsFalling());
+		assertTrue(Position.equals(log3.getPosition().getCubeCoordinates(), new int []{1,1,2}));
+		assertFalse(log4.isFalling());
+		assertFalse(log4.getIsFalling());
+		assertTrue(Position.equals(log4.getPosition().getCubeCoordinates(), new int []{1,1,2}));
 	}
 	
 	/**

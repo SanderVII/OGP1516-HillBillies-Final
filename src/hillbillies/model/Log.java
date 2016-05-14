@@ -2,11 +2,6 @@ package hillbillies.model;
 
 import java.util.Random;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.util.Position;
-import ogp.framework.util.Util;
-
 /**
  * A class of logs, involving a world, weight and coordinates.
  * 
@@ -16,7 +11,6 @@ import ogp.framework.util.Util;
 
 public class Log extends Item {
 	
-	// Exception gooien want dat wordt er ook gedaan in Entity als de gegeven weight negatief is.
 	/**
 	 * Initialize this new log with the given world, coordinates and weight.
 	 * 

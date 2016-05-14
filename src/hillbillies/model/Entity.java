@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.Arrays;
+
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.util.Position;
 import ogp.framework.util.Util;
@@ -328,6 +330,7 @@ public abstract class Entity {
 	 */
 	public void endFalling() {
 		if (this.canEndFalling()){
+			
 			this.setIsFalling(false);
 			this.getPosition().setCoordinates((Position.getCubeCenter(this.getPosition().getCoordinates())));
 		}
@@ -358,8 +361,6 @@ public abstract class Entity {
 	 * 				This item cannot have the given weight as its weight.
 	 */
 	protected void setWeight(int weight) {
-		// TODO als deze functie wordt opgeroepen vanuit Log, 
-		//		wordt er dan de canHaveAsWeight van Log gebruikt?
 		if (this.isTerminated())
 			throw new IllegalStateException();
 		if (! canHaveAsWeight(weight))

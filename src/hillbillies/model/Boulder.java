@@ -2,12 +2,6 @@ package hillbillies.model;
 
 import java.util.Random;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.util.ItemPosition;
-import hillbillies.util.Position;
-import ogp.framework.util.Util;
-
 /**
  * A class of boulders, involving a world, weight and a position.
  * 

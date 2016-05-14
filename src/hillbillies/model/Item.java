@@ -1,9 +1,11 @@
 package hillbillies.model;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.util.Position;
+import ogp.framework.util.Util;
 
 /**
  * A class of items, a specific type of entities, which can be picked up by units.
@@ -231,7 +233,16 @@ public abstract class Item extends Entity {
 		
 		if (this.isFalling()) {
 			double[] newCoordinates = Position.calculateNextCoordinates(this.getPosition().getCoordinates(), Entity.FALL_VELOCITY, deltaT);
-			this.getPosition().setCoordinates(newCoordinates);
+			int[] temp = Position.getCubeCoordinates(newCoordinates);
+			temp[2]++;
+			if ( (Util.fuzzyEquals(newCoordinates[2],  (double)temp[2],  1e-5))  
+					&& ((newCoordinates[2]<0)
+							|| ( ! this.getWorld().getCube(Position.getCubeCoordinates(newCoordinates)).isPassable()))  ){
+				this.getPosition().setCoordinates(temp);
+			}
+			else{
+				this.getPosition().setCoordinates(newCoordinates);
+			}
 		}
 		this.endFalling();
 	}
