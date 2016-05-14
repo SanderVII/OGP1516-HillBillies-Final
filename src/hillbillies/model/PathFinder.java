@@ -11,11 +11,8 @@ import hillbillies.util.Position;
 
 public class PathFinder {
 	
-	// TODO niet door de lucht lopen.
 	
-	public static List<int[]> getPath (int[] start, int[] destination, World world){
-//		Position start = new Position(world, startCoordinates);
-//		Position destination = new Position(world, destinationCoordinates);
+	public static List<int[]> getPath (int[] start, int[] destination, World world, boolean diagonalMovesAllowed){
 		
 		// The set of nodes already evaluated.
 		Set<int[]>closedSet = new HashSet<>();
@@ -50,9 +47,12 @@ public class PathFinder {
 			
 			openSet.remove(current);
 			closedSet.add(current);
-			for(int[] neighbour:  getPassableDirectlyAdjacentCoordinates(current, world)){
+			for(int[] neighbour:  (diagonalMovesAllowed) ? getPassableNeighbourCoordinates(current, world) : getPassableDirectlyAdjacentCoordinates(current, world)){
+				/* If no diagonal moves are allowed, then only directly adjecant positions should be explored as a next move.
+				 	This means that the next nodes to explore should be picked from the second set. 
+				 	If diagonal moves are allowed, then the next nodes to explore should be picked from the first set.*/
 				if (closedSet.contains(neighbour)){
-					continue;		// Ignore the neighbour which is already evaluated.
+					continue;		// Ignore the neighbours which are already evaluated.
 				}
 				if ( ! hasSolidNeighbours(neighbour, world)){
 					closedSet.add(neighbour);
@@ -141,7 +141,6 @@ public class PathFinder {
 		return LowestFScoreCoordinates;
 	}
 	
-
 	/**
 	 * Returns a heuristic cost estimate for the path from start to destination
 	 * @param start
@@ -162,7 +161,7 @@ public class PathFinder {
 	 * @throws	IllegalArgumentException
 	 * 			The given coordinates are illegal for this world.
 	 */
-	public static Set<int[]> getPassableDirectlyAdjacentCoordinates(int[] coordinates, World world) throws IllegalArgumentException{
+	private static Set<int[]> getPassableDirectlyAdjacentCoordinates(int[] coordinates, World world) throws IllegalArgumentException{
 		int x = coordinates[0];
 		int y = coordinates[1];
 		int z = coordinates[2];
@@ -187,6 +186,31 @@ public class PathFinder {
 			directlyAdjacentCoordinates.add(new int[]{x,y,z+1});
 		
 		return directlyAdjacentCoordinates;
+	}
+	
+	/**
+	 * Return a set of positions which are directly adjacent to the given cube.
+	 * @param 	coordinates
+	 *				The coordinates to find directly adjacent coordinates for
+	 * @return	A set of cubes which are directly adjacent and not passable.
+	 * @throws	IllegalArgumentException
+	 * 			The given coordinates are illegal for this world.
+	 */
+	private static Set<int[]> getPassableNeighbourCoordinates(int[] coordinates, World world) throws IllegalArgumentException{
+		int x = coordinates[0];
+		int y = coordinates[1];
+		int z = coordinates[2];
+		
+		if ( ! world.canHaveAsCoordinates(x, y, z))
+			throw new IllegalArgumentException();
+		
+		Set<int[]> passableNeighbourCoordinates = new HashSet<>();
+		Set<int[]> dummy = world.getNeighbours(x, y, z);
+		for (int[] neighbourCoordinates: dummy){
+			if (world.getCube(neighbourCoordinates).isPassable())
+				passableNeighbourCoordinates.add(neighbourCoordinates);
+		}
+		return passableNeighbourCoordinates;
 	}
 	
 }

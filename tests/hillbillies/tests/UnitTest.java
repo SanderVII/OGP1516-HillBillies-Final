@@ -29,7 +29,7 @@ public class UnitTest {
 	private World world20x40x10;
 	private int[] origin = new int[] {0,0,0};
 	private TerrainChangeListener modelListener = new DefaultTerrainChangeListener();
-	private int[][][] Terrain = Terrain("20x40x10");
+	private int[][][] Terrain = terrain("20x40x10");
 	private Unit unitRandom;
 	
 	private final int TIMES_TEST = 20;
@@ -49,7 +49,7 @@ public class UnitTest {
 		unit.advanceTime(time - n * step);
 	}
 	
-	private int[][][] Terrain(String size) {
+	private int[][][] terrain(String size) {
 		GameMap map;
 		final String LEVEL_FILE_EXTENSION = ".wrld";
 		final String LEVELS_PATH = "resources/";
