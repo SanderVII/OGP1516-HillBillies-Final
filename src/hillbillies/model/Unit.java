@@ -1600,20 +1600,18 @@ public class Unit extends Entity{
 	 			moveToPath.clear();
 	 			moveToPath.add(dummy);
 			}
-//		 	try {
 		 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
 		 		this.setPreviousActivity(this.getCurrentActivity());
 		 		this.setCurrentActivity(Activity.MOVE);
 		 		this.setInitialCoordinates(this.getPosition().getCoordinates());
 		 		
 				moveToPath = searchPath(currentCoordinates, destinationCoordinates);
-				
-//		 	} catch (Exception e) {}
 		}
 	}
 	
 	private List<int[]> searchPath(int[] startCoordinates, int[] destinationCoordinates) {
-		return PathFinder.getPath(startCoordinates, destinationCoordinates, this.getWorld());
+		return PathFinder.getPath(startCoordinates, destinationCoordinates, this.getWorld(), false); 
+		// TODO Pick true if you want to allow diagonal movement in moveTo.
 	}
 
 	/**

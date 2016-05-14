@@ -2,12 +2,6 @@ package hillbillies.model;
 
 import java.util.Random;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.util.ItemPosition;
-import hillbillies.util.Position;
-import ogp.framework.util.Util;
-
 /**
  * A class of boulders, involving a world, weight and a position.
  * 
@@ -34,7 +28,7 @@ public class Boulder extends Item{
 	 * @effect	The coordinates of this boulder is set to the given coordinates.
 	 * @effect	The weight of this boulder is set to the given weight.
 	 */
-	public Boulder(World world, double[] coordinates, int weight) throws IllegalArgumentException{
+	public Boulder(World world, int[] coordinates, int weight) throws IllegalArgumentException{
 		super(world, coordinates,weight);
 	}
 		
@@ -50,8 +44,8 @@ public class Boulder extends Item{
 	 * 				a random valid weight. 
 	 * 				The log is placed in the center of the given cube.
 	 */
-	public Boulder(World world, double[] coordinates) {
-		super(world, Position.getCubeCenter(coordinates), new Random().nextInt(41)+10);
+	public Boulder(World world, int[] coordinates) {
+		super(world, coordinates, new Random().nextInt(41)+10);
 	}
 	
 }

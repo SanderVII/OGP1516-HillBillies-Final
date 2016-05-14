@@ -730,9 +730,9 @@ public class World {
 		double succesRate = Math.random();
 		if (succesRate <= dropChance){
 			if (cube.getTerrainType() == Terrain.WOOD)
-				this.addEntity(new Log(this, Position.getCubeCenter(cubeCoordinates)));
+				this.addEntity(new Log(this, cubeCoordinates));
 			if (cube.getTerrainType() == Terrain.ROCK)
-				this.addEntity(new Boulder(this,Position.getCubeCenter(cubeCoordinates)));
+				this.addEntity(new Boulder(this, cubeCoordinates));
 		}
 	}
 	

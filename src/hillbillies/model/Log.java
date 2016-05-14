@@ -2,11 +2,6 @@ package hillbillies.model;
 
 import java.util.Random;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.util.Position;
-import ogp.framework.util.Util;
-
 /**
  * A class of logs, involving a world, weight and coordinates.
  * 
@@ -16,7 +11,6 @@ import ogp.framework.util.Util;
 
 public class Log extends Item {
 	
-	// Exception gooien want dat wordt er ook gedaan in Entity als de gegeven weight negatief is.
 	/**
 	 * Initialize this new log with the given world, coordinates and weight.
 	 * 
@@ -31,7 +25,7 @@ public class Log extends Item {
 	 * 			- The world is not a valid world for this log, or
 	 * 			- The position is not valid for this log in the given world.
 	 */
-	public Log(World world, double[] coordinates, int weight) throws IllegalArgumentException{
+	public Log(World world, int[] coordinates, int weight) throws IllegalArgumentException{
 		super(world, coordinates,weight);
 	}
 	
@@ -47,7 +41,7 @@ public class Log extends Item {
 	 * 				a random valid weight. 
 	 * 				The log is placed in the center of the given cube.
 	 */
-	public Log(World world, double[] coordinates) {
-		super(world, Position.getCubeCenter(coordinates), new Random().nextInt(41)+10);
+	public Log(World world, int[] coordinates) {
+		super(world, coordinates, new Random().nextInt(41)+10);
 	}
 }
