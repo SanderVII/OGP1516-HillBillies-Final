@@ -1,15 +1,12 @@
 package hillbillies.expressions.positionType;
 
-import java.util.List;
 import java.util.Set;
 
 import hillbillies.model.Log;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.util.Position;
 
-public class LogPositionExpression extends CubePositionExpression {
+public class LogPositionExpression extends PositionExpression {
 
 	public LogPositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);

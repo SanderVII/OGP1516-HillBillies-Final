@@ -1,0 +1,5 @@
+name: "drop item here" priority : 10
+activities:
+	if (carries_item(this)) then
+		work here;
+	fi

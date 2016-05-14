@@ -1,22 +1,18 @@
 package hillbillies.expressions.booleanType;
 
-import java.util.List;
-
-import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class IsAliveExpression extends SingleBooleanUnitExpression {
+public class IsAliveExpression<E extends UnitExpression> 
+		extends SingleBooleanUnitExpression<E> {
 
-
-	public IsAliveExpression(Expression unit, SourceLocation sourceLocation) {
+	public IsAliveExpression(E unit, SourceLocation sourceLocation) {
 		super(unit, sourceLocation);
 	}
 
 	@Override
 	public Boolean evaluate() {
-		return ! ((Unit) this.getExpression().evaluate()).isTerminated();
+		return ! (this.getExpression().evaluate()).isTerminated();
 	}
 
 }

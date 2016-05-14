@@ -6,7 +6,7 @@ import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
-public class LiteralPositionExpression extends CubePositionExpression {
+public class LiteralPositionExpression extends PositionExpression {
 	
 	public LiteralPositionExpression(int x, int y, int z, SourceLocation sourceLocation) {
 		super(sourceLocation);

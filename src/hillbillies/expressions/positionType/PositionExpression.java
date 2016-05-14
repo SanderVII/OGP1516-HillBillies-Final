@@ -4,10 +4,11 @@ import hillbillies.expressions.Expression;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.tasks.TextObject;
 
-public abstract class CubePositionExpression extends Expression {
+public abstract class PositionExpression extends Expression {
 
-	public CubePositionExpression(SourceLocation sourceLocation) {
+	public PositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);
 	}
 	

@@ -1,12 +1,10 @@
 package hillbillies.expressions.unitType;
 
 
-import java.util.List;
-
 import hillbillies.expressions.Expression;
 import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.tasks.TextObject;
 
 public abstract class UnitExpression extends Expression {
 

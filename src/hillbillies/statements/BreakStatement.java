@@ -1,18 +1,31 @@
 package hillbillies.statements;
 
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.expressionType.WhileStatement;
 
-public class BreakStatement extends Statement{
+public class BreakStatement extends Statement {
 
 	public BreakStatement(SourceLocation sourceLocation) {
 		super(sourceLocation);
-		// TODO Auto-generated constructor stub
+		if (! (this.getSuperText() instanceof WhileStatement))
+			throw new IllegalStateException("incorrect break placement");
 	}
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-		
+		this.getSuperText().setStatus(Status.DONE);
+	}
+	
+	@Override
+	public boolean isWellFormed() {
+		Statement superText = this.getSuperText();
+		while ( !superText.hasTask()) {
+			if (superText instanceof WhileStatement)
+				return true;
+			else
+				superText = superText.getSuperText();
+		}
+		return false;
 	}
 
 }

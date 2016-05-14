@@ -1,23 +1,19 @@
 package hillbillies.statements.expressionType.actions;
 
-import java.util.List;
-
-import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
+import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.Statement;
 
-public class MoveToStatement extends ActionPositionStatement {
+public class MoveToStatement<E extends PositionExpression> 
+		extends ActionPositionStatement<E> {
 
-	public MoveToStatement(Expression position, SourceLocation sourceLocation) {
+	public MoveToStatement(E position, SourceLocation sourceLocation) {
 		super(position, sourceLocation);
 	}
 
-
 	@Override
 	public void execute() {
-		this.getUnit().moveTo((int[]) this.getExpression().evaluate());
-		
+		this.getUnit().moveTo(this.getExpression().evaluate());
 	}
 
 }

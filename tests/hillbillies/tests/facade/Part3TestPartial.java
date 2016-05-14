@@ -2,6 +2,7 @@ package hillbillies.tests.facade;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class Part3TestPartial {
 	}
 
 	@Test
-	public void testTaskExecuted() throws ModelException {
+	public void testTaskExecuted() throws ModelException, IOException {
 		int[][][] types = new int[3][3][3];
 		types[1][1][0] = TYPE_ROCK;
 		types[1][1][1] = TYPE_ROCK;
@@ -48,6 +49,12 @@ public class Part3TestPartial {
 		Faction faction = facade.getFaction(unit);
 
 		Scheduler scheduler = facade.getScheduler(faction);
+		
+		String fileName = "/OGP1516-Hillbillies-Part3/tests/hillbillies/tests/tasks/DropItem";
+		
+//		List<Task> tasks = TaskParser.parseTasksFromString(
+//				"name: \"drop item\"\npriority: 1\nactivities:if (carries_item(this)) thenwork here;fi", 
+//				facade.createTaskFactory(),null);
 
 		List<Task> tasks = TaskParser.parseTasksFromString(
 				"name: \"work task\"\npriority: 1\nactivities: work selected;", facade.createTaskFactory(),

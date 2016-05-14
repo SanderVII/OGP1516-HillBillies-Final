@@ -1,16 +1,11 @@
 package hillbillies.expressions.positionType;
 
-import java.util.List;
-import java.util.Set;
-
-import hillbillies.model.Log;
 import hillbillies.model.Terrain;
-import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.util.Position;
 
-public class WorkshopPositionExpression extends CubePositionExpression{
+public class WorkshopPositionExpression extends PositionExpression{
 	
 	public WorkshopPositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);

@@ -1,8 +1,5 @@
 package hillbillies.expressions.booleanType;
 
-import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -11,34 +8,31 @@ import hillbillies.part3.programs.SourceLocation;
  * @author Thomas
  *
  */
-public abstract class CombinedBooleanExpression extends BooleanExpression {
+public abstract class CombinedBooleanExpression<E extends BooleanExpression> 
+		extends BooleanExpression {
 
-	public CombinedBooleanExpression(Expression left, Expression right, SourceLocation sourceLocation) {
+	public CombinedBooleanExpression(E left, E right, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		this.setLeft((BooleanExpression)left);
-		this.setRight((BooleanExpression)right);
+		this.setLeft(left);
+		this.setRight(right);
 	}
 	
 	private BooleanExpression left;
 	private BooleanExpression right;
 	
-	public Expression getLeft() {
-		return this.left;
+	public E getLeft() {
+		return (E) this.left;
 	}
 	
-	private void setLeft(BooleanExpression left) {
-		if (! (left instanceof BooleanExpression))
-			throw new IllegalArgumentException();
+	public void setLeft(E left) {
 		this.left = left;
 	}
 	
-	public Expression getRight() {
-		return this.right;
+	public E getRight() {
+		return (E) this.right;
 	}
 	
-	private void setRight(BooleanExpression right) {
-		if (! (right instanceof BooleanExpression))
-			throw new IllegalArgumentException();
+	public void setRight(E right) {
 		this.right = right;
 	}
 

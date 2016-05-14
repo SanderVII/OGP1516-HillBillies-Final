@@ -1,13 +1,8 @@
 package hillbillies.expressions.positionType;
 
-import java.util.List;
-
-import hillbillies.model.Task;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
-public class SelectedPositionExpression extends CubePositionExpression {
+public class SelectedPositionExpression extends PositionExpression {
 	
 	public SelectedPositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);
@@ -15,7 +10,7 @@ public class SelectedPositionExpression extends CubePositionExpression {
 
 	@Override
 	public int[] evaluate() {
-		return this.getStatement().getSuperTask().getPosition();
+		return this.getSuperTask().getPosition();
 	}
 
 }

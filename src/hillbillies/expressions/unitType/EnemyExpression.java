@@ -1,18 +1,10 @@
 package hillbillies.expressions.unitType;
 
-import java.util.List;
 import java.util.Set;
 
 import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.util.Position;
-
-import java.util.List;
-
-import hillbillies.model.Unit;
-import hillbillies.model.World;
-import hillbillies.part3.programs.SourceLocation;
 
 public class EnemyExpression extends UnitExpression {
 

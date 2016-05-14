@@ -1,11 +1,9 @@
 package hillbillies.expressions.unitType;
 
-import java.util.List;
 import java.util.Set;
 
 import hillbillies.model.Faction;
 import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.util.Position;
 

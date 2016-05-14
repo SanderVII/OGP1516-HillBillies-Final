@@ -1,13 +1,14 @@
 package hillbillies.statements.expressionType.actions;
 
-import hillbillies.expressions.Expression;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.Statement;
 
-public abstract class ActionUnitStatement extends ActionStatement {
+public abstract class ActionUnitStatement<E extends UnitExpression> 
+		extends ActionStatement<E> {
 
-	public ActionUnitStatement(Expression expression, SourceLocation sourceLocation) {
+	public ActionUnitStatement(E expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 }

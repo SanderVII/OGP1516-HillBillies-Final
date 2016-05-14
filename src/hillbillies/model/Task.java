@@ -511,7 +511,7 @@ public class Task implements Comparable<Task> {
 		for (String variable : variables.keySet()) {
 			if (!canHaveAsVariable(variable,variables.get(variable)))
 				return false;
-			if (variables.get(variable).getStatement().getTask() != this)
+			if (variables.get(variable).getSuperTask() != this)
 				return false;
 		}
 		return true;
@@ -541,7 +541,7 @@ public class Task implements Comparable<Task> {
 	 *       	| new.hasAsVariable(variable)
 	 */
 	public void addVariable(String variable, Expression value) {
-		assert (variable != null) && (value.getStatement().getTask() == this);
+		assert (variable != null) && (value.getSuperTask() == this);
 		variables.put(variable, value);
 	}
 
@@ -562,7 +562,7 @@ public class Task implements Comparable<Task> {
 	@Raw
 	public void removeVariable(String variable) {
 		assert this.hasAsVariable(variable) && 
-			(variables.get(variable).getStatement().getTask() == null);
+			(variables.get(variable).getSuperTask() == null);
 		variables.remove(variable);
 	}
 

@@ -1,22 +1,14 @@
 package hillbillies.expressions.positionType;
 
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.hamcrest.core.IsInstanceOf;
-
-import hillbillies.expressions.Expression;
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.util.Position;
 
-public class NextToExpression extends ExtendedPositionExpression{
+public class NextToExpression<E extends PositionExpression> 
+		extends ExtendedPositionExpression<E> {
 
-
-	public NextToExpression(Expression position, SourceLocation sourceLocation) {
+	public NextToExpression(E position, SourceLocation sourceLocation) {
 		super(position, sourceLocation);
 	}
 
@@ -35,13 +27,6 @@ public class NextToExpression extends ExtendedPositionExpression{
 		}
 		// Only happens in a 1x1x1 world.
 		return null;
-	}
-	
-	@Override
-	protected void setExpression(Expression position) {
-		if (! (position instanceof CubePositionExpression))
-			throw new IllegalArgumentException();
-		super.setExpression(position);
 	}
 
 }

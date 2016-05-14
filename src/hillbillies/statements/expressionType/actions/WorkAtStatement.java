@@ -1,27 +1,19 @@
 package hillbillies.statements.expressionType.actions;
 
-import hillbillies.expressions.*;
-import hillbillies.expressions.positionType.CubePositionExpression;
+import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.Statement;
 
-public class WorkAtStatement extends ActionPositionStatement {
+public class WorkAtStatement<E extends PositionExpression> 
+		extends ActionPositionStatement<E> {
 
-	public WorkAtStatement(Expression position, SourceLocation sourceLocation) {
+	public WorkAtStatement(E position, SourceLocation sourceLocation) {
 		super(position, sourceLocation);
-//		this.setExpression(position);
-	}
-
-	//TODO fix lists
-	@Override
-	public void execute() {
-		int[] dummy = (int[]) this.getExpression().evaluate();
-		this.getSuperTask().getUnit().workAt(dummy,true);
 	}
 	
 	@Override
-	protected void setExpression(Expression position) throws IllegalArgumentException {
-		if (! (position instanceof CubePositionExpression))
-			throw new IllegalArgumentException();
-		super.setExpression(position);
+	public void execute() {
+		int[] dummy = this.getExpression().evaluate();
+		this.getSuperTask().getUnit().workAt(dummy,true);
 	}
 }

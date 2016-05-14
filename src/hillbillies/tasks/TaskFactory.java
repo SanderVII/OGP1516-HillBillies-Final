@@ -3,8 +3,9 @@ package hillbillies.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
-import hillbillies.expressions.*;
+import hillbillies.expressions.Expression;
 import hillbillies.expressions.booleanType.AndExpression;
+import hillbillies.expressions.booleanType.BooleanExpression;
 import hillbillies.expressions.booleanType.CarriesItemExpression;
 import hillbillies.expressions.booleanType.FalseExpression;
 import hillbillies.expressions.booleanType.IsAliveExpression;
@@ -14,8 +15,10 @@ import hillbillies.expressions.booleanType.IsPassableExpression;
 import hillbillies.expressions.booleanType.IsSolidExpression;
 import hillbillies.expressions.booleanType.NotExpression;
 import hillbillies.expressions.booleanType.OrExpression;
+import hillbillies.expressions.booleanType.VariableBooleanExpression;
 import hillbillies.expressions.booleanType.TrueExpression;
 import hillbillies.expressions.positionType.BoulderPositionExpression;
+import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.expressions.positionType.HereExpression;
 import hillbillies.expressions.positionType.LiteralPositionExpression;
 import hillbillies.expressions.positionType.LogPositionExpression;
@@ -27,15 +30,21 @@ import hillbillies.expressions.unitType.AnyExpression;
 import hillbillies.expressions.unitType.EnemyExpression;
 import hillbillies.expressions.unitType.FriendExpression;
 import hillbillies.expressions.unitType.ThisExpression;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.model.Task;
-import hillbillies.statements.*;
-import hillbillies.statements.expressionType.IfElseStatement;
-import hillbillies.statements.expressionType.WhileStatement;
-import hillbillies.statements.expressionType.actions.AttackStatement;
-import hillbillies.statements.expressionType.actions.MoveToStatement;
-import hillbillies.statements.expressionType.actions.WorkAtStatement;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.BreakStatement;
+import hillbillies.statements.SequenceStatement;
+import hillbillies.statements.Statement;
+import hillbillies.statements.expressionType.AssignmentStatement;
+import hillbillies.statements.expressionType.IfElseStatement;
+import hillbillies.statements.expressionType.PrintStatement;
+import hillbillies.statements.expressionType.WhileStatement;
+import hillbillies.statements.expressionType.actions.AttackStatement;
+import hillbillies.statements.expressionType.actions.FollowStatement;
+import hillbillies.statements.expressionType.actions.MoveToStatement;
+import hillbillies.statements.expressionType.actions.WorkAtStatement;
 
 //TODO no expression checker for most statements.
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
@@ -54,25 +63,26 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 		else
 			for (int[]cube: selectedCubes)
 				result.add(new Task(name, priority, activity, cube));
-		return result;
-				
+		return result;		
 	}
 
 	@Override
 	public Statement createAssignment(String variableName, Expression value, SourceLocation sourceLocation) {
-		return new AssignmentStatement(variableName, value, sourceLocation);
+		return new AssignmentStatement<Expression>(variableName, value, sourceLocation);
 	}
 
 	@Override
 	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
 		// TODO finish!!
-		return new WhileStatement(condition, body, sourceLocation);
+		return new WhileStatement<BooleanExpression>(
+				(BooleanExpression) condition,  body, sourceLocation);
 	}
 
 	@Override
 	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
-		return new IfElseStatement(condition, ifBody, elseBody, sourceLocation);
+		return new IfElseStatement<BooleanExpression>(
+				(BooleanExpression) condition, ifBody, elseBody, sourceLocation);
 	}
 
 	@Override
@@ -83,7 +93,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
-		return new PrintStatement(value, sourceLocation);
+		return new PrintStatement<Expression>(value, sourceLocation);
 	}
 
 	@Override
@@ -94,74 +104,77 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
-		return new MoveToStatement(position, sourceLocation);
+		return new MoveToStatement<PositionExpression>((PositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		return new WorkAtStatement(position, sourceLocation);
+		return new WorkAtStatement<PositionExpression>((PositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Statement createFollow(Expression unit, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new FollowStatement<UnitExpression>((UnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Statement createAttack(Expression unit, SourceLocation sourceLocation) {
-		return new AttackStatement(unit, sourceLocation);
+		return new AttackStatement<UnitExpression>((UnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
-		//TODO finish!!
-		return new ReadVariableExpression(variableName, sourceLocation);
+		//TODO fix...
 	}
 
 	@Override
 	public Expression createIsSolid(Expression position, SourceLocation sourceLocation) {
-		return new IsSolidExpression(position, sourceLocation);
+		return new IsSolidExpression<PositionExpression>(
+				(PositionExpression)position, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsPassable(Expression position, SourceLocation sourceLocation) {
-		return new IsPassableExpression(position, sourceLocation);
+		return new IsPassableExpression<PositionExpression>(
+				(PositionExpression)position, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsFriend(Expression unit, SourceLocation sourceLocation) {
-		return new IsFriendExpression(unit, sourceLocation);
+		return new IsFriendExpression<UnitExpression>((UnitExpression)unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsEnemy(Expression unit, SourceLocation sourceLocation) {
-		return new IsEnemyExpression(unit, sourceLocation);
+		return new IsEnemyExpression<UnitExpression>((UnitExpression)unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsAlive(Expression unit, SourceLocation sourceLocation) {
-		return new IsAliveExpression(unit, sourceLocation);
+		return new IsAliveExpression<UnitExpression>((UnitExpression)unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createCarriesItem(Expression unit, SourceLocation sourceLocation) {
-		return new CarriesItemExpression(unit, sourceLocation);
+		return new CarriesItemExpression<UnitExpression>((UnitExpression)unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createNot(Expression expression, SourceLocation sourceLocation) {
-		return new NotExpression(expression, sourceLocation);
+		return new NotExpression<BooleanExpression>((BooleanExpression) expression, sourceLocation);
 	}
 
 	@Override
 	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		return new AndExpression(left, right, sourceLocation);
+		return new AndExpression<BooleanExpression>(
+				(BooleanExpression)left, (BooleanExpression)right, sourceLocation);
 	}
 
 	@Override
 	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		return new OrExpression(left, right, sourceLocation);
+		return new OrExpression<BooleanExpression>(
+				(BooleanExpression)left, (BooleanExpression)right, sourceLocation);
 	}
 
 	@Override
@@ -191,12 +204,12 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createNextToPosition(Expression position, SourceLocation sourceLocation) {
-		return new NextToExpression(position, sourceLocation);
+		return new NextToExpression<PositionExpression>((PositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Expression createPositionOf(Expression unit, SourceLocation sourceLocation) {
-		return new PositionOfExpression(unit, sourceLocation);
+		return new PositionOfExpression<UnitExpression>((UnitExpression) unit, sourceLocation);
 	}
 
 	@Override

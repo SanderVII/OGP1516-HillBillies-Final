@@ -1,23 +1,17 @@
 package hillbillies.expressions.booleanType;
 
-import java.util.List;
-
-import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
-public class OrExpression extends CombinedBooleanExpression{
+public class OrExpression<E extends BooleanExpression> 
+		extends CombinedBooleanExpression<E> {
 
-
-	public OrExpression(Expression left, Expression right, SourceLocation sourceLocation) {
+	public OrExpression(E left, E right, SourceLocation sourceLocation) {
 		super(left, right, sourceLocation);
 	}
-
-	@Override
+	
 	public Boolean evaluate() {
-		boolean leftBoolean = ((Boolean) this.getLeft().evaluate()).booleanValue();
-		boolean rightBoolean = ((Boolean) this.getRight().evaluate()).booleanValue();
+		boolean leftBoolean = this.getLeft().evaluate().booleanValue();
+		boolean rightBoolean = this.getRight().evaluate().booleanValue();
 		if (leftBoolean || rightBoolean)
 			return true;
 		else

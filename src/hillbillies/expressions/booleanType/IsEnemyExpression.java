@@ -1,22 +1,19 @@
 package hillbillies.expressions.booleanType;
 
-import java.util.List;
-
-import hillbillies.expressions.Expression;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class IsEnemyExpression extends SingleBooleanUnitExpression{
+public class IsEnemyExpression<E extends UnitExpression> 
+		extends SingleBooleanUnitExpression<E> {
 
 	
-	public IsEnemyExpression(Expression unit, SourceLocation sourceLocation) {
+	public IsEnemyExpression(E unit, SourceLocation sourceLocation) {
 		super(unit, sourceLocation);
 	}
 
 	@Override
 	public Boolean evaluate() {
-		return this.getUnit().getFaction() != ((Unit) this.getExpression().evaluate()).getFaction();
+		return this.getUnit().getFaction() != (this.getExpression().evaluate()).getFaction();
 	}
 
 }

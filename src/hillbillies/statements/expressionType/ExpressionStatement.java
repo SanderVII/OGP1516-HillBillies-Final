@@ -4,22 +4,16 @@ import hillbillies.expressions.Expression;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.statements.Statement;
 
-public abstract class ExpressionStatement extends Statement {
+public abstract class ExpressionStatement<E extends Expression>
+		extends Statement {
 
-	public ExpressionStatement(Expression expression, SourceLocation sourceLocation) {
+	public ExpressionStatement(E expression, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		this.setExpression(expression);
-		expression.setStatement(this);
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void execute() {
-		// TODO Auto-generated method stub
-
+		expression.setSuperText(this);
 	}
 	
-	public Expression getExpression() {
+	public E getExpression() {
 		return this.expression;
 	}
 	
@@ -27,11 +21,10 @@ public abstract class ExpressionStatement extends Statement {
 	 * NOTE: expressions are created without a statement.
 	 * setExpression assumes this and creates a bidirectional association.
 	 */
-	protected void setExpression(Expression expression) throws IllegalArgumentException {
+	protected void setExpression(E expression) throws IllegalArgumentException {
 		this.expression = expression;
-		expression.setStatement(this);
 	}
 	
-	private Expression expression;
+	private E expression;
 
 }

@@ -11,8 +11,7 @@ public class SequenceStatement extends Statement {
 	public SequenceStatement(List<Statement> statements, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		for (Statement statement: statements)
-			statement.setSuperStatement(this);
-			
+			statement.setSuperText(this);	
 		this.setStatements(statements);
 	}
 	
@@ -35,6 +34,9 @@ public class SequenceStatement extends Statement {
 		this.statements = statements;
 	}
 	
+	/**
+	 * Used to control which part of the sequence needs to be executed.
+	 */
 	private int cursor=0;
 	
 	public int getCursor() {
