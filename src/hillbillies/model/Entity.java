@@ -428,7 +428,7 @@ public abstract class Entity {
 	 *         		The new gametime is not a valid gametime for any entity.
 	 *       		| !isValidGametime(gametime+dt)
 	 */
-	public void advanceGametime(double dt) throws IllegalArgumentException{
+	protected void advanceGametime(double dt) throws IllegalArgumentException{
 		if ( ! this.isValidGametime(this.getGametime() + dt)){
 			throw new IllegalArgumentException();
 		}

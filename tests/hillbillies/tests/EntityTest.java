@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.Entity;
 import hillbillies.model.Item;
 import hillbillies.model.Log;
 import hillbillies.model.Unit;
@@ -146,17 +147,53 @@ public class EntityTest {
 		advanceTimeFor(world, 10, 0.2);
 		assertFalse(log.isFalling());
 		assertFalse(log.getIsFalling());
+		assertTrue(log.canEndFalling());
 		assertTrue(Position.equals(log.getPosition().getCubeCoordinates(), new int []{0,0,0}));
 		assertFalse(log2.isFalling());
 		assertFalse(log2.getIsFalling());
+		assertTrue(log2.canEndFalling());
 		assertTrue(Position.equals(log2.getPosition().getCubeCoordinates(), new int []{0,0,0}));
 		assertFalse(log3.isFalling());
 		assertFalse(log3.getIsFalling());
+		assertTrue(log3.canEndFalling());
 		assertTrue(Position.equals(log3.getPosition().getCubeCoordinates(), new int []{1,1,2}));
 		assertFalse(log4.isFalling());
 		assertFalse(log4.getIsFalling());
+		assertTrue(log4.canEndFalling());
 		assertTrue(Position.equals(log4.getPosition().getCubeCoordinates(), new int []{1,1,2}));
+		
+		log.terminate();
+		
+		try{
+			log.initiateFalling();
+		}catch(IllegalStateException e){
+			assertTrue(true);
+		}
 	}
+	
+	@Test
+	public void gameTimeTest() {
+		int[][][] terrain = new int[20][40][10];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
+		world.addEntity(log);
+		assertTrue(log.isValidGametime(0));
+		assertTrue(log.isValidGametime(100));
+		assertFalse(log.isValidGametime(-0.0001));
+		assertTrue(log.isValidGametime(log.getGametime()));
+		
+		advanceTimeFor(world, 10, 0.125);
+		
+		assertFalse(log.isValidGametime(0));
+		assertTrue(log.isValidGametime(100));
+		assertTrue(log.isValidGametime(10));
+		assertTrue(log.isValidGametime(10.001));
+		assertFalse(log.isValidGametime(9.999));
+		assertTrue(log.isValidGametime(log.getGametime()));
+	} 
 	
 	/**
 	 * Helper method to advance time for the given world by some time.
