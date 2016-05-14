@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import hillbillies.util.Position;
-import hillbillies.util.UnitPosition;
 
 public class PathFinder {
 	

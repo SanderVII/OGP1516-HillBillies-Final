@@ -1,6 +1,5 @@
 package hillbillies.model;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.*;
