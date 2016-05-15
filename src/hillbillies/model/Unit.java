@@ -1112,7 +1112,6 @@ public class Unit extends Entity{
 			
 			throw new IllegalArgumentException();
 	}
-//		System.out.println("number of units in the world: " + world.getNbUnits()  );
 		this.world = world;
 	}
 	
@@ -1529,7 +1528,6 @@ public class Unit extends Entity{
 	 * 			The given destination is invalid.
 	 */
 	public void moveTo(int[] destinationCoordinates) throws IllegalArgumentException{
-		System.out.println();
 		this.moveTo(destinationCoordinates,false);
 	}
 	

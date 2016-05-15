@@ -234,7 +234,6 @@ public abstract class Entity {
 			throws IllegalArgumentException {
 		if (! canHaveAsPosition(position))
 			throw new IllegalArgumentException();
-		System.out.println("test");
 		this.position = position;
 	}
 	
