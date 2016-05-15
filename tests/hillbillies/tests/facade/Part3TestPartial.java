@@ -3,6 +3,7 @@ package hillbillies.tests.facade;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,17 +45,17 @@ public class Part3TestPartial {
 
 		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50);
-		unit.startDefaultBehavior();
+//		unit.startDefaultBehavior();
 		facade.addUnit(unit, world);
 		Faction faction = facade.getFaction(unit);
 
 		Scheduler scheduler = facade.getScheduler(faction);
 		
-		String fileName = "/OGP1516-Hillbillies-Part3/tests/hillbillies/tests/tasks/DropItem";
+//		String fileName = "/OGP1516-Hillbillies-Part3/tests/hillbillies/tests/tasks/DropItem";
 		
 //		List<Task> tasks = TaskParser.parseTasksFromString(
-//				"name: \"drop item\"\npriority: 1\nactivities:if (carries_item(this)) thenwork here;fi", 
-//				facade.createTaskFactory(),null);
+//				"name: \"drop item\"\npriority: 1\nactivities:if (carries_item(this)) then work here;fi", 
+//				facade.createTaskFactory(),new ArrayList<int[]>());
 
 		List<Task> tasks = TaskParser.parseTasksFromString(
 				"name: \"work task\"\npriority: 1\nactivities: work selected;", facade.createTaskFactory(),
@@ -69,6 +70,8 @@ public class Part3TestPartial {
 		assertEquals("work task", facade.getName(task));
 		// test priority
 		assertEquals(1, facade.getPriority(task));
+		
+		unit.startDefaultBehavior();
 
 		facade.schedule(scheduler, task);
 		advanceTimeFor(facade, world, 100, 0.02);

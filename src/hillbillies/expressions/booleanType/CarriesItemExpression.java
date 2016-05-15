@@ -1,9 +1,11 @@
 package hillbillies.expressions.booleanType;
 
+import hillbillies.exception.IllegalVariableTypeException;
+import hillbillies.expressions.IUnitVariableExpression;
 import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class CarriesItemExpression<E extends UnitExpression> 
+public class CarriesItemExpression<E extends IUnitVariableExpression> 
 		extends SingleBooleanUnitExpression<E> {
 
 	public CarriesItemExpression(E unit, SourceLocation sourceLocation) {
@@ -11,7 +13,7 @@ public class CarriesItemExpression<E extends UnitExpression>
 	}
 
 	@Override
-	public Boolean evaluate() {
-		return this.getExpression().evaluate().hasItem();
+	public Boolean evaluate() throws IllegalVariableTypeException {
+		return this.getExpressionEvaluation().hasItem();
 	}
 }

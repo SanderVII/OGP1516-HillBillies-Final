@@ -1,9 +1,10 @@
 package hillbillies.expressions.booleanType;
 
+import hillbillies.expressions.IPositionVariableExpression;
 import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class IsPassableExpression<E extends PositionExpression> 
+public class IsPassableExpression<E extends IPositionVariableExpression> 
 		extends SingleBooleanPositionExpression<E> {
 
 
@@ -13,6 +14,6 @@ public class IsPassableExpression<E extends PositionExpression>
 
 	@Override
 	public Boolean evaluate() {
-		return this.getUnit().getWorld().getCube(this.getExpression().evaluate()).isPassable();
+		return this.getUnit().getWorld().getCube(this.getExpressionEvaluation()).isPassable();
 	}
 }

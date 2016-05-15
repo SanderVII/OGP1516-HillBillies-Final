@@ -1,11 +1,13 @@
 package hillbillies.statements.expressionType;
 
+import hillbillies.exception.IllegalVariableTypeException;
+import hillbillies.expressions.IBooleanVariableExpression;
 import hillbillies.expressions.booleanType.BooleanExpression;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.statements.Statement;
 import hillbillies.statements.Status;
 
-public class IfElseStatement<E extends BooleanExpression>
+public class IfElseStatement<E extends IBooleanVariableExpression>
 		extends ExtendedExpressionStatement<E> {
 
 	public IfElseStatement(E condition, Statement ifBody, Statement elseBody, SourceLocation sourceLocation) {
@@ -15,8 +17,8 @@ public class IfElseStatement<E extends BooleanExpression>
 	}
 
 	@Override
-	public void execute() {
-		if (this.getExpression().evaluate())
+	public void execute() throws IllegalVariableTypeException{
+		if ((Boolean) this.getExpression().evaluate())
 			this.getStatement().execute();
 		else if (this.getElseBody() != null)
 			this.getElseBody().execute();
