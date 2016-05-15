@@ -1,12 +1,13 @@
 package hillbillies.expressions.positionType;
 
-import hillbillies.expressions.Expression;
+import hillbillies.expressions.IExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public abstract class ExtendedPositionExpression<E extends Expression> extends PositionExpression {
+public abstract class ExtendedPositionExpression<E extends IExpression> extends PositionExpression {
 
 	public ExtendedPositionExpression(E expression, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		expression.setSuperText(this);
 		this.setExpression(expression);
 	}
 	

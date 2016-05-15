@@ -20,11 +20,11 @@ public abstract class TextObject {
 	/**
 	 * Check if the object is correctly placed.
 	 * Since we use generic classes to check at runtime, this method usually returns true.
-	 * However, some text objects (such as break and assign)
+	 * However, some text objects (such as break and readVariable)
 	 * have specific conditions and must override this method.
 	 * @return
 	 */
-	//TODO probably better to make abstract?
+	//TODO maybe better to make abstract?
 	public boolean isWellFormed() {
 		return true;
 	}

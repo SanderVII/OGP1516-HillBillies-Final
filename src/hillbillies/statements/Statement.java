@@ -26,18 +26,6 @@ public abstract class Statement extends TextObject {
 		this.status = status;
 	}
 	
-//	private Statement superStatement;
-//
-//	@Override
-//	public Statement getSuperStatement() {
-//		return this.superStatement;
-//	}
-//
-//	@Override
-//	public void setSuperStatement(Statement statement) {
-//		this.superStatement = statement;
-//	}
-	
 	/*
 	 * NOTE: Statements can only have another statement as its superstatement.
 	 */

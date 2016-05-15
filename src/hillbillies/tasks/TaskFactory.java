@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.expressions.Expression;
+import hillbillies.expressions.ReadVariableExpression;
 import hillbillies.expressions.booleanType.AndExpression;
 import hillbillies.expressions.booleanType.BooleanExpression;
 import hillbillies.expressions.booleanType.CarriesItemExpression;
@@ -15,7 +16,6 @@ import hillbillies.expressions.booleanType.IsPassableExpression;
 import hillbillies.expressions.booleanType.IsSolidExpression;
 import hillbillies.expressions.booleanType.NotExpression;
 import hillbillies.expressions.booleanType.OrExpression;
-import hillbillies.expressions.booleanType.VariableBooleanExpression;
 import hillbillies.expressions.booleanType.TrueExpression;
 import hillbillies.expressions.positionType.BoulderPositionExpression;
 import hillbillies.expressions.positionType.PositionExpression;
@@ -57,7 +57,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
 		List<Task> result = new ArrayList<>();
 		if (selectedCubes.size() == 0) {
-			//TODO no selected expression may exist in the statement(s). return exactly one task.
+			//TODO no selected expression may exist in the statement(s).
 			result.add(new Task(name, priority, activity));
 		}
 		else
@@ -125,7 +125,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
-		//TODO fix...
+		return new ReadVariableExpression(variableName, sourceLocation);
 	}
 
 	@Override

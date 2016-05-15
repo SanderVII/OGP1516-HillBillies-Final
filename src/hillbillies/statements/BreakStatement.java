@@ -16,6 +16,12 @@ public class BreakStatement extends Statement {
 		this.getSuperText().setStatus(Status.DONE);
 	}
 	
+	/**
+	 * Return true if this break statement has a while-statement as a
+	 * super Text Object. 
+	 * @note	This can span multiple 'layers' of text objects. 
+	 * 			(i.e. break inside if/else inside while == true)
+	 */
 	@Override
 	public boolean isWellFormed() {
 		Statement superText = this.getSuperText();
