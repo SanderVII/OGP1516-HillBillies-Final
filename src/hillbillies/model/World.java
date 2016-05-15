@@ -1413,6 +1413,13 @@ public class World {
 	 * 			The given game time to advance.
 	 */
 	public void advanceTime(double deltaT) throws NullPointerException, IllegalStateException, IllegalArgumentException{
+		if  (deltaT < 0)
+			throw new IllegalArgumentException("This deltaT is invalid, because it is negative.");
+		if  (deltaT > 0.2)
+			throw new IllegalArgumentException("This deltaT is invalid, because it is to big.");
+		if (this.isTerminated()){
+			throw new IllegalStateException("This world is terminated.");
+		}
 		
 		if (this.collapsingCubes.size() != 0){
 			this.caveInCollapsingCubes();

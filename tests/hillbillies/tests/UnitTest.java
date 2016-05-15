@@ -384,30 +384,30 @@ public class UnitTest {
 	@Test
 	public final void isValidTargetPosition_TrueCase() throws Exception {
 		double[] target = {unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()};
-		assertTrue(unitMin.isValidTargetCoordinates(target));
-		assertTrue(unitMin.isValidTargetCoordinates(null));
+		assertTrue(unitMin.canHaveAsTargetCoordinates(target));
+		assertTrue(unitMin.canHaveAsTargetCoordinates(null));
 	}
 	
 	@Test
 	public final void isValidTargetPosition_FalseCase() throws Exception {
 		double[] target1 = {500,unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()};
 		double[] target2 = {unitMin.getPosition().getXCoordinate(),-1,unitMin.getPosition().getZCoordinate()};
-		assertFalse(unitMin.isValidTargetCoordinates(target1));
-		assertFalse(unitMin.isValidTargetCoordinates(target2));
+		assertFalse(unitMin.canHaveAsTargetCoordinates(target1));
+		assertFalse(unitMin.canHaveAsTargetCoordinates(target2));
 	}
 	
 	@Test
 	public final void isValidInitialPosition_TrueCase() throws Exception {
 		double[] target = {unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()};
-		assertTrue(unitMin.isValidInitialCoordinates(target));
+		assertTrue(unitMin.canHaveAsInitialCoordinates(target));
 	}
 	
 	@Test
 	public final void isValidInitialPosition_FalseCase() throws Exception {
 		double[] target1 = {500,unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()};
 		double[] target2 = {unitMin.getPosition().getXCoordinate(),-1,unitMin.getPosition().getZCoordinate()};
-		assertFalse(unitMin.isValidInitialCoordinates(target1));
-		assertFalse(unitMin.isValidInitialCoordinates(target2));
+		assertFalse(unitMin.canHaveAsInitialCoordinates(target1));
+		assertFalse(unitMin.canHaveAsInitialCoordinates(target2));
 	}
 	
 	@Test
