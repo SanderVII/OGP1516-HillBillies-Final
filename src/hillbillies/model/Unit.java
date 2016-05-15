@@ -10,10 +10,8 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.exception.UnitMaxedOutException;
-import hillbillies.statements.Statement;
 import hillbillies.util.Position;
 import hillbillies.util.UnitPosition;
-import ogp.framework.util.Util;
 
 //TODO de fouten zoeken in defaultBehaviour. 
 //TODO do not award xp for failed task (i.e. working air)
@@ -21,7 +19,7 @@ import ogp.framework.util.Util;
 //TODO fix (unit)positions methods to use those of entity.
 
 /** 
- * @version 2.17
+ * @version 2.18
  */
 
 /**
@@ -1481,14 +1479,19 @@ public class Unit extends Entity{
 	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
 		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling. Done?
 		try {
-			if ( ! thisIsDefaultBehaviour)
+			
+			Cube destinationCube = this.getWorld().getCube(
+					this.getPosition().getCubeCoordinates()[0]+dx, this.getPosition().getCubeCoordinates()[1]+dy, this.getPosition().getCubeCoordinates()[2]+dz);
+			
+			if ( ! thisIsDefaultBehaviour){
 				this.setDefaultBehaviorEnabled(false);
+				this.moveTo(destinationCube.getPosition().getCubeCoordinates());
+			}
 			
 			if ((this.getCurrentActivity() == Activity.MOVE))
 				throw new IllegalStateException("Unit is already moving.");
 			
-			Cube destinationCube = this.getWorld().getCube(
-					this.getPosition().getCubeCoordinates()[0]+dx, this.getPosition().getCubeCoordinates()[1]+dy, this.getPosition().getCubeCoordinates()[2]+dz);
+			
 			
 			if ((dx==0) && (dy==0) && (dz==0)) {
 				throw new IllegalArgumentException("No need to move unit.");
@@ -1528,6 +1531,7 @@ public class Unit extends Entity{
 	 * 			The given destination is invalid.
 	 */
 	public void moveTo(int[] destinationCoordinates) throws IllegalArgumentException{
+		System.out.println();
 		this.moveTo(destinationCoordinates,false);
 	}
 	
@@ -1566,6 +1570,8 @@ public class Unit extends Entity{
 			if ( ! thisIsDefaultBehaviour)
 				this.setDefaultBehaviorEnabled(false);
 			
+			this.setProgress(0);
+			
 			// Readability
 			int[] currentCoordinates =  this.getPosition().getCubeCoordinates();	
 			
@@ -1576,12 +1582,12 @@ public class Unit extends Entity{
 	 			moveToPath.clear();
 	 			moveToPath.add(dummy);
 			}
-		 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
-		 		this.setPreviousActivity(this.getCurrentActivity());
-		 		this.setCurrentActivity(Activity.MOVE);
-		 		this.setInitialCoordinates(this.getPosition().getCoordinates());
-		 		
-				moveToPath = searchPath(currentCoordinates, destinationCoordinates);
+	 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
+	 		this.setPreviousActivity(this.getCurrentActivity());
+	 		this.setCurrentActivity(Activity.MOVE);
+	 		this.setInitialCoordinates(this.getPosition().getCoordinates());
+			moveToPath = searchPath(currentCoordinates, destinationCoordinates);
+			moveToPath.remove(0); 
 		}
 	}
 	
@@ -2053,6 +2059,8 @@ public class Unit extends Entity{
 			if ( ! thisIsDefaultBehaviour)
 				this.setDefaultBehaviorEnabled(false);
 			
+			this.setProgress(0);
+			
 			if (this.getCurrentActivity() != Activity.REST){
 				this.setPreviousActivity(this.getCurrentActivity());
 				this.setCurrentActivity(Activity.REST);
@@ -2202,6 +2210,7 @@ public class Unit extends Entity{
 	 */
 	public void attack(Unit defender) throws IllegalStateException{
 		try{
+			this.setProgress(0);
 			this.setCurrentActivity(Activity.ATTACK);
 			this.setUnitUnderAttack(defender);
 		} catch	(Exception e){
@@ -2881,7 +2890,6 @@ public class Unit extends Entity{
 	 */
 	@Override
 	public void advanceTime(double deltaT) throws IllegalArgumentException, IllegalStateException, NullPointerException{
-		//TODO move voorwaarden naar World.advanceTime()
 		if (this.isTerminated()){
 			throw new IllegalStateException("This unit is terminated.");
 		}
@@ -2911,13 +2919,6 @@ public class Unit extends Entity{
 			if ( (this.getPreviousActivity() == Activity.REST) && (this.getCurrentActivity() != Activity.REST) && ( ! this.getInitialRestTimePassed()) && ( ! this.isFighting()) )
 				this.rest(this.getDefaultBehaviorEnabled());
 			
-			// REST has no fixed end to reset its progress, so it happens when this unit stops resting 
-			// and the initial rest time is surpassed.
-			if ( (this.getPreviousActivity() == Activity.REST) && (this.getCurrentActivity() != Activity.REST) && ( this.getInitialRestTimePassed()) ){
-				this.setProgress(0.0);
-				this.setInitialRestTimePassed(false);
-			}
-			
 			// The unit has to rest every 3 minutes.
 			if ( (this.getGametime() - this.getTimeOfLastRest()) >= 180.0 ) 
 				this.rest(this.getDefaultBehaviorEnabled());
@@ -2942,13 +2943,11 @@ public class Unit extends Entity{
 				break;
 			
 			case REST:
-			advanceTimeRest(deltaT);
+				advanceTimeRest(deltaT);
 				break;
 				
-			case NOTHING:
+			default:
 				break;
-		default:
-			break;
 		}
 		
 	}
@@ -3014,8 +3013,8 @@ public class Unit extends Entity{
 				 this.addExperience(20);
 			}
 			
-			// Reset Progress.
-			this.setProgress(0.0);
+//			// Reset Progress.
+//			this.setProgress(0.0);
 			
 			// Do what has to be done when the defender dies.
 			if (defender.getCurrentHealth() <= 0)
@@ -3044,8 +3043,9 @@ public class Unit extends Entity{
 		// If this unit is carrying a log or a boulder:
 		if (this.hasItem()) {
 			this.dropItem(workTarget);
-			// Reset the progress.
-			this.setProgress(0.0);
+			
+//			// Reset the progress.
+//			this.setProgress(0.0);
 			
 			this.setCurrentActivity(Activity.NOTHING);
 			
@@ -3094,8 +3094,8 @@ public class Unit extends Entity{
 				this.addExperience(10);
 			}
 			
-			// Reset progress.
-			this.setProgress(0.0);
+//			// Reset progress.
+//			this.setProgress(0.0);
 			
 			// the current activity is set to nothing.
 			this.setCurrentActivity(Activity.NOTHING);
@@ -3139,19 +3139,22 @@ public class Unit extends Entity{
 			}
 			
 			// Set the orientation towards the target position.
-			if (! UnitPosition.fuzzyEquals(this.getTargetCoordinates(), newPosition)) {
+			if (! Position.fuzzyEquals(this.getTargetCoordinates(), newPosition)) {
 				this.setOrientation(this.getVelocity(this.getTargetCoordinates())[0], this.getVelocity(this.getTargetCoordinates())[1]);
 			}
-				
+			
+//			System.out.println("distance between start and target: "+ Position.getDistance(this.getTargetCoordinates(), this.getInitialCoordinates()));
+//			System.out.println("distance between new and target:  " + Position.getDistance(newPosition, this.getInitialCoordinates()) );
 			// If the target position is reached or surpassed, set to target position.
-			if (UnitPosition.getDistance(this.getTargetCoordinates(), this.getInitialCoordinates()) 
-					<= UnitPosition.getDistance(newPosition, this.getInitialCoordinates())) {
-				
+			if (Position.getDistance(this.getTargetCoordinates(), this.getInitialCoordinates()) 
+					<= Position.getDistance(newPosition, this.getInitialCoordinates())) {
 				this.setCoordinates(this.getTargetCoordinates());
 				
 				// Remove the cube from the path since you've just reached it.
 				if (moveToPath.size() !=0) {
 					moveToPath.remove(0);
+					// Recalculate the path since it could have changed by the time this unit moved one cube.
+					this.moveTo(this.moveToPath.get(this.moveToPath.size()-1), this.getDefaultBehaviorEnabled());
 				}
 				
 				// Add experience (1 per cube traversed)
@@ -3184,10 +3187,10 @@ public class Unit extends Entity{
 	}
 	
 	private void advanceTimeFall(double deltaT) {
-		double[] newPosition = new double[3];
+		double[] newCoordinates;
 
-		double[] targetPosition = UnitPosition.getCubeCenter(this.getWorld().getCubeBelow(Position.getCubeCoordinates(initialCoordinates)).getPosition().getCoordinates());
-		this.setTargetCoordinates(targetPosition);
+		double[] targetCoordinates = Position.getCubeCenter(this.getWorld().getCubeBelow(Position.getCubeCoordinates(initialCoordinates)).getPosition().getCoordinates());
+		this.setTargetCoordinates(targetCoordinates);
 
 		this.setCoordinates(this.getPosition().getSurfaceCenter());
 		
@@ -3195,17 +3198,17 @@ public class Unit extends Entity{
 		this.moveToPath.clear();
 		
 		// Calculate the new position.
-		newPosition = UnitPosition.calculateNextCoordinates(this.getPosition().getCoordinates(), Entity.FALL_VELOCITY, deltaT);
+		newCoordinates = Position.calculateNextCoordinates(this.getPosition().getCoordinates(), Entity.FALL_VELOCITY, deltaT);
 		
 		// No updates needed for orientation (only for x and y).
 		
 		// The target position is reached or surpassed.
-		if (UnitPosition.getDistance(this.getTargetCoordinates(), this.getInitialCoordinates()) 
-				<= UnitPosition.getDistance(newPosition, this.getInitialCoordinates())) {
+		if (Position.getDistance(this.getTargetCoordinates(), this.getInitialCoordinates()) 
+				<= Position.getDistance(newCoordinates, this.getInitialCoordinates())) {
 
 			// Update initial position
-			this.setInitialCoordinates(targetPosition);
-			this.setCoordinates(targetPosition);
+			this.setInitialCoordinates(targetCoordinates);
+			this.setCoordinates(targetCoordinates);
 			
 			// Lose health
 			if (this.getCurrentHealth() > 10)
@@ -3216,7 +3219,7 @@ public class Unit extends Entity{
 			}
 			
 			// The unit has stopped falling
-			if (this.hasSolidNeighbours(targetPosition[0], targetPosition[1], targetPosition[2])) {
+			if (this.hasSolidNeighbours(targetCoordinates[0], targetCoordinates[1], targetCoordinates[2])) {
 				
 				this.setCoordinates(this.getTargetCoordinates());
 				this.setCurrentActivity(Activity.NOTHING);
@@ -3224,7 +3227,7 @@ public class Unit extends Entity{
 				this.setIsFalling(false);
 			}
 		} else {
-			this.setCoordinates(newPosition); 				
+			this.setCoordinates(newCoordinates); 				
 		}	
 	}
 	

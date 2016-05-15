@@ -1417,6 +1417,9 @@ public class World {
 			throw new IllegalArgumentException("This deltaT is invalid, because it is negative.");
 		if  (deltaT > 0.2)
 			throw new IllegalArgumentException("This deltaT is invalid, because it is to big.");
+		if (this.isTerminated()){
+			throw new IllegalStateException("This world is terminated.");
+		}
 		
 		if (this.collapsingCubes.size() != 0){
 			this.caveInCollapsingCubes();
