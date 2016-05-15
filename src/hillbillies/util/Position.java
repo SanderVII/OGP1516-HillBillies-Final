@@ -14,8 +14,6 @@ import ogp.framework.util.Util;
 /**
  * A class of positions and helper methods for used for calculating positions.
  * All methods use vectors(arrays) of length 3.
- * @invar  The cost of each position must be a valid cost for any position.
- *				 | isValidCost(getCost())
  * @invar  The coordinates of this position must be valid coordinates for this position.
  *				 | canHaveAsCoordinates(getCoordinates())
  * 
@@ -23,50 +21,31 @@ import ogp.framework.util.Util;
  * @version	2.6
  */
 public class Position {
-	
+
 	/**
-	 * Initializes this position with the given world, coordinates and zero cost.
+	 * Initializes this position with the given world and coordinates.
 	 * @param world
 	 *				The world this position belongs to.
 	 * @param doubleCoordinates
 	 *				The coordinates for this new position.
-	 * @effect Initializes this position with the given world and coordinates and zero cost.
-	 */
-	public Position(World world, double[] doubleCoordinates) throws IllegalArgumentException{
-		this(world, doubleCoordinates,0);
-	}
-	
-	/**
-	 * Initializes this position with the given world, coordinates and cost.
-	 * @param world
-	 *				The world this position belongs to.
-	 * @param doubleCoordinates
-	 *				The coordinates for this new position.
-	 * @param cost
-	 *				An integer representing the cost of traveling trough this position.
-	 *
 	 *@effect Sets the world of this position to the given world. 
 	 *				| setWorld(world)
-	 *				TODO misschien enkel de grootte van de wereld overnemen zodat isValidCoordinates static kan.
 	 * @effect Sets the coordinates of this position to the given coordinates. 
 	 *				| setCoordinates(doubleCoordinates)
-	 * @effect Sets the cost of traveling through this position to the given cost. 
-	 *				| setCost(cost)
 	 */
-	public Position(World world, double[] doubleCoordinates, double cost) throws IllegalArgumentException{
+	public Position(World world, double[] doubleCoordinates) throws IllegalArgumentException{
 		this.setWorld(world);
 		this.setCoordinates(doubleCoordinates);
-		this.setCost(cost);
 	}
 	
 	/**
-	 * Initializes this position with the given world, coordinates and zero cost.
+	 * Initializes this position with the given world and coordinates.
 	 * @param world
 	 *				The world this position belongs to.
 	 * @param doubleCoordinates
 	 *				The coordinates for this new position.
-	 * @effect Initializes this position with the given world, the cube center of the given cube coordinates
-	 *				as its coordinates and zero cost. 
+	 * @effect Initializes this position with the given world and the cube center of the given cube coordinates
+	 *				as its coordinates. 
 	 */
 	public Position(World world, int[] cubeCoordinates) {
 		this(world, getCubeCenter(cubeCoordinates));
@@ -78,53 +57,8 @@ public class Position {
 	 */
 	@Override
 	public String toString(){
-		return "Position: { " + this.getXCoordinate() + ", " + this.getYCoordinate() + ", " + this.getZCoordinate() 
-		+ ", " + this.getCost() + " }";
+		return "Position: { " + this.getXCoordinate() + ", " + this.getYCoordinate() + ", " + this.getZCoordinate() + " }";
 	}
-	
-	/**
-	 * Return the cost of this position.
-	 */
-	@Basic @Raw
-	public double getCost() {
-		return this.cost;
-	}
-	
-	/**
-	 * Check whether the given cost is a valid cost for
-	 * any position.
-	 *  
-	 * @param  cost
-	 *				The cost to check.
-	 * @return The cost must be greater than or equal to 0.
-	 *				| result == (cost >= 0)
-	*/
-	public static boolean isValidCost(double cost) {
-		return (cost >= 0);
-	}
-	
-	/**
-	 * Set the cost of this position to the given cost.
-	 * 
-	 * @param  cost
-	 *				The new cost for this position.
-	 * @post	The cost of this new position is equal to the given cost.
-	 *				| new.getCost() == cost
-	 * @throws IllegalArgumentException
-	 *				The given cost is not a valid cost for any position.
-	 *				| ! isValidCost(getCost())
-	 */
-	@Raw
-	public void setCost(double cost) throws IllegalArgumentException {
-		if (! isValidCost(cost))
-			throw new IllegalArgumentException();
-		this.cost = cost;
-	}
-	
-	/**
-	 * Variable registering the cost of this position.
-	 */
-	private double cost;
 	
 	/*TODO use in setPosition, docs and invariants?
 	 * not using this assumes a position can be created with coordinates outside of its world.
@@ -749,18 +683,6 @@ public class Position {
 	 */
 	public static boolean equals(Position position1, Position position2){
 		return equals(position1.getCoordinates(),position2.getCoordinates());
-	}
-	
-	/**
-	 * Determines whether 2 given positions are the same (extended version). Positions are the same is the x-,y- and z-coordinate are the same 
-	 * and their cost have to be equal as well.
-	 * @param position1
-	 *				One of the positions to compare.
-	 * @param position2
-	 *				The other position to compare.
-	 */
-	public static boolean extendedEquals(Position position1, Position position2) {
-		return equals(position1, position2) && (position1.getCost() == position2.getCost());
 	}
 	
 	/**

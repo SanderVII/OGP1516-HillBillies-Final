@@ -125,6 +125,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
+		return null;
 		//TODO fix...
 	}
 

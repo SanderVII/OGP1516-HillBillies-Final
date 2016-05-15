@@ -151,6 +151,26 @@ public abstract class Entity {
 	// ==========================================================================================
 	
 	/**
+	 * Return the coordinates of the cube this entity is in.
+	 * @return	The cube coordinates, given as an array of 3 integers.
+	 * 					| result ==  Position.getCubeCoordinates(this.getPosition().getCoordinates())
+	 */
+	@Raw
+	public int[] getCubeCoordinates(){
+		return (Position.getCubeCoordinates(this.getPosition().getCoordinates()));
+	}
+	
+	/**
+ 	 * Returns the position of the center of the cube this entity is in.
+ 	 * 
+ 	 * @return	The coordinates of the center of the cube this entity occupies.
+ 	 * 				| result == getCubeCenter(getPosition().getCoordinates())
+ 	 */
+ 	public double[] getCubeCenter() {
+ 		return (Position.getCubeCenter(this.getPosition().getCoordinates()));
+ 	}
+	
+	/**
 	 * Return the position of this entity.
 	 */
 	@Basic @Raw
@@ -214,6 +234,7 @@ public abstract class Entity {
 			throws IllegalArgumentException {
 		if (! canHaveAsPosition(position))
 			throw new IllegalArgumentException();
+		System.out.println("test");
 		this.position = position;
 	}
 	
@@ -230,7 +251,7 @@ public abstract class Entity {
   	/**
    	 * Value registering if the entity is falling.
    	 */
-	private boolean isFalling = false;
+	protected boolean isFalling = false;
 
 	/**
 	 * Symbolic constant denoting the velocity of an entity when falling.

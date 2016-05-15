@@ -11,7 +11,7 @@ import hillbillies.model.World;
  * A class of unit positions.
  * @author Sander Mergan Thomas Vrancken
  * 
- * @version 2.2
+ * @version 2.3
  */
 public class UnitPosition extends Position{
 	
@@ -20,25 +20,11 @@ public class UnitPosition extends Position{
 	 * @param world
 	 *				The world for this new unit position.
 	 * @param doubleCoordinates
-	 *				The coordinates for this new unit position.
-	 * @effect super(world, doubleCoordinates)
-	 */
-	public UnitPosition(World world, double[] doubleCoordinates) {
-		super(world, doubleCoordinates);
-	}
-	
-	/**
-	 * Initializes this unitPosition with the given coordinates and world.
-	 * @param world
-	 *				The world for this new unit position.
-	 * @param doubleCoordinates
 	 *				The coordinates for this new unit  position.
-	 * @param cost
-	 *				The cost for this new unit position.
 	 * @effect super(world, doubleCoordinates)
 	 */
-	public UnitPosition(World world, double[] doubleCoordinates, double cost){
-		super(world, doubleCoordinates, cost);
+	public UnitPosition(World world, double[] doubleCoordinates){
+		super(world, doubleCoordinates);
 	}
 	
 	/**

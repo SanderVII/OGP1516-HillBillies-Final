@@ -15,11 +15,10 @@ import hillbillies.util.Position;
 import hillbillies.util.UnitPosition;
 import ogp.framework.util.Util;
 
-//TODO de fout zoeken in defaultBehaviour. (kan onder andere niet meer uitgezet worden).
-
-//TODO moving feature doesn't work.
+//TODO de fouten zoeken in defaultBehaviour. 
 //TODO do not award xp for failed task (i.e. working air)
-
+//TODO het path opnieuw berekenen na elke moveToAdjacent.
+//TODO fix (unit)positions methods to use those of entity.
 
 /** 
  * @version 2.17
@@ -29,29 +28,29 @@ import ogp.framework.util.Util;
  * A class of units involving a world, a faction, a name, a position, a number of primary attributes, health and stamina,
  * 	an orientation and a toggle (boolean value) for sprinting.
  * 
- * @invar 	The current health of each unit must be a valid current health for any unit. 
+ * @invar	The current health of each unit must be a valid current health for any unit. 
  *        			| canHaveAsCurrentHealth(getCurrentHealth())
- * @invar 	The current stamina of each unit must be a valid current stamina for any unit. 
+ * @invar	The current stamina of each unit must be a valid current stamina for any unit. 
  *        			| canHaveAsCurrentStamina(getCurrentStamina())
- * @invar 	The weight of each unit must be in the range minBaseStat..MaxBaseStat and be at least the average of the strength and agility of this unit. 
+ * @invar	The weight of each unit must be in the range minBaseStat..MaxBaseStat and be at least the average of the strength and agility of this unit. 
  * 					| canHaveAsWeight(getWeight())
- * @invar 	The maximum base stat must be a valid maximal base stat for any unit.
+ * @invar	The maximum base stat must be a valid maximal base stat for any unit.
  *					| canHaveAsMaxBaseStat(getMaxBaseStat())
- * @invar 	The minimal base stat must be a valid minimal base stat for any unit.
+ * @invar	The minimal base stat must be a valid minimal base stat for any unit.
  *					| canHaveAsMinBaseStat(getMinBaseStat())
  * @invar	The name of each unit must be a valid name for any unit.
  *					| isValidName(getName())
- * @invar 	The position of each unit must be a valid position for any unit.
- * 					| isValidPositionForUnit(getPosition())
+ * @invar	The position of each unit must be a valid position for any unit.
+ * 					|canHaveAsUnitPosition(getPosition())
  * @invar	The orientation of each unit must be a valid orientation for any unit.
  * 					| isValidOrientation(getAngle())
- * @invar  	The initial position of each unit must be a valid initial position for any unit.
+ * @invar	The initial position of each unit must be a valid initial position for any unit.
  *       			| isValidInitialPosition(getInitialPosition())
- * @invar  	The target position of each unit must be a valid target position for any unit.
+ * @invar	The target position of each unit must be a valid target position for any unit.
  *       			| isValidTargetPosition(getTargetPosition())
- * @invar  	The is-sprinting value of each unit must be a valid is-sprinting value for any unit.
+ * @invar	The is-sprinting value of each unit must be a valid is-sprinting value for any unit.
  *       			| isValidIsSprinting(getIsSprinting())
- * @invar  	The experience of each unit must be a valid experience for any unit.
+ * @invar	The experience of each unit must be a valid experience for any unit.
  *       			| isValidExperience(getExperience())
  * @invar	Each unit must have a proper world to which it is attached.
  * 					| hasProperWorld()
@@ -59,6 +58,8 @@ import ogp.framework.util.Util;
  * 					| hasProperFaction()
  * @invar	Each unit must have a proper task.
  * 					| hasProperTask()
+ * @invar	The is-falling property of each unit must be a valid is-falling property for any unit.
+ *					| isValidIsFalling(getIsFalling())
  * 
  * @author Sander Mergan, Thomas Vranken
  */
@@ -130,7 +131,7 @@ public class Unit extends Entity{
 	 *  
 	 * @throws	IllegalArgumentException
 	 * 				The given position is not a valid position.
-	 *  			| ! isValidPositionForUnit(position)
+	 *  			| ! canHaveAsUnitPosition(position)
 	 */
 	public Unit(World world, Faction faction, String name, int[] position, 
 			int weight, int strength, int agility, int toughness) throws IllegalArgumentException {
@@ -142,9 +143,8 @@ public class Unit extends Entity{
 		// conditions that apply to name in order to be valid are checked in setName method itself.
 		this.setName(name);
 		
-		//TODO fix (unit)positions methods to use those of entity.
 		// Upon creation, places this unit in the center of a cube.
-		this.setPosition( new UnitPosition(this.getWorld(), UnitPosition.getCubeCenter(position)) );
+		this.setPosition( new UnitPosition(this.getWorld(), Position.getCubeCenter(position)) );
 		
 		this.setInitialStrength(strength);
 		
@@ -264,7 +264,6 @@ public class Unit extends Entity{
 			this.stopDefaultBehavior();
 			this.resetCoordinates();
 			
-			// TODO unify in isCarryingItem and dropItem
 			if (this.hasItem())
 				this.dropItem(this.getCubeCoordinates());
 	
@@ -518,6 +517,7 @@ public class Unit extends Entity{
 	 * 				| if (weight > this.getMaxBaseStat()) 
 	 * 				| 	then new.getWeight == this.getMaxBaseStat()
 	 */
+	@Override
 	public void setWeight(int weight) {
 		if (weight > Unit.getMaxBaseStat()) {
 			this.weight = getMaxBaseStat();
@@ -1008,53 +1008,14 @@ public class Unit extends Entity{
 	public int getCubeLength(){
 		return Cube.CUBE_LENGHT;
 	}
-	
-	/**
-	 * A variable that stores the position of this unit.
-	 */
-	private UnitPosition position;
-	
+
 	/**
 	 * Return the exact position of this unit.
 	 */
 	@Basic @Raw
 	public UnitPosition getPosition(){
-		return this.position;
+		return (UnitPosition) this.position;
 	}
-	
-	/**
-	 * Return the coordinates of the cube this unit is standing in.
-	 * A cube coordinate corresponds to the coordinate of this unit, rounded down to the nearest integer.
-	 * 
-	 * @return	The cube coordinates, given as an array of 3 integers.
-	 * 					| result ==  Position.getCubeCoordinates(this.getPosition())
-	 */
-	@Raw
-	public int[] getCubeCoordinates(){
-		double[] unitPosition = this.getPosition().getCoordinates();
-		return (Position.getCubeCoordinates(unitPosition));
-	}
-	
-	/**
-	 * Sets the position of this unit to the given position.
-	 * @param unitPosition
-	 *				The position to set this units position to.
-	 * @post	The position of this unit is equal to the given position.
-	 *				| this.getPosition() == unitPosition
-	 */
-	private void setPosition(UnitPosition unitPosition) {
-		this.position = unitPosition;
-	}
-	
-	/**
- 	 * Returns the position of the center of the cube this unit is standing in.
- 	 * 
- 	 * @return	The coordinates of the center of the cube this unit occupies.
- 	 * 				| result == getCubeCenter(getPosition())
- 	 */
- 	public double[] getCubeCenter() {
- 		return (Position.getCubeCenter(this.getPosition().getCoordinates()));
- 	}
  	
  	/**
  	 * Returns the position of the 2D-center of the cube this unit is standing in.
@@ -1075,7 +1036,7 @@ public class Unit extends Entity{
 	 * 					The new position of this unit.
 	 * @throws 	IllegalArgumentException
 	 * 					The given position is not a valid position for any unit..
-	 * 					|! isValidPosition(getPosition())
+	 * 					|! canHaveAsPosition(getPosition())
 	 */
 	public void setCoordinates(double[] position) throws IllegalArgumentException{
 		this.position.setCoordinates(position);
@@ -1170,7 +1131,7 @@ public class Unit extends Entity{
 	// ===================================================================================
 	
 	/**
- 	 * Return the target position of this unit.
+ 	 * Return the target coordinates of this unit.
  	 */
  	@Basic @Raw
  	public double[] getTargetCoordinates() {
@@ -1178,42 +1139,42 @@ public class Unit extends Entity{
  	}
  	
  	/**
- 	 * Check whether the given target position is a valid target position for this unit.
+ 	 * Check whether the given target coordinates are valid target coordinates for this unit.
  	 *  
- 	 * @param	targetPosition
- 	 *         			The target position to check.
- 	 * @return	True if the target position is null, or is a valid position for this unit in its world.
- 	 *       			| result == (targetPosition == null || isValidPosition(targetPosition))
+ 	 * @param	targetCoordinates
+ 	 *         			The target coordinates to check.
+ 	 * @return	True if the target coordinates are null, or are valid coordinates for this unit in its world.
+ 	 *       			| result == (targetCoordinates == null || canHaveAsCoordinates(targetCoordinates))
  	*/
- 	public boolean isValidTargetCoordinates(double[] targetPosition) {
- 		return( (targetPosition == null) || this.getPosition().canHaveAsUnitCoordinates(targetPosition) );
+ 	public boolean canHaveAsTargetCoordinates(double[] targetCoordinates) {
+ 		return( (targetCoordinates == null) || this.getPosition().canHaveAsUnitCoordinates(targetCoordinates) );
  	}
  	
  	/**
- 	 * Set the target position of this unit to the given target position.
+ 	 * Set the target coordinates of this unit to the given target coordinates.
  	 * 
- 	 * @param	targetPosition
- 	 *         			The new target position for this unit.
- 	 * @post	The target position of this new unit is equal to the given target position.
- 	 *       		| new.getTargetPosition() == targetPosition
+ 	 * @param	targetCoordinates
+ 	 *         			The new target coordinates for this unit.
+ 	 * @post	The target coordinates of this new unit are equal to the given target coordinates.
+ 	 *       		| new.getTargetCoordinates() == targetCoordinates
  	 * @throws 	IllegalArgumentException
- 	 *         			The given target position is not a valid target position for any unit.
- 	 *       			| ! isValidTargetPosition(getTargetPosition())
+ 	 *         			The given target coordinates are not valid target coordinates for any unit.
+ 	 *       			| ! canHaveAsTargetCoordinates(getTargetCoordinates())
  	 */
  	@Raw
- 	public void setTargetCoordinates(double[] targetPosition) throws IllegalArgumentException {
- 		if (! isValidTargetCoordinates(targetPosition))
- 			throw new IllegalArgumentException("Invalid target position.");
- 		this.targetCoordinates = targetPosition;
+ 	public void setTargetCoordinates(double[] targetCoordinates) throws IllegalArgumentException {
+ 		if (! canHaveAsTargetCoordinates(targetCoordinates))
+ 			throw new IllegalArgumentException("The given target coordinates are invalid.");
+ 		this.targetCoordinates = targetCoordinates;
  	}
  
   	/**
-  	 * A variable that stores the target position of this unit.
+  	 * A variable that stores the target coordinates of this unit.
    	 */		   
    	private double[] targetCoordinates;
 
  	/**
- 	 * Return the initial position of this unit.
+ 	 * Return the initial coordinates of this unit.
  	 */
  	@Basic @Raw
  	public double[] getInitialCoordinates() {
@@ -1221,45 +1182,45 @@ public class Unit extends Entity{
  	}
  	
  	/**
- 	 * Check whether the given initial position is a valid initial position for this unit.
+ 	 * Check whether the given initial coordinates are valid initial coordinates for this unit.
  	 *  
- 	 * @param	initialPosition
- 	 *         			The initial position to check.
- 	 * @return	True if the initial position is null, or is a valid position for this unit in its world.
- 	 *       			| result == (initialPosition == null || isValidPosition(initialPosition))
+ 	 * @param	initialCoordinates
+ 	 *         			The initial coordinates to check.
+ 	 * @return	True if the initial coordinates are null, or are valid coordinates for this unit in its world.
+ 	 *       			| result == (initialCoordinates == null || canHaveAsCoordinates(initialCoordinates))
  	*/
- 	public  boolean isValidInitialCoordinates(double[] initialPosition) {
- 		return ( (initialPosition == null) || (this.getPosition().canHaveAsUnitCoordinates(initialPosition)) );
+ 	public  boolean canHaveAsInitialCoordinates(double[] initialCoordinates) {
+ 		return ( (initialCoordinates == null) || (this.getPosition().canHaveAsUnitCoordinates(initialCoordinates)) );
  	}
  	
  	/**
- 	 * Set the initial position of this unit to the given initial position.
+ 	 * Set the initial coordinates of this unit to the given initial coordinates.
  	 * 
- 	 * @param	initialPosition
- 	 *         			The new initial position for this unit.
- 	 * @post	The initial position of this new unit is equal to the given initial position.
- 	 *       		| new.getInitialPosition() == initialPosition
+ 	 * @param	initialCoordinates
+ 	 *         			The new initial coordinates for this unit.
+ 	 * @post	The initial coordinates of this new unit are equal to the given initial coordinates.
+ 	 *       		| new.getInitialCoordinates() == initialCoordinates
  	 * @throws 	IllegalArgumentException
- 	 *         			The given initial position is not a valid initial position for any unit.
- 	 *       			| ! isValidInitialPosition(getInitialPosition())
+ 	 *         			The given initial coordinates are not valid initial coordinates for any unit.
+ 	 *       			| ! canHaveAsInitialCoordinates(getInitialCoordinates())
  	 */
  	@Raw
- 	public void setInitialCoordinates(double[] initialPosition) throws IllegalArgumentException {
- 		if (! isValidInitialCoordinates(initialPosition))
- 			throw new IllegalArgumentException("Given initial position is invalid.");
- 		this.initialCoordinates = initialPosition;
+ 	public void setInitialCoordinates(double[] initialCoordinates) throws IllegalArgumentException {
+ 		if (! canHaveAsInitialCoordinates(initialCoordinates))
+ 			throw new IllegalArgumentException("The given initial coordinates are invalid.");
+ 		this.initialCoordinates = initialCoordinates;
  	}
  
    	/**
-   	 * A variable that stores the initial position of this unit (before it moved).
+   	 * A variable that stores the initial coordinates of this unit (before it moved).
    	 */
    	private double[] initialCoordinates;
    	
    	/**
-   	 * Resets the target position and initial position of this unit.
+   	 * Resets the target coordinates and initial coordinates of this unit.
    	 * 
-   	 * @post	The initial position and target position are both equal to null;
-   	 * 			| new.getInitialPosition() == null && new.getTargetPosition() == null
+   	 * @post	The initial coordinates and target coordinates are both equal to null;
+   	 * 			| new.getInitialCoordinates() == null && new.getTargetCoordinates() == null
    	 */
    	private void resetCoordinates() {
    		this.setTargetCoordinates(null);
@@ -1273,13 +1234,13 @@ public class Unit extends Entity{
 	
    	/**
 	 * Returns the distance between this unit's current position and the center of the target cube.
-	 * @param	targetPosition
-	 * 					The coordinates of the target targetPosition.
+	 * @param	targetCoordinates
+	 * 					The coordinates of the target.
 	 * @return	The distance based on the mathematical formula of distance in 3 dimensions.
-	 * 					| result == PositionUtil.getDistance(this.getPosition(), targetPosition);
+	 * 					| result == PositionUtil.getDistance(this.getPosition().getCoordinates(), targetCoordinates);
 	 */
-	public double getDistance(double[] targetPosition) {
-		return Position.getDistance(this.getPosition().getCoordinates(), targetPosition);
+	public double getDistance(double[] targetCoordinates) {
+		return Position.getDistance(this.getPosition().getCoordinates(), targetCoordinates);
 	}
 	
  	/**
@@ -1296,23 +1257,23 @@ public class Unit extends Entity{
 	 * given coordinates.
 	 * @param	start
 	 * 					The starting coordinates.
-	 * @param	targetLocation
-	 * 					The location to move to.
-	 * @return	The walking speed, depending on the target location.
+	 * @param	targetCoordinates
+	 * 					The coordinates to move to.
+	 * @return	The walking speed, depending on the target coordinates.
 	 * 					If the difference between start z-coordinate and the target z-coordinate is negative,
 	 * 					the walking speed equals to 0.5 * baseSpeed.
 	 * 					If the difference between start z-coordinate and the target z-coordinate is positive,
 	 * 					the walking speed equals to 1.2 * baseSpeed.
 	 * 					Else the walking speed is equal to the base speed.
-	 * 					| if (Math.signum(start[2]-targetLocation[2]) < 0)
+	 * 					| if (Math.signum(start[2]-targetCoordinates[2]) < 0)
 	 * 					|	then result == 0.5 * getBaseSpeed()
-	 * 					| else if (Math.signum(start[2]-targetLocation[2]) > 0)
+	 * 					| else if (Math.signum(start[2]-targetCoordinates[2]) > 0)
 	 * 					|	then result == 1.2 * getBaseSpeed()
 	 * 					| else
 	 * 					|	result ==  getBaseSpeed()
 	 */		
-	public double getWalkSpeed(double[] start, double[] targetLocation){
-		double sign = Math.signum(start[2]-targetLocation[2]);
+	public double getWalkSpeed(double[] start, double[] targetCoordinates){
+		double sign = Math.signum(start[2]-targetCoordinates[2]);
 		if (sign < 0 && sign != Double.NaN)
 			return 0.5 * this.getBaseSpeed();
 		else if (sign > 0 && sign != Double.NaN)
@@ -1323,52 +1284,52 @@ public class Unit extends Entity{
 	
  	/**
 	 * Returns the walking speed of this unit.
-	 * @param	targetLocation
-	 * 					The location to move to.
-	 * @return	The walking speed from this unit's current location to the target.
-	 * 			| result == (getWalkSpeed(this.getPosition().getCoordinates(), targetLocation))
+	 * @param	targetCoordinates
+	 * 					The coordinates to move to.
+	 * @return	The walking speed from this unit's current coordinates to the target coordinates.
+	 * 			| result == (getWalkSpeed(this.getPosition().getCoordinates(), targetCoordinates))
 	 */		
-	public double getWalkSpeed(double[] targetLocation){
-		return (this.getWalkSpeed(this.getPosition().getCoordinates(), targetLocation));
+	public double getWalkSpeed(double[] targetCoordinates){
+		return (this.getWalkSpeed(this.getPosition().getCoordinates(), targetCoordinates));
 	}
 	
 	/**
 	 * Returns the sprinting speed of the unit.
-	 * @param	targetLocation
-	 * 					The location to move to.
+	 * @param	targetCoordinates
+	 * 					The coordinates to move to.
 	 * @return	The sprinting speed of the unit.
 	 * 					| result == getWalkSpeed()
 	 */
-	public double getSprintSpeed(double[] targetLocation) {
-		return 2*this.getWalkSpeed(targetLocation);
+	public double getSprintSpeed(double[] targetCoordinates) {
+		return 2*this.getWalkSpeed(targetCoordinates);
 	}
  	
 	/**
 	 * Returns the velocity vector of this unit 
-	 * based on its current position and the given position.
+	 * based on its current coordinates and some given coordinates.
 	 * 
-	 * @param	targetPosition
+	 * @param	targetCoordinates
 	 * 				The given destination.
 	 * @return	The velocity vector as calculated in Position.getVelocity()
-	 * 				| result == Position.getVelocity(this.getPosition(), targetPosition, speed)
+	 * 				| result == Position.getVelocity(this.getPosition().getCoordinates(), targetCoordinates, speed)
 	 */
-	public double[] getVelocity(double[] targetPosition) {
+	public double[] getVelocity(double[] targetCoordinates) {
 		double speed = 0.0;
 		if ((this.getIsSprinting()) && this.getCurrentStamina() > 0)
-			speed = this.getSprintSpeed(targetPosition);
+			speed = this.getSprintSpeed(targetCoordinates);
 		else
-			speed = this.getWalkSpeed(targetPosition);
-		return (UnitPosition.getVelocity(this.getPosition().getCoordinates(), targetPosition, speed));
+			speed = this.getWalkSpeed(targetCoordinates);
+		return (UnitPosition.getVelocity(this.getPosition().getCoordinates(), targetCoordinates, speed));
 	}
 	
 	/**
 	 * Returns the velocity vector of this unit 
-	 * based on its current and target position.
+	 * based on its current coordinates and target coordinates.
 	 * 
-	 * @return	The velocity vector between target and current position for this unit.
-	 * 				| result == getVelocity(this.getTargetPosition())
+	 * @return	The velocity vector between target coordinates and current coordinates for this unit.
+	 * 				| result == getVelocity(this.getTargetCoordinates())
 	 * @throws	NullPointerException
-	 * 				The unit's target position is null.
+	 * 				The unit's target coordinates are null.
 	 */
 	public double[] getVelocity() throws NullPointerException {
 		if (this.getTargetCoordinates() == null)
@@ -1381,10 +1342,10 @@ public class Unit extends Entity{
 	 * 
 	 * @param	targetCube
 	 * 					The cube to check.
-	 * @return	True if and only if the positions are the same or next to each other.
-	 * 					| result == Position.isAdjacentTo(this.getCubePosition(), targetCube)
+	 * @return	True if and only if the coordinates are the same or next to each other.
+	 * 					| result == Position.isAdjacentTo(this.getCubePosition().getCubeCoordinates, targetCube)
 	 * @throws	IllegalArgumentException
-	 * 					The target cube is invalid for this unit's world.
+	 * 					The target cube is invalid for this unit in it's world.
 	 */
 	@Raw
 	public boolean isAdjacentTo(int[]targetCube) throws IllegalArgumentException {
@@ -1470,7 +1431,7 @@ public class Unit extends Entity{
 	@Raw
 	public void startSprinting(){
 		try{
-			if ( ! this.isFalling()) // TODO Thomas heb ik hier de juiste checker gebruikt om te zien of de unit valt? Een unit mag enkel beginnen te sprinten als niet aan het vallen is
+			if ( ! this.isFalling())
 				this.setIsSprinting(true);
 		} catch (IllegalStateException e){}
 	}
@@ -1484,30 +1445,41 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Initiates movement to the given position.
+	 * Initiates movement to the given coordinates.
 	 * @param	dx
 	 * 				The move to make in the x-direction.
 	 * @param	dy
 	 * 				The move to make in the y-direction.
 	 * @param	dz
 	 * 				The move to make in the z-direction.
-	 * @post	The current activity of the unit is set to MOVE.
-	 * 				The target position of the unit is set to the cube decided by the given direction.
-	 * 				The initial position of the unit is set to the current position.
-	 * 				| new.getCurrentActivity() == MOVE
-	 * 				| new.getTargetPosition() =={this.getPosition()[0] + dx,
-	 * 				|							this.getPosition()[1] + dy,this.getPosition()[2] + dz}
-	 * 				| new.getInitialPosition() == this.getPosition()
-	 * @throws	IllegalStateException
-	 * 				This unit cannot currently accept this command.
-	 * 				| 
+	 * @effect Initiate movement to the given coordinates and disable default behaviour.
+	 *				| moveToAdjacent(dx, dy, dz, false)
 	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalArgumentException{
 		this.moveToAdjacent(dx, dy, dz, false);
  	}	
 	
+	/**
+	 * Initiates movement to the given coordinates.
+	 * @param	dx
+	 * 				The move to make in the x-direction.
+	 * @param	dy
+	 * 				The move to make in the y-direction.
+	 * @param	dz
+	 * 				The move to make in the z-direction.
+	 * @param thisIsDefaultBehaviour
+	 *				Whether the movement is initiated by default behaviour or the player.
+	 * @post	The current activity of the unit is set to MOVE.
+	 *				| new.getCurrentActivity() == MOVE
+	 * @post	The target coordinates of the unit are set to the cube decided by the given direction.
+	 * 				| new.getTargetCoordinates() =={this.getPosition().getCoordinates()[0] + dx,
+	 * 				|							this.getPosition().getCoordinates()[1] + dy,this.getPosition().getCoordinates()[2] + dz}
+	 * @post	The initial coordinates of the unit are set to the current coordinates.
+	 * 				| new.getInitialCoordinates() == this.getPosition().getCoordinates()
+	 * @note Throws no exception because Exception is caught.
+	 */
 	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
-		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling.
+		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling. Done?
 		try {
 			if ( ! thisIsDefaultBehaviour)
 				this.setDefaultBehaviorEnabled(false);
@@ -1525,30 +1497,32 @@ public class Unit extends Entity{
 				throw new IllegalArgumentException(destinationCube.toString());
 			}
 
-			double[] dummyPosition = {this.getPosition().getCoordinates()[0] + dx,this.getPosition().getCoordinates()[1] + dy,this.getPosition().getCoordinates()[2] + dz};
+			double[] dummyCoordinates = {this.getPosition().getCoordinates()[0] + dx,this.getPosition().getCoordinates()[1] + dy,this.getPosition().getCoordinates()[2] + dz};
 
 	 		this.setCurrentActivity(Activity.MOVE);
-	 		this.setTargetCoordinates(dummyPosition);
+	 		this.setTargetCoordinates(dummyCoordinates);
 	 		this.setInitialCoordinates(this.getPosition().getCoordinates());
 		} 
 		catch (Exception e) {
-//					this.resetPositions();
 		}
 	}
 	
-	// TODO finish + documentation
+	// TODO finish?
+	/**
+	 * Checks whether this unit can start moving to an adjacent cube.
+	 * A unit can only start moving if it is not falling.
+	 * @return True if this unit is not falling.
+	 *				| ( ! this.isFalling())
+	 */
 	public boolean canDoMoveToAdjacent() {
-		if (this.isFalling())
-			return false;
-		
-		return true;
+		return ( ! this.isFalling());
 	}
 	
 	/**
-	 * Initializes movement for this unit to the given cube position by filling moveToPath.
+	 * Initializes movement for this unit to the given cube coordinates and disables default behaviour.
 	 * @param	destinationCoordinates
 	 * 					The destination cube.
-	 * @effect Initializes movement for this unit to the given cube poisition.
+	 * @effect Initializes movement for this unit to the given cube coordinates and disables default behaviour.
 	 *				| this.moveTo(destinationCoordinates, false)
 	 * @throws	IllegalArgumentException
 	 * 			The given destination is invalid.
@@ -1565,7 +1539,14 @@ public class Unit extends Entity{
 	 *				Whether attacking is called by default behaviour or not.
 	 *
 	 * @throws	IllegalArgumentException
-	 * 			The given destination is invalid.
+	 * 				The given destination is invalid.
+	 *				| (! this.getPosition().canHaveAsUnitCoordinates(destinationCoordinates))
+	 * @note Silent reject for:
+	 *				no adjacent solid cube (makes a unit go to mid air, which will make it fall), 
+	 *				target is unreachable because is is surrounded by solid cubes,
+	 *				this unit cannot move away from it's current position because it is locked in by solid cubes.
+	 *				This prevents the program from trying all possible cubes in the world (which takes very long, even for small worlds),
+	 *				while we know there is no path.
 	 */
 	/* TODO there seems to be some bug: when the path is a U-shape (on a single z-level)
 	 * the unit walks towards the cube right before the final one, and then suddenly flashes to
@@ -1574,11 +1555,6 @@ public class Unit extends Entity{
 	private void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
 		if (thisIsDefaultBehaviour)
 			System.out.println("moveTo by defaultBehaviour");
-		// If the given position is unusable (outside of world, solid, no adjacent solid cube, no adjacent passable cube).
-		// throws exception. This is caught and prevents calculating unnecessary things.
-		// Cases we avoid with this: no adjacent solid cube (make a unit go to mid air), 
-		// 		target is unreachable because is is surrounded by solid cubes,
-		// 		this unit cannot move away from it's current position because it is locked in by solid cubes. 
 		if ( ! this.getPosition().canHaveAsUnitCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
 			throw new IllegalArgumentException();
 		}
@@ -1611,20 +1587,20 @@ public class Unit extends Entity{
 	
 	private List<int[]> searchPath(int[] startCoordinates, int[] destinationCoordinates) {
 		return PathFinder.getPath(startCoordinates, destinationCoordinates, this.getWorld(), false); 
-		// TODO Pick true if you want to allow diagonal movement in moveTo.
+		/* Pick true if you want to allow diagonal movement in moveTo.*/
 	}
 
 	/**
 	 * A list registering the path this unit has to follow.
 	 * It is filled when executing moveTo() and it is used during advanceTime
-	 * to decide the next location to move to.
+	 * to decide the next coordinates to move to.
 	 */
 	private List<int[]> moveToPath = new ArrayList<>();
 	
 	/**
    	 * Cancels the move-to command of this non-terminated unit.
    	 * 
-   	 * @post	The unit's target and initial positions and moveToPath are reset.
+   	 * @post	The unit's target coordinates, initial coordinates and moveToPath are reset.
    	 * 			The unit stands in the center of its current cube and does nothing.
    	 * 
    	 */
@@ -1632,7 +1608,7 @@ public class Unit extends Entity{
    		try {
 	   		this.resetCoordinates();
 	   		this.setCurrentActivity(Activity.NOTHING);
-	   		this.getPosition().setCoordinates(this.getCubeCenter());
+	   		this.setCoordinates(this.getCubeCenter());
 	   		this.moveToPath.clear();
    		} catch(IllegalStateException e) {}
    	}
@@ -1641,43 +1617,6 @@ public class Unit extends Entity{
 	// ================================================================================================
 	// Methods for falling.
 	// ================================================================================================
-	
-	/** TO BE ADDED TO CLASS HEADING
-	 * @invar  The is-falling property of each unit must be a valid is-falling property for any
-	 *         unit.
-	 *       | isValidIsFalling(getIsFalling())
-	 */
-	
-	/**
-	 * Return the is-falling property of this unit.
-	 */
-	@Basic @Raw
-	public boolean getIsFalling() {
-		return this.isFalling;
-	}
-	
-	// No checker used, since this private property is controlled somewhat manually.
-	
-	/**
-	 * Set the is-falling property of this unit to the given is-falling property.
-	 * 
-	 * @param  isFalling
-	 *         The new is-falling property for this unit.
-	 * @post   The is-falling property of this new unit is equal to
-	 *         the given is-falling property.
-	 *       | new.getIsFalling() == isFalling
-	 */
-	@Raw
-	protected void setIsFalling(boolean isFalling) {
-		this.isFalling = isFalling;
-	}
-
-   	/**
-   	 * Value used to check if the unit is falling. Works alongside
-   	 * the isFalling-method. Needed because once a unit enters a lower cube,
-   	 * it may already think it is no longer falling according to the method.
-   	 */
-   	private boolean isFalling = false;
 	
 	/**
 	 * Checks if this unit is falling.
@@ -2063,9 +2002,6 @@ public class Unit extends Entity{
 			
 			// MoveToAdjacent may not be interupted except by being attacked.
 			if ((this.getCurrentActivity() != Activity.MOVE) && (moveToPath.size() == 0)) {
-				int x = workTarget[0];
-				int y = workTarget[1];
-				
 				this.setProgress(0.0);
 				
 				// If the workTarget is not in range, then an exception is thrown.
@@ -2946,10 +2882,6 @@ public class Unit extends Entity{
 	@Override
 	public void advanceTime(double deltaT) throws IllegalArgumentException, IllegalStateException, NullPointerException{
 		//TODO move voorwaarden naar World.advanceTime()
-		if  (deltaT < 0)
-			throw new IllegalArgumentException("This deltaT is invalid, because it is negative.");
-		if  (deltaT > 0.2)
-			throw new IllegalArgumentException("This deltaT is invalid, because it is to big.");
 		if (this.isTerminated()){
 			throw new IllegalStateException("This unit is terminated.");
 		}
