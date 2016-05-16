@@ -136,7 +136,7 @@ public class UnitPosition extends Position{
 	@Raw
 	public boolean canHaveAsUnitCoordinates(double xCoordinate, double yCoordinate, double zCoordinate) {
 		int[] cubePosition = Position.getCubeCoordinates(new double[] {xCoordinate, yCoordinate, zCoordinate});
-		return (this.isValidXCoordinate(xCoordinate) && this.isValidYCoordinate(yCoordinate) && this.isValidZCoordinate(zCoordinate) 
+		return (this.canHaveAsXCoordinate(xCoordinate) && this.canHaveAsYCoordinate(yCoordinate) && this.canHaveAsZCoordinate(zCoordinate) 
 				&& this.getWorld().getCube(cubePosition[0], cubePosition[1], cubePosition[2]).isPassable());
 	}
 	

@@ -36,7 +36,7 @@ public class ItemPosition extends Position {
 	 */
 	@Raw
 	public boolean canHaveAsItemCoordinates(double xCoordinate, double yCoordinate, double zCoordinate) {
-		return this.isValidXCoordinate(xCoordinate) && this.isValidYCoordinate(yCoordinate) && this.isValidZCoordinate(zCoordinate);
+		return this.canHaveAsXCoordinate(xCoordinate) && this.canHaveAsYCoordinate(yCoordinate) && this.canHaveAsZCoordinate(zCoordinate);
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class ItemPosition extends Position {
 	 */
 	@Raw
 	public boolean canHaveAsItemCoordinates(double[] coordinates) {
-		return (this.isValidXCoordinate(coordinates[0]) && this.isValidYCoordinate(coordinates[1])  && this.isValidZCoordinate(coordinates[2]));
+		return (this.canHaveAsXCoordinate(coordinates[0]) && this.canHaveAsYCoordinate(coordinates[1])  && this.canHaveAsZCoordinate(coordinates[2]));
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class ItemPosition extends Position {
 	 */
 	@Raw
 	public boolean canHaveAsItemCoordinates(int[] cubeCoordinates) {
-		return (this.isValidXCoordinate(cubeCoordinates[0]) && this.isValidYCoordinate(cubeCoordinates[1])  && this.isValidZCoordinate(cubeCoordinates[2]));
+		return (this.canHaveAsXCoordinate(cubeCoordinates[0]) && this.canHaveAsYCoordinate(cubeCoordinates[1])  && this.canHaveAsZCoordinate(cubeCoordinates[2]));
 	}
 	
 }

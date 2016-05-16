@@ -301,37 +301,37 @@ public class UnitTest {
 	@Test
 	public final void isValidXCoordinate() {
 		// True Case.
-		assertTrue(unitMax.getPosition().isValidXCoordinate(unitMax.getWorld().getMaximumXValue()/2));
+		assertTrue(unitMax.getPosition().canHaveAsXCoordinate(unitMax.getWorld().getMaximumXValue()/2));
 		
 		// False Case negative coöridinate.
-		assertFalse(unitMax.getPosition().isValidXCoordinate(-25.0));
+		assertFalse(unitMax.getPosition().canHaveAsXCoordinate(-25.0));
 		
 		// False Case coöridinate to big.
-		assertFalse(unitMax.getPosition().isValidXCoordinate(unitMax.getWorld().getMaximumXValue()));
+		assertFalse(unitMax.getPosition().canHaveAsXCoordinate(unitMax.getWorld().getMaximumXValue()));
 	}
 	
 	@Test
 	public final void isValidYCoordinate() {
 		// True case.
-		assertTrue(unitMax.getPosition().isValidYCoordinate(unitMax.getWorld().getMaximumYValue()/2));
+		assertTrue(unitMax.getPosition().canHaveAsYCoordinate(unitMax.getWorld().getMaximumYValue()/2));
 		
 		// False Case negative coöridinate.
-		assertFalse(unitMax.getPosition().isValidYCoordinate(-25.0));
+		assertFalse(unitMax.getPosition().canHaveAsYCoordinate(-25.0));
 				
 		// False Case coöridinate to big.
-		assertFalse(unitMax.getPosition().isValidYCoordinate(unitMax.getWorld().getMaximumYValue()));
+		assertFalse(unitMax.getPosition().canHaveAsYCoordinate(unitMax.getWorld().getMaximumYValue()));
 	}
 	
 	@Test
 	public final void isValidZCoordinate() {
 		// True case.
-		assertTrue(unitMax.getPosition().isValidZCoordinate(unitMax.getWorld().getMaximumZValue()/2));
+		assertTrue(unitMax.getPosition().canHaveAsZCoordinate(unitMax.getWorld().getMaximumZValue()/2));
 		
 		// False Case negative coöridinate.
-		assertFalse(unitMax.getPosition().isValidZCoordinate(-25.0));
+		assertFalse(unitMax.getPosition().canHaveAsZCoordinate(-25.0));
 				
 		// False Case coöridinate to big.
-		assertFalse(unitMax.getPosition().isValidZCoordinate(unitMax.getWorld().getMaximumZValue()));
+		assertFalse(unitMax.getPosition().canHaveAsZCoordinate(unitMax.getWorld().getMaximumZValue()));
 	}
 
 	@Test

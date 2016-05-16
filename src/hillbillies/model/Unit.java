@@ -2410,10 +2410,10 @@ public class Unit extends Entity{
 	 */
 	private double[] getRandomDodgeMove( double[] coordinates) {
 		double newRandomXCoordinate = -1;
-		while ( ! this.getPosition().isValidXCoordinate(newRandomXCoordinate))
+		while ( ! this.getPosition().canHaveAsXCoordinate(newRandomXCoordinate))
 			 newRandomXCoordinate = coordinates[0] + new Random().nextDouble()*2-1;
 		double newRandomYCoordinate = -1;
-		while ( ! this.getPosition().isValidYCoordinate(newRandomYCoordinate))
+		while ( ! this.getPosition().canHaveAsYCoordinate(newRandomYCoordinate))
 			 newRandomYCoordinate = coordinates[1] + new Random().nextDouble()*2-1;
 		double[] newRandomCoordinates = { newRandomXCoordinate, newRandomYCoordinate, this.getPosition().getCubeCoordinates()[2]};
 		return newRandomCoordinates;

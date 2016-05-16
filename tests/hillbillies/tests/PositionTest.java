@@ -218,6 +218,19 @@ public class PositionTest {
 		try{ Position.equals(new int[] {1,1}, new int[]{10,-10}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 		try{ Position.equals(new int[] {1,1,1,0}, new int[]{10,-10}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 		try{ Position.equals(new int[] {1,1}, new int[]{10,-10,20,0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Position position1 = new Position(world, new int[]{1, 1, 1});
+		Position position2 = new Position(world, new int[]{1, 1, 1});
+		Position position3 = new Position(world, new int[]{1, 2, 1});
+		
+		assertTrue(Position.equals(position1, position2));
+		assertFalse(Position.equals(position1,  position3));
+		assertFalse(Position.equals(position2,  position3));
 	}
 	
 	@Test
@@ -292,5 +305,58 @@ public class PositionTest {
 		assertTrue(Position.getCubeCoordinatesInRange(new int[] {-10,10,-10}, 2).size() == 125);
 		assertTrue(Position.getCubeCoordinatesInRange(new int[] {10,-10,-10}, 2).size() == 125);
 	}
+	
+	@Test 
+	public void getXYZCoordinate_canHaveAsXYZCoordinateTest(){
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Position position = new Position(world, new int[]{0, 1, 2});
+		
+		assertTrue(position.getXCoordinate() == 0.5);
+		assertTrue(position.getYCoordinate() == 1.5);
+		assertTrue(position.getZCoordinate() == 2.5);
+		
+
+		assertFalse(position.canHaveAsXCoordinate(3.5));
+		assertFalse(position.canHaveAsXCoordinate(3.0));
+		assertFalse(position.canHaveAsXCoordinate(-0.01));
+		assertTrue(position.canHaveAsXCoordinate(1.5));
+		assertFalse(position.canHaveAsYCoordinate(3.5));
+		assertFalse(position.canHaveAsYCoordinate(3.0));
+		assertFalse(position.canHaveAsYCoordinate(-0.01));
+		assertTrue(position.canHaveAsYCoordinate(1.5));
+		assertFalse(position.canHaveAsZCoordinate(3.5));
+		assertFalse(position.canHaveAsZCoordinate(3.0));
+		assertFalse(position.canHaveAsZCoordinate(-0.01));
+		assertTrue(position.canHaveAsZCoordinate(1.5));
+		
+	}
+	
+	@Test 
+	public void setXYZCoordinateTest(){
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Position position = new Position(world, new int[]{0, 1, 2});
+		
+		try{ position.setXCoordinate(2.5); assertTrue(position.getXCoordinate() == 2.5); } catch(IllegalArgumentException e){ assertTrue(false); }
+		try{ position.setXCoordinate(-0.2); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setXCoordinate(3.0); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setYCoordinate(0.5); assertTrue(position.getYCoordinate() == 0.5); } catch(IllegalArgumentException e){ assertTrue(false); }
+		try{ position.setYCoordinate(-0.2); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setYCoordinate(3.0); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setZCoordinate(1.5); assertTrue(position.getZCoordinate() == 1.5); } catch(IllegalArgumentException e){ assertTrue(false); }
+		try{ position.setZCoordinate(-0.2); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setZCoordinate(3.0); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		
+	}
+	
+	
+	
 	
 }

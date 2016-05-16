@@ -28,13 +28,18 @@ public class Position {
 	 *				The world this position belongs to.
 	 * @param doubleCoordinates
 	 *				The coordinates for this new position.
-	 *@effect Sets the world of this position to the given world. 
-	 *				| setWorld(world)
+	 *@post The world of this position is equal to the given world. 
+	 *				| this.getWorld() == world
 	 * @effect Sets the coordinates of this position to the given coordinates. 
 	 *				| setCoordinates(doubleCoordinates)
+	 * @throws IllegalArgumentException
+	 *				The given world is not a valid world for any position.
+	 *				| ( ! isValidWorld(world))
 	 */
 	public Position(World world, double[] doubleCoordinates) throws IllegalArgumentException{
-		this.setWorld(world);
+		if ( ! isValidWorld(world) )
+			throw new IllegalArgumentException("You are trying to set an illegal world.");
+		this.world = world;
 		this.setCoordinates(doubleCoordinates);
 	}
 	
@@ -174,6 +179,18 @@ public class Position {
  	}
 	
 	/**
+	 * Return the coordinates of the cube corresponding to the exact coordinates.
+	 * A cube coordinate corresponds to the exact coordinates, rounded down to the nearest integer.
+	 * 
+	 * @return	The cube coordinates, given as an array of 3 integers.
+	 * 					| result ==  getCubeCoordinates(this.getCoordinates())
+	 */
+	@Raw
+	public int[] getCubeCoordinates() throws IllegalArgumentException {
+		return getCubeCoordinates( this.getCoordinates());
+	}
+	
+	/**
  	 * Returns the coordinates of the center of the given cube.
  	 * @param	cubeCoordinates
  	 * 				The given cube coordinates.
@@ -310,56 +327,7 @@ public class Position {
  				+Math.pow(coordinates1[2] - coordinates2[2], 2));
  	}
  	
- 	/**
-	 * Checks if two cube coordinates are the same by comparing each of their coordinates.
-	 * 
-	 * @param	coordinates1
-	 *				The coordinates of the first cube.
-	 * @param	coordinates2
-	 *				The coordinates of the second cube.
-	 * @return	True if all coordinates of coordinates1 and coordinates2 are the same.
-	 * @throws	IllegalArgumentException
- 	 *				The given coordinates 1 is invalid.
- 	 * 				| ! (isValidArray(coordinates1))
- 	 * @throws	IllegalArgumentException
- 	 *				The given coordinates 2 is invalid.
- 	 * 				| ! (isValidArray(coordinates2))
-	 */
-	public static boolean equals (int[] coordinates1, int[] coordinates2) throws IllegalArgumentException {
-		if (! isValidArray(coordinates1))
-			throw new IllegalArgumentException(Arrays.toString(coordinates1));
- 		if (! isValidArray(coordinates2))
- 			throw new IllegalArgumentException(Arrays.toString(coordinates2));
-		return ( (coordinates1[0] == coordinates2[0]) && (coordinates1[1] == coordinates2[1])
-				&& (coordinates1[2] == coordinates2[2]) );
-	}
-
-	/**
-	 * Checks if two coordinates are nearly the same.
-	 * @param	coordinates1
-	 * 				The first coordinates.
-	 * @param	coordinates2
-	 * 				The second coordinates.
-	 * @return	True if all coordinates are nearly the same.
-	 * 				| result == (Util.fuzzyEquals(coordinates1[0]-coordinates2[0], 0)) &&
-	 *		 		|	(Util.fuzzyEquals(coordinates1[1]-coordinates2[1], 0)) &&
-	 *			 	|	(Util.fuzzyEquals(coordinates1[2]-coordinates2[2], 0)) 
-	 * @throws	IllegalArgumentException
- 	 * 				The given coordinates 1 is invalid.
- 	 * 				| ! (isValidArray(coordinates1))
- 	 * @throws	IllegalArgumentException
- 	 * 				The given coordinates 2 is invalid.
- 	 * 				| ! (isValidArray(coordinates2))
-	 */
-	public static boolean fuzzyEquals(double[] coordinates1, double[] coordinates2) throws IllegalArgumentException{
-		if (! isValidArray(coordinates1))
-			throw new IllegalArgumentException(Arrays.toString(coordinates1));
- 		if (! isValidArray(coordinates2))
- 			throw new IllegalArgumentException(Arrays.toString(coordinates2));
-		 return ( (Util.fuzzyEquals(coordinates1[0]-coordinates2[0], 0)) &&
-				 	(Util.fuzzyEquals(coordinates1[1]-coordinates2[1], 0)) &&
-				 	(Util.fuzzyEquals(coordinates1[2]-coordinates2[2], 0)) );
-	}
+ 	
 	
 	/**
 	 * Checks if two cube coordinates are next to each other, or the same.
@@ -464,40 +432,6 @@ public class Position {
 				}
 		return result;
 	}
-
-	/**
-	 * Checks if a list of positions contains a certain location.
-	 * @param list
-	 *				The list of positions to check.
-	 * @param coordinates2
-	 *				The location to search for.
-	 * @return True if at least one of the list's positions holds the same coordinates as the given location.
-	 * @throws IllegalArgumentException
-	 *				One of the positions in the given list has invalid coordinates (i.e. not three-dimensional).
-	 */
-	public static boolean containsCoordinates(List<Position> list, int[] coordinates2) throws IllegalArgumentException {
-		for (Position position: list) {
-			if ( ! isValidArray(position.getCoordinates()))
-				throw new IllegalArgumentException();
-			
-			int[] coordinates1 = position.getCubeCoordinates();
-			if (Position.equals(coordinates1, coordinates2))
-				return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Return the coordinates of the cube corresponding to the exact coordinates.
-	 * A cube coordinate corresponds to the exact coordinates, rounded down to the nearest integer.
-	 * 
-	 * @return	The cube coordinates, given as an array of 3 integers.
-	 * 					| result ==  getCubeCoordinates(this.getCoordinates())
-	 */
-	@Raw
-	public int[] getCubeCoordinates() throws IllegalArgumentException {
-		return getCubeCoordinates( this.getCoordinates());
-	}
 	
 	/**
 	 * Return the x-coordinate of this unit.
@@ -517,7 +451,7 @@ public class Position {
 	 *       			| result == ((xCoordinate >= World.CUBE_COORDINATE_MIN) && (xCoordinate < this.getWorld().getMaximumXValue()))
 	*/
 	@Raw
-	public boolean isValidXCoordinate(double xCoordinate) {
+	public boolean canHaveAsXCoordinate(double xCoordinate) {
 		return ((xCoordinate >= World.CUBE_COORDINATE_MIN) && (xCoordinate < this.getWorld().getMaximumXValue()));
 	}
 	
@@ -534,7 +468,7 @@ public class Position {
 	 */
 	@Raw
 	public void setXCoordinate(double xCoordinate)  throws IllegalArgumentException {
-		if (! isValidXCoordinate(xCoordinate))
+		if (! canHaveAsXCoordinate(xCoordinate))
 			throw new IllegalArgumentException("X Coordinate is outside the allowed range!");
 		this.coordinates[0] = xCoordinate;
 	}
@@ -558,7 +492,7 @@ public class Position {
 	 *       			| result == ((yCoordinate >= World.CUBE_COORDINATE_MIN) && (yCoordinate < this.getWorld().getMaximumYValue())) 
 	*/
 	@Raw
-	public boolean isValidYCoordinate(double yCoordinate) {
+	public boolean canHaveAsYCoordinate(double yCoordinate) {
 		return ((yCoordinate >= World.CUBE_COORDINATE_MIN) && (yCoordinate < this.getWorld().getMaximumYValue()));
 	}
 	
@@ -575,7 +509,7 @@ public class Position {
 	 */
 	@Raw
 	public void setYCoordinate(double yCoordinate) throws IllegalArgumentException {
-		if (! isValidYCoordinate(yCoordinate))
+		if (! canHaveAsYCoordinate(yCoordinate))
 			throw new IllegalArgumentException("Y Coordinate is outside the allowed range!");
 		this.coordinates[1] = yCoordinate;
 	}
@@ -598,7 +532,7 @@ public class Position {
 	 *       			| result == ((zCoordinate >= World.CUBE_COORDINATE_MIN) && (zCoordinate < this.getWorld().getMaximumZValue())) 
 	 */     
 	@Raw
-	public boolean isValidZCoordinate(double zCoordinate) {
+	public boolean canHaveAsZCoordinate(double zCoordinate) {
 		return ((zCoordinate >= World.CUBE_COORDINATE_MIN) && (zCoordinate <this.getWorld().getMaximumZValue()));
 	}
 	
@@ -615,7 +549,7 @@ public class Position {
 	 */
 	@Raw
 	public void setZCoordinate(double zCoordinate) throws IllegalArgumentException {
-		if (! isValidZCoordinate(zCoordinate))
+		if (! canHaveAsZCoordinate(zCoordinate))
 			throw new IllegalArgumentException("Z Coordinate is outside of the allowed range!");
 		this.getCoordinates()[2]= zCoordinate;
 	}
@@ -625,22 +559,6 @@ public class Position {
 	 */
 	public World getWorld(){
 		return this.world;
-	}
-	
-	/**
-	 * Sets the world this position belongs to to the given world.
-	 * @param	world
-	 *				The world to attach this position to.
-	 * @post	The world of this position is equal to the given world.
-	 *				| new.getWorld() == world
-	 * @throws IllegalArgumentException
-	 *				The given world is not a valid world for any position.
-	 */
-	protected void setWorld(World world) throws IllegalArgumentException{
-		if ( ! isValidWorld(world) )
-			throw new IllegalArgumentException("You are trying to set an illegal world.");
-		
-		this.world = world;
 	}
 	
 	/**
@@ -656,10 +574,34 @@ public class Position {
 	/**
 	 * A variable referencing the world this position belongs to.
 	 */
-	private World world;
+	private final World world;
 	
 	/**
-	 * Determines whether 2 given coordinates are the same. Coordinates are the same is the x-,y- and z-coordinate are the same.
+	 * Checks if two given cube coordinates are the same by comparing each of their coordinates.
+	 * 
+	 * @param	coordinates1
+	 *				The coordinates of the first cube.
+	 * @param	coordinates2
+	 *				The coordinates of the second cube.
+	 * @return	True if all coordinates of coordinates1 and coordinates2 are the same.
+	 * @throws	IllegalArgumentException
+ 	 *				The given coordinates 1 is invalid.
+ 	 * 				| ! (isValidArray(coordinates1))
+ 	 * @throws	IllegalArgumentException
+ 	 *				The given coordinates 2 is invalid.
+ 	 * 				| ! (isValidArray(coordinates2))
+	 */
+	public static boolean equals (int[] coordinates1, int[] coordinates2) throws IllegalArgumentException {
+		if (! isValidArray(coordinates1))
+			throw new IllegalArgumentException(Arrays.toString(coordinates1));
+ 		if (! isValidArray(coordinates2))
+ 			throw new IllegalArgumentException(Arrays.toString(coordinates2));
+		return ( (coordinates1[0] == coordinates2[0]) && (coordinates1[1] == coordinates2[1])
+				&& (coordinates1[2] == coordinates2[2]) );
+	}
+	
+	/**
+	 * Checks if two given coordinates are the sameby comparing each of their coordinates.
 	 * @param coordinates1
 	 *				One of the coordinates to compare.
 	 * @param coordinates2
@@ -681,95 +623,41 @@ public class Position {
 	}
 	
 	/**
-	 * Determines whether 2 given positions are the same. Positions are the same is the x-,y- and z-coordinate are the same.
-	 * @param position1
-	 *				One of the positions to compare.
-	 * @param position2
-	 *				The other position to compare.
+	 * Checks if two coordinates are nearly the same.
+	 * @param	coordinates1
+	 * 				The first coordinates.
+	 * @param	coordinates2
+	 * 				The second coordinates.
+	 * @return	True if all coordinates are nearly the same.
+	 * 				| result == (Util.fuzzyEquals(coordinates1[0]-coordinates2[0], 0)) &&
+	 *		 		|	(Util.fuzzyEquals(coordinates1[1]-coordinates2[1], 0)) &&
+	 *			 	|	(Util.fuzzyEquals(coordinates1[2]-coordinates2[2], 0)) 
+	 * @throws	IllegalArgumentException
+ 	 * 				The given coordinates 1 is invalid.
+ 	 * 				| ! (isValidArray(coordinates1))
+ 	 * @throws	IllegalArgumentException
+ 	 * 				The given coordinates 2 is invalid.
+ 	 * 				| ! (isValidArray(coordinates2))
 	 */
-	public static boolean equals(Position position1, Position position2) throws IllegalArgumentException {
-		return equals(position1.getCoordinates(),position2.getCoordinates());
+	public static boolean fuzzyEquals(double[] coordinates1, double[] coordinates2) throws IllegalArgumentException{
+		if (! isValidArray(coordinates1))
+			throw new IllegalArgumentException(Arrays.toString(coordinates1));
+ 		if (! isValidArray(coordinates2))
+ 			throw new IllegalArgumentException(Arrays.toString(coordinates2));
+		 return ( (Util.fuzzyEquals(coordinates1[0]-coordinates2[0], 0)) &&
+				 	(Util.fuzzyEquals(coordinates1[1]-coordinates2[1], 0)) &&
+				 	(Util.fuzzyEquals(coordinates1[2]-coordinates2[2], 0)) );
 	}
 	
 	/**
-	 * Return the angle between two vectors which have the same starting point, and their own ending point.
-	 * @param start
-	 * 			The start coordinates.
-	 * @param destination1
-	 * 			The end coordinates of the first vector.
-	 * @param destination2
-	 * 			The end coordinates of the second vector. 
-	 * @return	The angle between the two vectors in radians.
-	 * @throws IllegalArgumentException
-	 *				The given start coordinates are not valid.
-	 *				| isValidArray(start)
-	 * @throws IllegalArgumentException
-	 *				The first given destination coordinates are not valid.
-	 *				| isValidArray(destination1)
-	 * @throws IllegalArgumentException
-	 *				The second given destination coordinates are not valid.
-	 *				| isValidArray(destination2)
+	 * Determines whether 2 given coordinates are the same by comparing each of their coordinates.
+	 * @param coordinates1
+	 *				One of the coordinates to compare.
+	 * @param coordinates2
+	 *				The other coordinates to compare.
 	 */
-	public static double getAngleBetween(double[] start, double[] destination1, double[] destination2) throws IllegalArgumentException {
-		if ( ! isValidArray(start))
-			throw new IllegalArgumentException();
-		if ( ! isValidArray(destination1))
-			throw new IllegalArgumentException();
-		if ( ! isValidArray(destination2))
-			throw new IllegalArgumentException();
-		
-		double[] baseVector = new double[2];
-		for (int count = 0; count < 2; count++)
-			baseVector[count] = destination1[count]-start[count];
-		double[] compareVector = new double[2];
-		for (int count = 0; count < 2; count++)
-			compareVector[count] = destination2[count]-start[count];
-		
-		double angle1 = Math.atan2(destination1[1]-start[1], destination1[0]-start[0]);
-		double angle2 = Math.atan2(destination2[1]-start[1], destination2[0]-start[0]);
-		if (angle1 < 0)
-			angle1 = angle1 + Math.PI * 2;
-		if (angle2 < 0)
-			angle2 = angle2 + Math.PI * 2;
-		
-		double result = (Math.abs(angle2-angle1));
-		if (result > Math.PI)
-			result = 2*Math.PI-result;
-		return result;
-	}
-	
-	/**
-	 * Return the angle between two vectors which have the same starting point, and their own ending point.
-	 * @param start
-	 * 			The start coordinates.
-	 * @param destination1
-	 * 			The end coordinates of the first vector.
-	 * @param destination2
-	 * 			The end coordinates of the second vector. 
-	 * @return	The angle between the two vectors in radians.
-	 */
-	public static double getAngleBetween(int[] start, int[] destination1, int[] destination2) throws IllegalArgumentException {
-		double[] startDouble = new double[]{start[0],start[1]};
-		double[] destination1Double = new double[]{destination1[0],destination1[1]};
-		double[] destination2Double = new double[]{destination2[0],destination2[1]};
-		return Position.getAngleBetween(startDouble, destination1Double, destination2Double);
-	}
-	
-	/**
-	 * Return the angle between two vectors which have the same starting point, and their own ending point.
-	 * @param start
-	 * 			The start position.
-	 * @param destination1
-	 * 			The end position of the first vector.
-	 * @param destination2
-	 * 			The end position of the second vector. 
-	 * @return	The angle between the two vectors in radians.
-	 */
-	public static double getAngleBetween(Position start, Position destination1, Position destination2) {
-		double[] startDouble = start.getCoordinates();
-		double[] destination1Double = destination1.getCoordinates();
-		double[] destination2Double = destination2.getCoordinates();
-		return Position.getAngleBetween(startDouble, destination1Double, destination2Double);
+	public static boolean equals(Position coordinates1, Position coordinates2) throws IllegalArgumentException {
+		return equals(coordinates1.getCoordinates(),coordinates2.getCoordinates());
 	}
 	
 }
