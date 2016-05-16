@@ -28,6 +28,7 @@ public class PositionTest {
 		{11,9,9},{11,9,10},{11,9,11},{11,10,9},{11,10,10},{11,10,11},
 		{11,11,9},{11,11,10},{11,11,11}};
 	private final double deltaT = 0.1;
+	@SuppressWarnings("unused")
 	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
 	private static final int TYPE_TREE = 2;

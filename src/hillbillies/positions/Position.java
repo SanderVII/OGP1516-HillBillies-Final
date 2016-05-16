@@ -100,6 +100,9 @@ public class Position {
 	 *				| new.coordinates = doubleCoordinates
 	 * @throws IllegalArgumentException
 	 *				The given coordinates are not valid coordinates for this position.
+	 * @throws IllegalArgumentException
+	 *				The given coordinates are not valid coordinates.
+	 *				| ( ! isValidArray(doubleCoordinates))
 	 */
 	public void setCoordinates(double[] doubleCoordinates) throws IllegalArgumentException{
 		if ( ! isValidArray(doubleCoordinates)) {

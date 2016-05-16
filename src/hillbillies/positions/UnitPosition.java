@@ -12,33 +12,27 @@ import hillbillies.model.World;
 public class UnitPosition extends Position{
 	
 	/**
-	 * Initializes this unitPosition with the given coordinates and world.
+	 * Initializes this UnitPosition with the given coordinates and world.
 	 * @param world
-	 *				The world for this new unit position.
+	 *				The world for this new UnitPosition.
 	 * @param doubleCoordinates
-	 *				The coordinates for this new unit  position.
+	 *				The coordinates for this new UnitPosition.
 	 * @effect super(world, doubleCoordinates)
 	 */
 	public UnitPosition(World world, double[] doubleCoordinates){
 		super(world, doubleCoordinates);
 	}
-	
+
 	/**
-	 * Sets the coordinates of this position.
+	 * Initializes this UnitPosition with the given coordinates and world.
+	 * @param world
+	 *				The world for this new unit position.
 	 * @param doubleCoordinates
-	 *				The coordinates to set this positions coordinates to.
-	 *
-	 * @post The position is equal to the given coordinates.
-	 *				| new.coordinates = coordinates
-	 *
-	 * @throws IllegalArgumentException
-	 *				The given coordinates are not valid coordinates for any unit position.
+	 *				The coordinates for this new unit  position.
+	 * @effect super(world, getCubeCenter(cubeCoordinates))
 	 */
-	@Override
-	public void setCoordinates(double[] doubleCoordinates) throws IllegalArgumentException{		
-		if ( ! canHaveAsCoordinates(doubleCoordinates))
-			throw new IllegalArgumentException("The given position is not a valid position for any unit.");
-		this.coordinates = doubleCoordinates;
+	public UnitPosition(World world, int[] cubeCoordinates) {
+		super(world, cubeCoordinates);
 	}
 	
 	/**
