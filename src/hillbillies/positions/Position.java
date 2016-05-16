@@ -214,7 +214,7 @@ public class Position {
  	 * Returns the coordinates of the center of the cube corresponding to the current coordinates of this position.
  	 * 
  	 * @return	The coordinates of the center of the cube corresponding to the current coordinates of this position.
- 	 *				| result == getCubeCenter(getPosition())
+ 	 *				| result == getCubeCenter(getcoordinates())
  	 */
  	public double[] getCubeCenter() throws IllegalArgumentException {
  		return getCubeCenter(this.getCoordinates());
@@ -231,7 +231,7 @@ public class Position {
  	 * 				| result == {this.getCubeCenter(coordinates)[0],this.getCubeCenter(coordinates)[1],coordinates[2]});	
  	 * @throws	IllegalArgumentException
  	 *				The given coordinates are invalid.
- 	 * 				| ! (isValidArray(position))		
+ 	 * 				| ! (isValidArray(coordinates))		
  	 */
  	public static double[] getSurfaceCenter(double[] coordinates) throws IllegalArgumentException {
  		if (! isValidArray(coordinates))
@@ -246,14 +246,14 @@ public class Position {
  	 * is the same as this unit's z-coordinate.
  	 * 
  	 * @return	The coordinates of the center of the cube corresponding to the coordinates.
- 	 * 				| result == getSurfaceCenter(getPosition())
+ 	 * 				| result == getSurfaceCenter(getCoordinates())
  	 */
  	public double[] getSurfaceCenter() throws IllegalArgumentException {
  		return getSurfaceCenter(this.getCoordinates());
  	}
  	
  	/**
- 	 * Returns the next position for a given velocity and time interval.
+ 	 * Returns the next coordinates for a given velocity and time interval.
  	 * 
  	 * @param	coordinates
  	 * 				The original coordinates.
@@ -262,14 +262,14 @@ public class Position {
  	 * @param	deltaT
  	 * 				The given time interval.
  	 * @return	The next coordinates, calculated as the velocity times deltaT, added to the original coordinates.
- 	 * 				| for element in nextPosition
+ 	 * 				| for element in nextCoordinates
  	 * 				|	nextCoordinates[element] = coordinates[element] + velocity[element] * deltaT;
  	 * @throws	IllegalArgumentException
  	 *				The given coordinates are invalid.
  	 * 				| ! (isValidArray(coordinates))
  	 * @throws	IllegalArgumentException
  	 *				The given velocity is invalid.
- 	 * 				| ! (isValidArray(coordinates))		
+ 	 * 				| ! (isValidArray(velocity))		
  	 */
  	public static double[] calculateNextCoordinates(double[] coordinates, double[] velocity, double deltaT) throws IllegalArgumentException {
  		if (! isValidArray(coordinates))
@@ -472,6 +472,8 @@ public class Position {
 	 * @param coordinates2
 	 *				The location to search for.
 	 * @return True if at least one of the list's positions holds the same coordinates as the given location.
+	 * @throws IllegalArgumentException
+	 *				One of the positions in the given list has invalid coordinates (i.e. not three-dimensional).
 	 */
 	public static boolean containsCoordinates(List<Position> list, int[] coordinates2) throws IllegalArgumentException {
 		for (Position position: list) {
@@ -662,6 +664,12 @@ public class Position {
 	 *				One of the coordinates to compare.
 	 * @param coordinates2
 	 *				The other coordinates to compare.
+	 * @throws IllegalArgumentException
+	 *				The first given coordinates are not valid.
+	 *				| isValidArray(coordinates1)
+	 * @throws IllegalArgumentException
+	 *				The second given coordinates are not valid.
+	 *				| isValidArray(coordinates2)
 	 */
 	public static boolean equals(double[] coordinates1, double[] coordinates2) throws IllegalArgumentException {
 		if (! isValidArray(coordinates1))
@@ -692,6 +700,15 @@ public class Position {
 	 * @param destination2
 	 * 			The end coordinates of the second vector. 
 	 * @return	The angle between the two vectors in radians.
+	 * @throws IllegalArgumentException
+	 *				The given start coordinates are not valid.
+	 *				| isValidArray(start)
+	 * @throws IllegalArgumentException
+	 *				The first given destination coordinates are not valid.
+	 *				| isValidArray(destination1)
+	 * @throws IllegalArgumentException
+	 *				The second given destination coordinates are not valid.
+	 *				| isValidArray(destination2)
 	 */
 	public static double getAngleBetween(double[] start, double[] destination1, double[] destination2) throws IllegalArgumentException {
 		if ( ! isValidArray(start))
@@ -732,13 +749,6 @@ public class Position {
 	 * @return	The angle between the two vectors in radians.
 	 */
 	public static double getAngleBetween(int[] start, int[] destination1, int[] destination2) throws IllegalArgumentException {
-		if ( ! isValidArray(start))
-			throw new IllegalArgumentException();
-		if ( ! isValidArray(destination1))
-			throw new IllegalArgumentException();
-		if ( ! isValidArray(destination2))
-			throw new IllegalArgumentException();
-		
 		double[] startDouble = new double[]{start[0],start[1]};
 		double[] destination1Double = new double[]{destination1[0],destination1[1]};
 		double[] destination2Double = new double[]{destination2[0],destination2[1]};
