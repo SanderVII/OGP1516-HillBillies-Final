@@ -147,22 +147,22 @@ public class PositionTest {
 	}
 	
 	@Test
+	public void getSurfaceCenterTest() {
+		assertTrue(Position.fuzzyEquals(
+				Position.getSurfaceCenter(new double[] {10.96,10.24,10.1}),new double[]{10.5,10.5,10.1}));
+		assertTrue(Position.fuzzyEquals(
+				Position.getSurfaceCenter(new double[]{5.2,-3.6,-4.9}),new double[]{5.5,-3.5,-4.9}));
+		try{ Position.getCubeCenter(new double[]{0, 0, 0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ Position.getCubeCenter(new double[]{0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+	}
+	
+	@Test
 	public void getCubeCenterTest() {
 		assertTrue(Position.fuzzyEquals(
 				Position.getCubeCenter(new int[] {10,10,10}), new double[]{10.5,10.5,10.5}));
 		assertTrue(Position.fuzzyEquals(
 				Position.getCubeCenter(new int[]{5,-4,-5}), new double[]{5.5,-3.5,-4.5}));
 		
-		try{ Position.getCubeCenter(new double[]{0, 0, 0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-		try{ Position.getCubeCenter(new double[]{0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-	}
-	
-	@Test
-	public void getSurfaceCenterTest() {
-		assertTrue(Position.fuzzyEquals(
-				Position.getSurfaceCenter(new double[] {10.96,10.24,10.1}),new double[]{10.5,10.5,10.1}));
-		assertTrue(Position.fuzzyEquals(
-				Position.getSurfaceCenter(new double[]{5.2,-3.6,-4.9}),new double[]{5.5,-3.5,-4.9}));
 		try{ Position.getCubeCenter(new double[]{0, 0, 0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 		try{ Position.getCubeCenter(new double[]{0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 	}
@@ -356,8 +356,4 @@ public class PositionTest {
 		try{ position.setZCoordinate(3.0); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 		
 	}
-	
-	
-	
-	
 }
