@@ -10,30 +10,29 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.World;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.positions.Position;
 import ogp.framework.util.Util;
 
 /**
  * @author Sander Mergan, Thomas Vranken
- * @version	2.0
+ * @version	2.1
  */
 public class PositionTest {
 	
-	final double[] positionEasy1 = new double[] {1.0,1.0,1.0};
-	final double[] positionEasy2 = new double[] {-1.0,-1.0,-1.0};
-	final double[] positionNormal = new double[] {10.96,10.24,10.1};
-	final int[] cubeNormal = new int[] {10,10,10};
-	final int[][]neighboursNormal = new int[][] {{9,9,9},{9,9,10},{9,9,11},
+	private final int[][]neighboursNormal = new int[][] {{9,9,9},{9,9,10},{9,9,11},
 		{9,10,9},{9,10,10},{9,10,11},{9,11,9},{9,11,10},{9,11,11},
 		{10,9,9},{10,9,10},{10,9,11},{10,10,9},{10,10,10},{10,10,11},
 		{10,11,9},{10,11,10},{10,11,11},
 		{11,9,9},{11,9,10},{11,9,11},{11,10,9},{11,10,10},{11,10,11},
 		{11,11,9},{11,11,10},{11,11,11}};
-	final double[] positionNegative = new double[]{5.2,-3.6,-4.9};
-	final int[] cubeNegative = new int[]{5,-4,-5};
-	final double speed = 2.0;
-	final double[] velocity = new double[]{10,-10,20};
-	final double deltaT = 0.1;
+	private final double deltaT = 0.1;
+	private static final int TYPE_AIR = 0;
+	private static final int TYPE_ROCK = 1;
+	private static final int TYPE_TREE = 2;
+	private static final int TYPE_WORKSHOP = 3;
+	
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -54,64 +53,148 @@ public class PositionTest {
 	}
 	
 	@Test
-	public void getCubePosition() {
-		assertTrue(Position.equals(Position.getCubeCoordinates(positionNormal),cubeNormal)); 
-		assertTrue(Position.equals(Position.getCubeCoordinates(positionNegative),cubeNegative)); 
+	public void constructorTest(){
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		
+		Position position = new Position(world, new int[]{1, 1, 1});
+		assertTrue(position.getWorld() == world);
+		assertTrue(Position.equals(position.getCoordinates(), new double[]{1.5, 1.5, 1.5} ));
+		assertTrue(Position.equals(position.getCubeCoordinates(), new int[]{1, 1, 1} ));
+		
+		Position position2 = new Position(world, new int[]{0, 0, 0});
+		assertTrue(position2.getWorld() == world);
+		assertTrue(Position.equals(position2.getCoordinates(), new double[]{0.5, 0.5, 0.5} ));
+		assertTrue(Position.equals(position2.getCubeCoordinates(), new int[]{0, 0, 0} ));
+		
+		Position position3 = new Position(world, new int[]{2, 2, 2});
+		assertTrue(position3.getWorld() == world);
+		assertTrue(Position.equals(position3.getCoordinates(), new double[]{2.5, 2.5, 2.5} ));
+		assertTrue(Position.equals(position3.getCubeCoordinates(), new int[]{2, 2, 2} ));
+		
+		try{new Position(null, new int[]{0 ,0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ new Position(world, new int[]{0, 0, 0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ new Position(world, new int[]{3, 3, 3}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ new Position(world, new int[]{-1, -1, -1}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 	}
 	
 	@Test
-	public void getCubeCenter() {
-		assertTrue(Position.fuzzyEquals(
-				Position.getCubeCenter(cubeNormal), new double[]{10.5,10.5,10.5}));
-		assertTrue(Position.fuzzyEquals(
-				Position.getCubeCenter(cubeNegative), new double[]{5.5,-3.5,-4.5}));
+	public void toStringTest(){
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Position position = new Position(world, new int[]{1, 1, 1});
+		
+		assertTrue(position.toString().equals( "Position: { 1.5, 1.5, 1.5 }"));
 	}
 	
 	@Test
-	public void getSurfaceCenter() {
-		assertTrue(Position.fuzzyEquals(
-				Position.getSurfaceCenter(positionNormal),new double[]{10.5,10.5,10.1}));
-		assertTrue(Position.fuzzyEquals(
-				Position.getSurfaceCenter(positionNegative),new double[]{5.5,-3.5,-4.9}));
+	public void canHaveAsCoordinatesTest(){
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Position position = new Position(world, new int[]{1, 1, 1});
+		
+		assertFalse(position.canHaveAsCoordinates(new double[]{3, 2, 2}));
+		assertFalse(position.canHaveAsCoordinates(new double[]{2, 3, 2}));
+		assertFalse(position.canHaveAsCoordinates(new double[]{2, 2, 3}));
+		assertFalse(position.canHaveAsCoordinates(new double[]{-1, 0, 0}));
+		assertFalse(position.canHaveAsCoordinates(new double[]{0, -1, 0}));
+		assertFalse(position.canHaveAsCoordinates(new double[]{0, 0, -1}));
+		assertTrue(position.canHaveAsCoordinates(new double[]{0, 0, 0}));
+		assertTrue(position.canHaveAsCoordinates(new double[]{2, 2, 2}));
+		assertTrue(position.canHaveAsCoordinates(new double[]{0, 1, 2}));
 	}
 	
 	@Test
-	public void calculateNextPosition() {
-		assertTrue(Position.fuzzyEquals(
-				Position.calculateNextCoordinates(positionEasy1, velocity, deltaT),new double[]{2.0,0.0,3.0}));
-		assertTrue(Position.fuzzyEquals(
-				Position.calculateNextCoordinates(positionEasy2, velocity, deltaT),new double[]{0.0,-2.0,1.0}));
+	public void setCoordinatesTest(){
+		int[][][] terrain = new int[3][3][3];
+		terrain[1][1][0] = TYPE_ROCK;
+		terrain[1][1][1] = TYPE_TREE;
+		terrain[1][1][2] = TYPE_WORKSHOP;
+		World world = new World(terrain, new DefaultTerrainChangeListener());
+		Position position = new Position(world, new int[]{1, 1, 1});
+		
+		try{ position.setCoordinates(new int[]{0, 1, 2}); assertTrue(Position.equals(position.getCubeCoordinates(), new int[]{0, 1, 2}));} catch(IllegalArgumentException e){ assertTrue(false); }
+		try{ position.setCoordinates(new int[]{0, 0, 0}); assertTrue(Position.equals(position.getCubeCoordinates(), new int[]{0, 0, 0}));} catch(IllegalArgumentException e){ assertTrue(false); }
+		try{ position.setCoordinates(new int[]{0, 0, 0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setCoordinates(new int[]{3, 3, 3}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setCoordinates(new int[]{-1, -1, -1}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		
+		try{ position.setCoordinates(new double[]{0.5, 1.5, 2.5}); assertTrue(Position.equals(position.getCoordinates(), new double[]{0.5, 1.5, 2.5}));} catch(IllegalArgumentException e){ assertTrue(false); };
+		try{ position.setCoordinates(new double[]{0.5, 0.5, 0.5}); assertTrue(Position.equals(position.getCoordinates(), new double[]{0.5, 0.5, 0.5}));} catch(IllegalArgumentException e){ assertTrue(false); };
+		try{ position.setCoordinates(new double[]{0.5, 0.5, 0.5, 0.5}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setCoordinates(new double[]{3.5, 3.5, 3.5}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ position.setCoordinates(new double[]{-1.5, -1.5, -1.5}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 	}
 	
 	@Test
-	public void getDistance() {
-		assertTrue(Util.fuzzyEquals(Position.getDistance(positionEasy1, positionEasy2),3.464102));
+	public void getCubeCoordinatesTest() {
+		assertTrue(Position.equals(Position.getCubeCoordinates(new double[] {10.96,10.24,10.1}), new int[] {10,10,10}));
+		try{ Position.getCubeCoordinates(new double[]{0, 0, 0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+
 	}
 	
 	@Test
-	public void isAdJacentTo() {
-		assertFalse(Position.isAdjacentTo(cubeNormal, cubeNegative));
-		assertTrue(Position.isAdjacentTo(cubeNormal, cubeNormal));
-		assertTrue(Position.isAdjacentTo(cubeNormal, new int[]{9,9,9}));
-	}
-	
-	@Test
-	public void getVelocity() {
+	public void getCubeCenterTest() {
 		assertTrue(Position.fuzzyEquals(
-				Position.getVelocity(positionEasy1, positionEasy2, speed),new double[]{-1.1547,-1.1547,-1.1547}));
+				Position.getCubeCenter(new int[] {10,10,10}), new double[]{10.5,10.5,10.5}));
 		assertTrue(Position.fuzzyEquals(
-				Position.getVelocity(positionNegative, positionNegative, speed),new double[]{0,0,0}));
+				Position.getCubeCenter(new int[]{5,-4,-5}), new double[]{5.5,-3.5,-4.5}));
 	}
 	
 	@Test
-	public void getCubePositionsInRange1() {
+	public void getSurfaceCenterTest() {
+		assertTrue(Position.fuzzyEquals(
+				Position.getSurfaceCenter(new double[] {10.96,10.24,10.1}),new double[]{10.5,10.5,10.1}));
+		assertTrue(Position.fuzzyEquals(
+				Position.getSurfaceCenter(new double[]{5.2,-3.6,-4.9}),new double[]{5.5,-3.5,-4.9}));
+	}
+	
+	@Test
+	public void calculateNextPositionTest() {
+		assertTrue(Position.fuzzyEquals(
+				Position.calculateNextCoordinates(new double[] {1.0,1.0,1.0}, new double[]{10,-10,20}, deltaT),new double[]{2.0,0.0,3.0}));
+		assertTrue(Position.fuzzyEquals(
+				Position.calculateNextCoordinates(new double[] {-1.0,-1.0,-1.0}, new double[]{10,-10,20}, deltaT),new double[]{0.0,-2.0,1.0}));
+	}
+	
+	@Test
+	public void getDistanceTest() {
+		assertTrue(Util.fuzzyEquals(Position.getDistance(new double[] {1.0,1.0,1.0}, new double[] {-1.0,-1.0,-1.0}),3.464102));
+	}
+	
+	@Test
+	public void isAdJacentToTest() {
+		assertFalse(Position.isAdjacentTo(new int[] {10,10,10}, new int[]{5,-4,-5}));
+		assertTrue(Position.isAdjacentTo(new int[] {10,10,10}, new int[] {10,10,10}));
+		assertTrue(Position.isAdjacentTo(new int[] {10,10,10}, new int[]{9,9,9}));
+	}
+	
+	@Test
+	public void getVelocityTest() {
+		assertTrue(Position.fuzzyEquals(
+				Position.getVelocity(new double[] {1.0,1.0,1.0}, new double[] {-1.0,-1.0,-1.0}, 2.0),new double[]{-1.1547,-1.1547,-1.1547}));
+		assertTrue(Position.fuzzyEquals(
+				Position.getVelocity(new double[]{5.2,-3.6,-4.9}, new double[]{5.2,-3.6,-4.9}, 2.0),new double[]{0,0,0}));
+	}
+	
+	@Test
+	public void getCubePositionsInRange1Test() {
 		int count = 0;
-		Set<int[]> result = Position.getCubeCoordinatesInRange(cubeNormal, 1);
+		Set<int[]> result = Position.getCubeCoordinatesInRange(new int[] {10,10,10}, 1);
 		for (int[]position: neighboursNormal)
 			for (int[] resultpos: result)
 				if (Position.equals(position, resultpos))
 					count++;
 		assertTrue(count==27);
 	}
-
+	
 }
