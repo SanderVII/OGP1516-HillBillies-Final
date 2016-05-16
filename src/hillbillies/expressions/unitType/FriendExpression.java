@@ -5,7 +5,7 @@ import java.util.Set;
 import hillbillies.model.Faction;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 
 public class FriendExpression extends UnitExpression {
 

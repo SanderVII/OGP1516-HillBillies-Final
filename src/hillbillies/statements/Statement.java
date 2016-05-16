@@ -5,7 +5,6 @@ import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.statements.expressionType.ExpressionStatement;
 import hillbillies.tasks.TextObject;
 
 public abstract class Statement extends TextObject {

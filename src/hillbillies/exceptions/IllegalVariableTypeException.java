@@ -1,4 +1,4 @@
-package hillbillies.exception;
+package hillbillies.exceptions;
 
 /**
  * This exception is thrown whenever a readVariableExpression evaluates to an inappropriate type.

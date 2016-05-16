@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.util.ItemPosition;
-import hillbillies.util.Position;
+import hillbillies.positions.ItemPosition;
+import hillbillies.positions.Position;
 
 /**
  * @version	2.0

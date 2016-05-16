@@ -16,7 +16,7 @@ import hillbillies.part2.internal.map.GameMap;
 import hillbillies.part2.internal.map.GameMapReader;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part2.listener.TerrainChangeListener;
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 import ogp.framework.util.Util;
 
 /**

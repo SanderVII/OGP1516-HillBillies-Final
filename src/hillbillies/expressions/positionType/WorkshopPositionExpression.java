@@ -3,7 +3,7 @@ package hillbillies.expressions.positionType;
 import hillbillies.model.Terrain;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 
 public class WorkshopPositionExpression extends PositionExpression{
 	

@@ -1,7 +1,7 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 import ogp.framework.util.Util;
 
 /**

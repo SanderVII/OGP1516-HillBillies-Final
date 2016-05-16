@@ -1,4 +1,4 @@
-package hillbillies.util;
+package hillbillies.positions;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -15,7 +15,7 @@ import org.junit.rules.ExpectedException;
 import hillbillies.model.*;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.facade.Facade;
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 import ogp.framework.util.ModelException;
 
 /**

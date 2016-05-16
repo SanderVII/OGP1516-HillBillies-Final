@@ -4,7 +4,7 @@ import java.util.Set;
 
 import hillbillies.model.Log;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 
 public class LogPositionExpression extends PositionExpression {
 

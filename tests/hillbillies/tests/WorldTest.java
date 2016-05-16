@@ -17,7 +17,7 @@ import hillbillies.model.Terrain;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 import ogp.framework.util.Util;
 
 /**

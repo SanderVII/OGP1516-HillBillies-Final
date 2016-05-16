@@ -1,9 +1,8 @@
 package hillbillies.expressions.positionType;
 
-import hillbillies.exception.IllegalVariableTypeException;
+import hillbillies.exceptions.IllegalVariableTypeException;
 import hillbillies.expressions.IUnitVariableExpression;
 import hillbillies.expressions.ReadVariableExpression;
-import hillbillies.expressions.booleanType.BooleanExpression;
 import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;

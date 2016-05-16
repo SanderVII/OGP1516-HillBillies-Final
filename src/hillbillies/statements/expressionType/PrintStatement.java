@@ -2,7 +2,6 @@ package hillbillies.statements.expressionType;
 
 import hillbillies.expressions.Expression;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.statements.Statement;
 
 public class PrintStatement<E extends Expression> extends ExpressionStatement<E> {
 

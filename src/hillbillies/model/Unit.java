@@ -9,9 +9,9 @@ import java.util.Set;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.exception.UnitMaxedOutException;
-import hillbillies.util.Position;
-import hillbillies.util.UnitPosition;
+import hillbillies.exceptions.UnitMaxedOutException;
+import hillbillies.positions.Position;
+import hillbillies.positions.UnitPosition;
 
 //TODO de fouten zoeken in defaultBehaviour. 
 //TODO do not award xp for failed task (i.e. working air)

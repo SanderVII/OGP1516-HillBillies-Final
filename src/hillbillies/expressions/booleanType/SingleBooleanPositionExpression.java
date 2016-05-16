@@ -1,7 +1,6 @@
 package hillbillies.expressions.booleanType;
 
 import hillbillies.expressions.IPositionVariableExpression;
-import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.part3.programs.SourceLocation;
 
 public abstract class SingleBooleanPositionExpression<E extends IPositionVariableExpression> 

@@ -1,4 +1,4 @@
-package hillbillies.util;
+package hillbillies.positions;
 
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.World;

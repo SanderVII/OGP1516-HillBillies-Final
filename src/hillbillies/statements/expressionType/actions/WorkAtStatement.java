@@ -2,7 +2,6 @@ package hillbillies.statements.expressionType.actions;
 
 import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.statements.Statement;
 
 public class WorkAtStatement<E extends PositionExpression> 
 		extends ActionPositionStatement<E> {

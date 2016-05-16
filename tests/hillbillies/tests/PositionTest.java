@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 import ogp.framework.util.Util;
 
 /**

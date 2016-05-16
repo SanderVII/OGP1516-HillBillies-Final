@@ -3,7 +3,6 @@ package hillbillies.tests.facade;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

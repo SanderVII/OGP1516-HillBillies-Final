@@ -10,9 +10,9 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.part2.listener.TerrainChangeListener;
+import hillbillies.positions.Position;
+import hillbillies.positions.UnitPosition;
 import hillbillies.util.ConnectedToBorder;
-import hillbillies.util.Position;
-import hillbillies.util.UnitPosition;
 import hillbillies.model.Cube;
 import hillbillies.model.Terrain;
 
@@ -234,18 +234,6 @@ public class World {
 				return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Return the number of factions associated with this world.
-	 * 
-	 * @note	This also includes inactive (empty) factions!
-	 * @return  The total number of factions collected in this world.
-	 *        | result ==
-	 *        |   card({faction:Faction | hasAsFaction({faction)})
-	 */
-	private int getNbFactions() {
-		return factions.size();
 	}
 	
 	/**

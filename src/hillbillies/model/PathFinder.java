@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 
 public class PathFinder {
 	

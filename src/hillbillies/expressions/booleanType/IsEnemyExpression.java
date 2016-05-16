@@ -1,6 +1,6 @@
 package hillbillies.expressions.booleanType;
 
-import hillbillies.exception.IllegalVariableTypeException;
+import hillbillies.exceptions.IllegalVariableTypeException;
 import hillbillies.expressions.IUnitVariableExpression;
 import hillbillies.part3.programs.SourceLocation;
 

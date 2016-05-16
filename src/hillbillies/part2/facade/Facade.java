@@ -1,6 +1,5 @@
 package hillbillies.part2.facade;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import hillbillies.model.Boulder;

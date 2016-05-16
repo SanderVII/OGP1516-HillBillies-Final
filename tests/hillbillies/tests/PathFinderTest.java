@@ -3,7 +3,6 @@ package hillbillies.tests;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +18,7 @@ import hillbillies.part2.internal.map.CubeType;
 import hillbillies.part2.internal.map.GameMap;
 import hillbillies.part2.internal.map.GameMapReader;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
-import hillbillies.util.Position;
+import hillbillies.positions.Position;
 
 /**
  * @author Sander Mergan, Thomas Vranken

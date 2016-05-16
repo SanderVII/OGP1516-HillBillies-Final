@@ -1,4 +1,4 @@
-package hillbillies.exception;
+package hillbillies.exceptions;
 
 public class UnitMaxedOutException extends RuntimeException {
 

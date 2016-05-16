@@ -3,10 +3,9 @@ package hillbillies.expressions.positionType;
 import java.util.Random;
 import java.util.Set;
 
-import hillbillies.exception.IllegalVariableTypeException;
+import hillbillies.exceptions.IllegalVariableTypeException;
 import hillbillies.expressions.IPositionVariableExpression;
 import hillbillies.expressions.ReadVariableExpression;
-import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class NextToExpression<E extends IPositionVariableExpression> 
