@@ -3141,7 +3141,10 @@ public class Unit extends Entity{
 				if (moveToPath.size() !=0) {
 					moveToPath.remove(0);
 					// Recalculate the path since it may have changed by the time this unit moved one cube.
-					this.moveTo(this.moveToPath.get(this.moveToPath.size()-1), this.getDefaultBehaviorEnabled());
+					if (moveToPath.size() >= 1){
+						System.out.println(this.moveToPath.size()-1);
+						this.moveTo(this.moveToPath.get(this.moveToPath.size()-1), this.getDefaultBehaviorEnabled());
+					}
 				}
 				
 				// Add experience (1 per cube traversed)

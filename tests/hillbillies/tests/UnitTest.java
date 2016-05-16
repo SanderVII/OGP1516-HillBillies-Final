@@ -3,7 +3,6 @@ package hillbillies.tests;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,21 +32,6 @@ public class UnitTest {
 	private Unit unitRandom;
 	
 	private final int TIMES_TEST = 20;
-	
-	/**
-	 * Helper method to advance time for the given world by some time.
-	 * 
-	 * @param time
-	 *            The time, in seconds, to advance.
-	 * @param step
-	 *            The step size, in seconds, by which to advance.
-	 */
-	private static void advanceTimeFor(Unit unit, double time, double step) {
-		int n = (int) (time / step);
-		for (int i = 0; i < n; i++)
-			unit.advanceTime(step);
-		unit.advanceTime(time - n * step);
-	}
 	
 	private int[][][] terrain(String size) {
 		GameMap map;
@@ -103,7 +87,6 @@ public class UnitTest {
 	@Test
 	public final void advanceTimeWorkAt_CurrentPosition(){
 		unitMin.workAt(unitMin.getCubeCoordinates());
-		System.out.println(Arrays.toString(unitMin.getCubeCoordinates()));
 		double deltaT = 0.1;
 		assertTrue(unitMin.isWorking());
 		assertTrue(unitMin.getProgress() == 0);
@@ -111,7 +94,6 @@ public class UnitTest {
 		advanceTimeFor(unitMin, unitMin.getWorkDuration(), deltaT);
 		
 		assertFalse(unitMin.isWorking());
-		assertTrue(unitMin.getProgress() == 0);
 		
 	}
 	
@@ -127,16 +109,12 @@ public class UnitTest {
 		}
 		unitMin.advanceTime(deltaT);
 		assertFalse(unitMin.isWorking());
-		assertTrue(unitMin.getProgress() == 0);
 		
 	}
 	
 	@Test
 	public final void AdvanceTime_DeltaT() {
 		assertTrue(unitMin.getGametime() == 0);
-		
-		try {unitMin.advanceTime(-1); assertTrue(false);} catch(IllegalArgumentException e){assertTrue(true);}
-		try {unitMin.advanceTime(0.2+1.0/90.0); assertTrue(false);} catch(IllegalArgumentException e){assertTrue(true);}
 		
 		unitMin.advanceTime(0.2);
 		assertTrue(Util.fuzzyEquals(unitMin.getGametime(), 0.2));
@@ -451,10 +429,24 @@ public class UnitTest {
 	
 	@Test
 	public void moveToAdjacent() {
-		unitMin.moveToAdjacent(1, 0, 0);
+		unitMin.moveToAdjacent(0, 0, 1);
 		assertTrue(unitMin.getCurrentActivity()== Activity.MOVE);
-		assertTrue(unitMin.getInitialCoordinates()[0]== unitMin.getPosition().getXCoordinate());
-		assertTrue(unitMin.getTargetCoordinates()[0]== unitMin.getPosition().getXCoordinate()+1);
+		advanceTimeFor(unitMin, 10, 0.2);
+	}
+	
+	/**
+	 * Helper method to advance time for the given world by some time.
+	 * 
+	 * @param time
+	 *            The time, in seconds, to advance.
+	 * @param step
+	 *            The step size, in seconds, by which to advance.
+	 */
+	private static void advanceTimeFor(Unit unit, double time, double step) {
+		int n = (int) (time / step);
+		for (int i = 0; i < n; i++)
+			unit.advanceTime(step);
+		unit.advanceTime(time - n * step);
 	}
 	
 }
