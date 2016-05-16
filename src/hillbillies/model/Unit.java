@@ -1227,17 +1227,6 @@ public class Unit extends Entity{
 	// Methods concerning distance and speed.
 	//============================================================================================
 	
-   	/**
-	 * Returns the distance between this unit's current position and the center of the target cube.
-	 * @param	targetCoordinates
-	 * 					The coordinates of the target.
-	 * @return	The distance based on the mathematical formula of distance in 3 dimensions.
-	 * 					| result == PositionUtil.getDistance(this.getPosition().getCoordinates(), targetCoordinates);
-	 */
-	public double getDistance(double[] targetCoordinates) {
-		return Position.getDistance(this.getPosition().getCoordinates(), targetCoordinates);
-	}
-	
  	/**
 	 * Returns the base speed of this unit.
 	 * @return	The base speed is given as 1.5*(agility+strength)/(2.0*weight).

@@ -39,7 +39,7 @@ public class UnitTest {
 	}
 	
 	@Test
-	public final void advanceTimeWorkAt_CurrentPosition(){
+	public final void advanceTimeWorkAtTest_CurrentPosition(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
 		world.addEntity(unitMin);
@@ -56,7 +56,7 @@ public class UnitTest {
 	}
 	
 	@Test
-	public final void advanceTimeWorkAt_Origin(){
+	public final void advanceTimeWorkAtTest_Origin(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
 		world.addEntity(unitMin);
@@ -87,7 +87,7 @@ public class UnitTest {
 	}
 	
 	@Test
-	public final void extendedConstructor_NormalCase() {
+	public final void constructorTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
 		world.addEntity(unitMin);
@@ -101,11 +101,7 @@ public class UnitTest {
 		assertEquals(25, unitMin.getStrength());
 		assertEquals(25, unitMin.getAgility());
 		assertEquals(25, unitMin.getToughness());
-	}
-	
-	@Test
-	public final void extendedConstructor_LowWeight() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		
 		Unit unitLowWeight = new Unit(world, "UnitLowWeight", new int[] {world.getMaximumXValue()-world.getMaximumXValue()/2-3, 
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
 																														world.getMaximumZValue()-5}, 
@@ -124,7 +120,7 @@ public class UnitTest {
 	}
 
 	@Test
-	public final void getMinWeight_SingleCase() {
+	public final void getMinWeightTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitLowWeight = new Unit(world, "UnitLowWeight", new int[] {world.getMaximumXValue()-world.getMaximumXValue()/2-3, 
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
@@ -136,77 +132,45 @@ public class UnitTest {
 	}
 	
 	@Test
-	public final void canHaveAsWeight_TrueCase() {
+	public final void canHaveAsWeightTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
-		
-		assertTrue(unitMin.canHaveAsWeight(30));
-	}
-	
-	@Test
-	public final void canHaveAsWeight_BelowMinBaseStat() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
-		
-		assertFalse(unitMin.canHaveAsWeight(-1));
-	}
-	
-	@Test
-	public final void canHaveAsWeight_AboveMaxBaseStat() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
-																							world.getMaximumYValue()-1, 
-																							world.getMaximumZValue()-1},
-																							100,100,100,100);
-		world.addEntity(unitMax);
-		
-		assertFalse(unitMax.canHaveAsWeight(201));
-	}
-	
-	@Test
-	public final void canHaveAsWeight_LowWeight() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+				world.getMaximumYValue()-1, 
+				world.getMaximumZValue()-1},
+				100,100,100,100);
 		Unit unitLowWeight = new Unit(world, "UnitLowWeight", new int[] {world.getMaximumXValue()-world.getMaximumXValue()/2-3, 
-																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
-																														world.getMaximumZValue()-5}, 
-																														25,60,50,40);
+				world.getMaximumYValue()-world.getMaximumYValue()+5, 
+				world.getMaximumZValue()-5}, 
+				25,60,50,40);
+		world.addEntity(unitMin);
+		world.addEntity(unitMax);
 		world.addEntity(unitLowWeight);
 		
+		assertTrue(unitMin.canHaveAsWeight(30));
+		assertFalse(unitMin.canHaveAsWeight(-1));
+		assertFalse(unitMax.canHaveAsWeight(201));
 		assertFalse(unitLowWeight.canHaveAsWeight(25));
 	}
 	
 	@Test
-	public final void canHaveAsStrength_TrueCase() {
+	public final void canHaveAsStrengthTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitLowWeight = new Unit(world, "UnitLowWeight", new int[] {world.getMaximumXValue()-world.getMaximumXValue()/2-3, 
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
 																														world.getMaximumZValue()-5}, 
 																														25,60,50,40);
+		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
+				world.getMaximumYValue()-1, 
+				world.getMaximumZValue()-1},
+				100,100,100,100);
+		world.addEntity(unitMax);
+		world.addEntity(unitMin);
 		world.addEntity(unitLowWeight);
 		
 		assertTrue(unitLowWeight.canHaveAsStrength(150));
-	}
-	
-	@Test
-	public final void canHaveAsStrength_BelowMinBaseStat() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
-		
 		assertFalse(unitMin.canHaveAsWeight(-1));
-	}
-	
-	@Test
-	public final void canHaveAsStrength_AboveMaxBaseStat() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
-																							world.getMaximumYValue()-1, 
-																							world.getMaximumZValue()-1},
-																							100,100,100,100);
-		world.addEntity(unitMax);
-		
 		assertFalse(unitMax.canHaveAsWeight(201));
 	}
 	
@@ -217,66 +181,43 @@ public class UnitTest {
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
 																														world.getMaximumZValue()-5}, 
 																														25,60,50,40);
+		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
+				world.getMaximumYValue()-1, 
+				world.getMaximumZValue()-1},
+				100,100,100,100);
+		world.addEntity(unitMax);
+		world.addEntity(unitMin);
 		world.addEntity(unitLowWeight);
 		
 		assertTrue(unitLowWeight.canHaveAsAgility(150));
-	}
-	
-	@Test
-	public final void canHaveAsAgility_BelowMinBaseStat() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
-		
 		assertFalse(unitMin.canHaveAsAgility(-1));
-	}
-	
-	@Test
-	public final void canHaveAsAgility_AboveMaxBaseStat() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
-																							world.getMaximumYValue()-1, 
-																							world.getMaximumZValue()-1},
-																							100,100,100,100);
-		world.addEntity(unitMax);
-		
 		assertFalse(unitMax.canHaveAsAgility(201));
 	}
 	
 	@Test
-	public final void canHaveAsToughness_TrueCase() {
+	public final void canHaveAsToughnessTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitLowWeight = new Unit(world, "UnitLowWeight", new int[] {world.getMaximumXValue()-world.getMaximumXValue()/2-3, 
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
 																														world.getMaximumZValue()-5}, 
 																														25,60,50,40);
-		world.addEntity(unitLowWeight);
-		assertTrue(unitLowWeight.canHaveAsToughness(150));
-	}
-	
-	@Test
-	public final void canHaveAsToughness_BelowMinBaseStat() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
-		
-		assertFalse(unitMin.canHaveAsToughness(-1));
-	}
-	
-	@Test
-	public final void canHaveAsToughness_AboveMaxBaseStat() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
-																							world.getMaximumYValue()-1, 
-																							world.getMaximumZValue()-1},
-																							100,100,100,100);
+				world.getMaximumYValue()-1, 
+				world.getMaximumZValue()-1},
+				100,100,100,100);
 		world.addEntity(unitMax);
+		world.addEntity(unitMin);
+		world.addEntity(unitLowWeight);
 		
+		assertTrue(unitLowWeight.canHaveAsToughness(150));
+		assertFalse(unitMin.canHaveAsToughness(-1));
 		assertFalse(unitMax.canHaveAsToughness(201));
 	}
 	
 	@Test
-	public final void canHaveAsCurrentHealth_TrueCase() {
+	public final void canHaveAsCurrentHealth() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
 																							world.getMaximumYValue()-1, 
@@ -285,34 +226,12 @@ public class UnitTest {
 		world.addEntity(unitMax);
 		
 		assertTrue(unitMax.canHaveAsCurrentHealth(50));
-	}
-	
-	@Test
-	public final void canHaveAsCurrentHealth_Negative() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
-																							world.getMaximumYValue()-1, 
-																							world.getMaximumZValue()-1},
-																							100,100,100,100);
-		world.addEntity(unitMax);
-		
 		assertFalse(unitMax.canHaveAsCurrentHealth(-50));
-	}
-
-	@Test
-	public final void canHaveAsCurrentHealth_AboveMaxHealth() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
-																							world.getMaximumYValue()-1, 
-																							world.getMaximumZValue()-1},
-																							100,100,100,100);
-		world.addEntity(unitMax);
-		
 		assertFalse(unitMax.canHaveAsCurrentHealth(250));
 	}
 	
 	@Test
-	public final void canHaveAsCurrentStamina_TrueCase() {
+	public final void canHaveAsCurrentStaminaTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
 																							world.getMaximumYValue()-1, 
@@ -321,29 +240,7 @@ public class UnitTest {
 		world.addEntity(unitMax);
 		
 		assertTrue(unitMax.canHaveAsCurrentStamina(50));
-	}
-	
-	@Test
-	public final void canHaveAsCurrentStamina_Negative() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
-																							world.getMaximumYValue()-1, 
-																							world.getMaximumZValue()-1},
-																							100,100,100,100);
-		world.addEntity(unitMax);
-		
 		assertFalse(unitMax.canHaveAsCurrentStamina(-50));
-	}
-
-	@Test
-	public final void canHaveAsCurrenStamina_AboveMaxStamina() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
-																							world.getMaximumYValue()-1, 
-																							world.getMaximumZValue()-1},
-																							100,100,100,100);
-		world.addEntity(unitMax);
-		
 		assertFalse(unitMax.canHaveAsCurrentStamina(250));
 	}
 
@@ -370,17 +267,6 @@ public class UnitTest {
 	}
 	
 	@Test
-	public final void getCoordinates() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
-		
-		assertTrue(Util.fuzzyEquals(unitMin.getPosition().getXCoordinate(), 0.5));
-		assertTrue(Util.fuzzyEquals(unitMin.getPosition().getYCoordinate(), 0.5));
-		assertTrue(Util.fuzzyEquals(unitMin.getPosition().getZCoordinate(), 1.5));
-	}
-	
-	@Test
 	public final void getCubePosition() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
@@ -389,29 +275,6 @@ public class UnitTest {
 		assertTrue(unitMin.getCubeCoordinates()[0] == 0);
 		assertTrue(unitMin.getCubeCoordinates()[1] == 0);
 		assertTrue(unitMin.getCubeCoordinates()[2] == 1);
-	}
-	
-	@Test
-	public final void getCubeCente() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
-		
-		assertTrue(Position.getCubeCenter(unitMin.getCubeCoordinates())[0] == 0.5);
-		assertTrue(Position.getCubeCenter(unitMin.getCubeCoordinates())[1] == 0.5);
-		assertTrue(Position.getCubeCenter(unitMin.getCubeCoordinates())[2] == 1.5);
-	}
-	
-	@Test
-	public final void setPosition_RandomPosition() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitRandom = new Unit(world, "RandomUnit");
-		world.addEntity(unitRandom);
-		
-		for (int count = 0; count < TIMES_TEST; count ++) {
-			double[] position = Position.getCubeCenter(unitRandom.getWorld().getRandomAvailableUnitCoordinates());
-			assertTrue(unitRandom.getPosition().canHaveAsCoordinates(position));
-		}
 	}
 	
 	@Test
@@ -447,16 +310,6 @@ public class UnitTest {
 		double[] target2 = {unitMin.getPosition().getXCoordinate(),-1,unitMin.getPosition().getZCoordinate()};
 		assertFalse(unitMin.canHaveAsInitialCoordinates(target1));
 		assertFalse(unitMin.canHaveAsInitialCoordinates(target2));
-	}
-	
-	@Test
-	public final void getDistanceTest() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
-		
-		double[] target = {unitMin.getPosition().getXCoordinate()+1,unitMin.getPosition().getYCoordinate()+1,unitMin.getPosition().getZCoordinate()+1};
-		assertTrue(Util.fuzzyEquals(unitMin.getDistance(target),Math.sqrt(3) ));
 	}
 	
 	@Test
@@ -514,6 +367,7 @@ public class UnitTest {
 		assertTrue(unitMin.getCurrentActivity() == Activity.NOTHING);
 	}
 	
+	
 	/**
 	 * Helper method to advance time for the given world by some time.
 	 * 
@@ -529,6 +383,7 @@ public class UnitTest {
 		unit.advanceTime(time - n * step);
 	}
 	
+	
 	/**
 	 * Helper method to advance time for the given world by some time.
 	 * 
@@ -543,6 +398,7 @@ public class UnitTest {
 			world.advanceTime(step);
 		world.advanceTime(time - n * step);
 	}
+	
 	
 	/**
 	 * Helper method to load the terrain for a new world. Only existing terrains should be asked for.
