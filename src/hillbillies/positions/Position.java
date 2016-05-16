@@ -2,7 +2,6 @@ package hillbillies.positions;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -73,12 +72,23 @@ public class Position {
 	 */
 	public boolean canHaveAsCoordinates(double[] coordinates) {
 		return ( (coordinates != null) &&
-				(this.getWorld().getMaximumXValue() > coordinates[0]) && 
-				(this.getWorld().getMaximumYValue() > coordinates[1]) && 
-				(this.getWorld().getMaximumZValue() > coordinates[2]) && 
-				(coordinates[0] >= World.CUBE_COORDINATE_MIN) && 
-				(coordinates[1] >= World.CUBE_COORDINATE_MIN) && 
-				(coordinates[2] >= World.CUBE_COORDINATE_MIN) );
+				(this.canHaveAsXCoordinate(coordinates[0])) && 
+				(this.canHaveAsYCoordinate(coordinates[1])) && 
+				(this.canHaveAsZCoordinate(coordinates[2])) );
+	}
+	
+	/**
+	 * Checks whether the given cube coordinates are valid coordinates.
+	 * @param	cubeCoordinates
+	 * 					The coordinates of the cube to check.
+	 * @return	True if and only if all three coordinates are within the game world.
+	 * 					|result == (isValidXCoordinate(cubePosition[0]) && 
+	 * 									 isValidYCoordinate(cubePosition[1]) &&
+	 * 									 isValidZCoordinate(cubePosition[2]))
+	 */
+	@Raw
+	public boolean canHaveAsCoordinates(int[] cubeCoordinates) {
+		return canHaveAsCoordinates(getCubeCenter(cubeCoordinates));
 	}
 	
 	/**
@@ -327,8 +337,6 @@ public class Position {
  				+Math.pow(coordinates1[2] - coordinates2[2], 2));
  	}
  	
- 	
-	
 	/**
 	 * Checks if two cube coordinates are next to each other, or the same.
 	 * 

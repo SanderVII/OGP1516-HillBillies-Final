@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.positions.ItemPosition;
 import hillbillies.positions.Position;
 
 /**
@@ -15,8 +14,8 @@ import hillbillies.positions.Position;
  * A class of cubes involving...
  * @invar	The terrain type of each cube must be a valid terrain type for any cube.
  *      	| isValidTerrainType(getTerrainType())
- * @invar  	The position of each cube must be a valid position for any cube.
- *       	| isValidPosition(getPosition())
+ * @invar  	The coordinates of the position of each cube must be valid coordinates for any cube.
+ *       	| isValidCubeCoordinates(getPosition().getCubeCoordinates)
  * @author	Sander Mergan, Thomas Vranken
  */	
 public class Cube {
@@ -37,7 +36,7 @@ public class Cube {
 	public Cube(int terrainIndex, World world, int[] position) throws IllegalArgumentException{
 		this.setTerrainType(terrainIndex);
 		this.setWorld(world);
-		this.setPosition(new ItemPosition(this.getWorld(), ItemPosition.getCubeCenter(position)));
+		this.position = (new Position(this.getWorld(), Position.getCubeCenter(position)));
 	}
 	
 	/**
@@ -166,46 +165,28 @@ public class Cube {
 	}
 	
 	/**
-	 * Check whether the given position is a valid position for
-	 * any cube.
+	 * Check whether the given coordinates are valid coordinates for any cube.
 	 *  
-	 * @param	position
+	 * @param	coordinates
 	 *				The position to check.
 	 * @return	True if all coordinates are greater than the minimal coordinate value.
 	 * 
 	 * @note	Cubes do not know the world they are part of. World also has a checker for valid positions
 	 *				(within the boundaries of the world).
 	*/
-	public boolean isValidCubeCoordinates(int[] position) {
-		if (position.length == 3){
-				if (	(World.CUBE_COORDINATE_MIN <= position[0]) && 
-						(World.CUBE_COORDINATE_MIN <= position[1]) && 
-						(World.CUBE_COORDINATE_MIN <= position[2])  )
+	public boolean isValidCubeCoordinates(int[] coordinates) {
+		if (coordinates.length == 3){
+				if (	(World.CUBE_COORDINATE_MIN <= coordinates[0]) && 
+						(World.CUBE_COORDINATE_MIN <= coordinates[1]) && 
+						(World.CUBE_COORDINATE_MIN <= coordinates[2])  )
 				return true;
 		}
 		return false;
-	}
-
-	// TODO controle bij setPosition nodig? Die vraag geldt ook voor andere klassen.
-	/**
-	 * Set the position of this cube to the given position.
-	 * 
-	 * @param	position
-	 *				The new position for this cube.
-	 * @post	The position of this new cube is equal to the given position.
-	 *				| new.getPosition() == position
-	 * @throws IllegalArgumentException
-	 *				The given position is not a valid position for any cube.
-	 *				| ! isValidPosition(getPosition())
-	 */
-	@Raw
-	public void setPosition(Position position) throws IllegalArgumentException {
-		this.position = position;
 	}
 	
 	/**
 	 * Variable registering the position of this cube.
 	 */
-	private Position position;
+	private final Position position;
 	
 }

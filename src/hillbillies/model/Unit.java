@@ -1142,7 +1142,7 @@ public class Unit extends Entity{
  	 *       			| result == (targetCoordinates == null || canHaveAsCoordinates(targetCoordinates))
  	*/
  	public boolean canHaveAsTargetCoordinates(double[] targetCoordinates) {
- 		return( (targetCoordinates == null) || this.getPosition().canHaveAsUnitCoordinates(targetCoordinates) );
+ 		return( (targetCoordinates == null) || this.getPosition().canHaveAsCoordinates(targetCoordinates) );
  	}
  	
  	/**
@@ -1185,7 +1185,7 @@ public class Unit extends Entity{
  	 *       			| result == (initialCoordinates == null || canHaveAsCoordinates(initialCoordinates))
  	*/
  	public  boolean canHaveAsInitialCoordinates(double[] initialCoordinates) {
- 		return ( (initialCoordinates == null) || (this.getPosition().canHaveAsUnitCoordinates(initialCoordinates)) );
+ 		return ( (initialCoordinates == null) || (this.getPosition().canHaveAsCoordinates(initialCoordinates)) );
  	}
  	
  	/**
@@ -1551,7 +1551,7 @@ public class Unit extends Entity{
 	private void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
 		if (thisIsDefaultBehaviour)
 			System.out.println("moveTo by defaultBehaviour");
-		if ( ! this.getPosition().canHaveAsUnitCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
+		if ( ! this.getPosition().canHaveAsCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
 			throw new IllegalArgumentException();
 		}
 		

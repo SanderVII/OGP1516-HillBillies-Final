@@ -835,7 +835,7 @@ public class World {
 		
 		UnitPosition temp = new UnitPosition(this, coordinates);
 		for (int[] cubeCoordinates: cubeSet){
-			if (temp.canHaveAsUnitCoordinates(cubeCoordinates))
+			if (temp.canHaveAsCoordinates(cubeCoordinates))
 				reducedSet.add(cubeCoordinates);
 		}
 		int randomIndex = new Random().nextInt(reducedSet.size());

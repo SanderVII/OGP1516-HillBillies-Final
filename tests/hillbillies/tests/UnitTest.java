@@ -337,19 +337,19 @@ public class UnitTest {
 	@Test
 	public final void isValidPosition() {
 		// True Case.
-		assertTrue(unitMin.getPosition().canHaveAsUnitCoordinates(unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()));
+		assertTrue(unitMin.getPosition().canHaveAsCoordinates(unitMin.getPosition().getCoordinates()));
 		// False case x-coördinate to big.
-		assertFalse(unitMin.getPosition().canHaveAsUnitCoordinates(unitMin.getWorld().getMaximumXValue(),unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()));
+		assertFalse(unitMin.getPosition().canHaveAsCoordinates(new double[]{unitMin.getWorld().getMaximumXValue(),unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()}));
 		// False case y-coördinate to big.
-		assertFalse(unitMin.getPosition().canHaveAsUnitCoordinates(unitMin.getPosition().getXCoordinate(),unitMin.getWorld().getMaximumYValue(),unitMin.getPosition().getZCoordinate()));
+		assertFalse(unitMin.getPosition().canHaveAsCoordinates(new double[]{unitMin.getPosition().getXCoordinate(),unitMin.getWorld().getMaximumYValue(),unitMin.getPosition().getZCoordinate()}));
 		// False case z-coördinate to big.
-		assertFalse(unitMin.getPosition().canHaveAsUnitCoordinates(unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(), unitMin.getWorld().getMaximumZValue()));
+		assertFalse(unitMin.getPosition().canHaveAsCoordinates(new double[]{unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(), unitMin.getWorld().getMaximumZValue()}));
 		// False case negative x-coördinate.
-		assertFalse(unitMin.getPosition().canHaveAsUnitCoordinates(-1,unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()));
+		assertFalse(unitMin.getPosition().canHaveAsCoordinates(new double[]{-1,unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()}));
 		// False case negative y-coördinate.
-		assertFalse(unitMin.getPosition().canHaveAsUnitCoordinates(unitMin.getPosition().getXCoordinate(),-1,unitMin.getPosition().getZCoordinate()));
+		assertFalse(unitMin.getPosition().canHaveAsCoordinates(new double[]{unitMin.getPosition().getXCoordinate(),-1,unitMin.getPosition().getZCoordinate()}));
 		// False case negative z-coördinate.
-		assertFalse(unitMin.getPosition().canHaveAsUnitCoordinates(unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(),-1));
+		assertFalse(unitMin.getPosition().canHaveAsCoordinates(new double[]{unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(),-1}));
 	}
 	
 	@Test
@@ -377,7 +377,7 @@ public class UnitTest {
 	public final void setPosition_RandomPosition() {
 		for (int count = 0; count < TIMES_TEST; count ++) {
 			double[] position = Position.getCubeCenter(unitRandom.getWorld().getRandomAvailableUnitCoordinates());
-			assertTrue(unitRandom.getPosition().canHaveAsUnitCoordinates(position));
+			assertTrue(unitRandom.getPosition().canHaveAsCoordinates(position));
 		}
 	}
 	
