@@ -1172,13 +1172,12 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Returns the walking speed of the unit if it walks between the
-	 * given coordinates.
+	 * Returns the walking speed of the unit if it walks between the given coordinates.
 	 * @param	start
 	 * 					The starting coordinates.
 	 * @param	targetCoordinates
 	 * 					The coordinates to move to.
-	 * @return	The walking speed, depending on the target coordinates.
+	 * @return	The walking speed, based on the starting coordinates and the target coordinates.
 	 * 					If the difference between start z-coordinate and the target z-coordinate is negative,
 	 * 					the walking speed equals to 0.5 * baseSpeed.
 	 * 					If the difference between start z-coordinate and the target z-coordinate is positive,
@@ -1217,18 +1216,17 @@ public class Unit extends Entity{
 	 * @param	targetCoordinates
 	 * 					The coordinates to move to.
 	 * @return	The sprinting speed of the unit.
-	 * 					| result == getWalkSpeed()
+	 * 					| result == 2*getWalkSpeed(targetCoordinates)
 	 */
 	public double getSprintSpeed(double[] targetCoordinates) {
 		return 2*this.getWalkSpeed(targetCoordinates);
 	}
  	
 	/**
-	 * Returns the velocity vector of this unit 
-	 * based on its current coordinates and some given coordinates.
+	 * Returns the velocity vector of this unit based on its current coordinates and the given coordinates.
 	 * 
 	 * @param	targetCoordinates
-	 * 				The given destination.
+	 * 				The given destination coordinates.
 	 * @return	The velocity vector as calculated in Position.getVelocity()
 	 * 				| result == Position.getVelocity(this.getPosition().getCoordinates(), targetCoordinates, speed)
 	 */
@@ -1242,21 +1240,6 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Returns the velocity vector of this unit 
-	 * based on its current coordinates and target coordinates.
-	 * 
-	 * @return	The velocity vector between target coordinates and current coordinates for this unit.
-	 * 				| result == getVelocity(this.getTargetCoordinates())
-	 * @throws	NullPointerException
-	 * 				The unit's target coordinates are null.
-	 */
-	public double[] getVelocity() throws NullPointerException {
-		if (this.getTargetCoordinates() == null)
-			throw new NullPointerException();
-		return this.getVelocity(this.getTargetCoordinates());
-	}
-	
-	/**
 	 * Checks if the target cube with given coordinates is next to the cube the unit is standing in.
 	 * 
 	 * @param	targetCube
@@ -1264,7 +1247,7 @@ public class Unit extends Entity{
 	 * @return	True if and only if the coordinates are the same or next to each other.
 	 * 					| result == Position.isAdjacentTo(this.getCubePosition().getCubeCoordinates, targetCube)
 	 * @throws	IllegalArgumentException
-	 * 					The target cube is invalid for this unit in it's world.
+	 * 					The target cube is invalid for this unit's world.
 	 */
 	@Raw
 	public boolean isAdjacentTo(int[]targetCube) throws IllegalArgumentException {
@@ -1291,7 +1274,7 @@ public class Unit extends Entity{
 	}
 
 	/**
-	 * Return the is-sprinting value of this unit.
+	 * Returns the is-sprinting value of this unit.
 	 */
 	@Basic @Raw
 	public boolean getIsSprinting() {
@@ -1299,8 +1282,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Check whether the given value is a valid is-sprinting value for
-	 * this unit.
+	 * Checks whether the given value is a valid is-sprinting value for this unit.
 	 *  
 	 * @param	is-sprinting
 	 *         			The is-sprinting value to check.
@@ -1323,12 +1305,12 @@ public class Unit extends Entity{
 	 * Set the is-sprinting property of this unit to the given value.
 	 * 
 	 * @param	isSprinting
-	 *         			The new is-sprinting value for this unit.
+	 *				The new is-sprinting value for this unit.
 	 * @post	The is-sprinting value of this new unit is equal to the given is-sprinting value.
-	 *       		| new.getIsSprinting() == isSprinting
+	 *				| new.getIsSprinting() == isSprinting
 	 * @throws 	IllegalStateException
-	 *         			The given is-sprinting value is not a valid is-sprinting for any unit.
-	 *       			| ! isValidIsSprinting(getIsSprinting())
+	 *				The given is-sprinting value is not a valid is-sprinting for any unit.
+	 *				| ! isValidIsSprinting(getIsSprinting())
 	 */
 	@Raw
 	public void setIsSprinting(boolean isSprinting) throws IllegalStateException {
@@ -1338,14 +1320,15 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * A variable that registers whether this unit is sprinting or not.
+	 * A variable that stores whether this unit is sprinting or not.
 	 */
 	private boolean isSprinting;
 
 	/**
 	 * Makes this unit start sprinting, if possible.
-	 * @effect	The unit's sprint value is set to true.
-	 * 			| setIsSprinting(true)
+	 * @effect	The unit's is-sprinting value is set to true, if it is not falling.
+	 *				| if ( ! this.isFalling())
+	 *				|	then setIsSprinting(true)
 	 */
 	@Raw
 	public void startSprinting(){
@@ -1357,6 +1340,8 @@ public class Unit extends Entity{
 	
 	/**
 	 * Makes this unit stop sprinting. 
+	 * @effect	The unit's is-sprinting value is set to false.
+	 *				| setIsSprinting(true)
 	 */
 	@Raw
 	public void stopSprinting(){
@@ -1388,11 +1373,12 @@ public class Unit extends Entity{
 	 * 				The move to make in the z-direction.
 	 * @param thisIsDefaultBehaviour
 	 *				Whether the movement is initiated by default behaviour or the player.
+	 *
 	 * @post	The current activity of the unit is set to MOVE.
 	 *				| new.getCurrentActivity() == MOVE
 	 * @post	The target coordinates of the unit are set to the cube decided by the given direction.
-	 * 				| new.getTargetCoordinates() =={this.getPosition().getCoordinates()[0] + dx,
-	 * 				|							this.getPosition().getCoordinates()[1] + dy,this.getPosition().getCoordinates()[2] + dz}
+	 * 				| new.getTargetCoordinates() =={this.getPosition().getCubeCoordinates()[0] + dx,
+	 * 				|							this.getPosition().getCubeCoordinates()[1] + dy,this.getPosition().getCubeCoordinates()[2] + dz}
 	 * @post	The initial coordinates of the unit are set to the current coordinates.
 	 * 				| new.getInitialCoordinates() == this.getPosition().getCoordinates()
 	 * @note Throws no exception because Exception is caught.
@@ -1400,12 +1386,13 @@ public class Unit extends Entity{
 	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
 		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling. Done?
 		try {
+			this.setProgress(0);
 			
 			Cube destinationCube = this.getWorld().getCube(
 					this.getPosition().getCubeCoordinates()[0]+dx, this.getPosition().getCubeCoordinates()[1]+dy, this.getPosition().getCubeCoordinates()[2]+dz);
 			
 			if ( ! thisIsDefaultBehaviour){
-				this.setDefaultBehaviorEnabled(false);
+				this.stopDefaultBehavior();
 				this.moveTo(destinationCube.getPosition().getCubeCoordinates());
 			}
 			
@@ -1431,7 +1418,7 @@ public class Unit extends Entity{
 		}
 	}
 	
-	// TODO finish?
+	// TODO finished?
 	/**
 	 * Checks whether this unit can start moving to an adjacent cube.
 	 * A unit can only start moving if it is not falling.
@@ -1462,6 +1449,9 @@ public class Unit extends Entity{
 	 * @param	thisIsDefaultBehaviour
 	 *				Whether attacking is called by default behaviour or not.
 	 *
+	 * @post	The progress of this unit is equal to zero.
+	 * 				|new.getProgress() == 0
+	 *
 	 * @throws	IllegalArgumentException
 	 * 				The given destination is invalid.
 	 *				| (! this.getPosition().canHaveAsUnitCoordinates(destinationCoordinates))
@@ -1484,7 +1474,7 @@ public class Unit extends Entity{
 				&& (this.hasPassableNeighbours(this.getPosition().getCubeCoordinates()))){
 		
 			if ( ! thisIsDefaultBehaviour)
-				this.setDefaultBehaviorEnabled(false);
+				this.stopDefaultBehavior();
 			
 			this.setProgress(0);
 			
@@ -1513,6 +1503,7 @@ public class Unit extends Entity{
 	 *				The start coordinates for the path.
 	 * @param destinationCoordinates
 	 *				The destination coordinates for the path.
+	 *
 	 * @return	A list a cube coordinates which represent the path from the start coordinates to the destination coordinates.
 	 */
 	private List<int[]> searchPath(int[] startCoordinates, int[] destinationCoordinates) {
@@ -1521,17 +1512,16 @@ public class Unit extends Entity{
 	}
 
 	/**
-	 * A list registering the path this unit has to follow.
-	 * It is filled when executing moveTo() and it is used during advanceTime
-	 * to decide the next coordinates to move to.
+	 * A list that stores the path this unit has to follow.
+	 * It is filled when executing moveTo() and it is used during advanceTime to decide the next coordinates to move to.
 	 */
 	private List<int[]> moveToPath = new ArrayList<>();
 	
 	/**
    	 * Cancels the move-to command of this non-terminated unit.
    	 * 
-   	 * @post	The unit's target coordinates, initial coordinates and moveToPath are reset.
-   	 * 			The unit stands in the center of its current cube and does nothing.
+   	 * @effect	The unit's target coordinates, initial coordinates and moveToPath are reset.
+   	 *				The unit stands in the center of its current cube and does nothing.
    	 * 
    	 */
    	public void cancelMoveTo(){
@@ -1564,6 +1554,7 @@ public class Unit extends Entity{
 	 * @throws	IllegalArgumentException
 	 * 			The unit does not occupy a valid cube.
 	 */
+   	@Override
 	public boolean isFalling() throws IllegalArgumentException {
 		// NOTE: do not change the is-falling property in this method itself! 
 		// It will break the code (not to mention it is bad practice to return and change values in one method).
@@ -1572,28 +1563,25 @@ public class Unit extends Entity{
 		else if (this.getCubeCoordinates()[2] == 0)
 			return false;
 		else
-			return (!hasSolidNeighbours(this.getPosition().getXCoordinate(), this.getPosition().getYCoordinate(), this.getPosition().getZCoordinate())
+			return ( ! hasSolidNeighbours(this.getPosition().getCubeCoordinates())
 					 && (Position.fuzzyEquals(this.getPosition().getCoordinates(), this.getCubeCenter())));
 	}
 	
 	/**
-	 * Checks if the cube position with the given coordinates is adjacent
+	 * Checks if the cube coordinates with the given coordinates are adjacent
 	 * to at least one cube which is solid.
 	 * 
-	 * @param	x
-	 * 			The x-coordinate of the cube.
-	 * @param	y
-	 * 			The y-coordinate of the cube.
-	 * @param	z
-	 * 			The z-coordinate of the cube.
+	 * @param	coordinates
+	 *				The coordinates to check.
+	 *
 	 * @return	False if none of the neighbouring cubes is solid.
-	 * 			| for (int[] position: neighbours)
-	 *			|	if ( ! getWorld().getCube(position).isPassable())
-	 * 			|		then result == true
-	 * 			| result == false
+	 *				| for (int[] position: neighbours)
+	 *				|	if ( ! getWorld().getCube(coordinates).isPassable())
+	 *				|		then result == true
+	 *				| result == false
 	 */
-	public boolean hasSolidNeighbours(int[] position) {
-		Set<int[]> neighbours = this.getWorld().getNeighbours(position);
+	public boolean hasSolidNeighbours(int[] coordinates) {
+		Set<int[]> neighbours = this.getWorld().getNeighbours(coordinates);
 		for (int[] neighbour: neighbours)
 			if ( ! this.getWorld().getCube(neighbour).isPassable())
 				return true;
@@ -1601,58 +1589,33 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Checks if the cube position with the given coordinates is adjacent
+	 * Checks if the cube coordinates with the given coordinates are adjacent
 	 * to at least one cube which is passable.
 	 * 
-	 * @param	x
-	 * 			The x-coordinate of the cube.
-	 * @param	y
-	 * 			The y-coordinate of the cube.
-	 * @param	z
-	 * 			The z-coordinate of the cube.
+	 * @param	coordinates
+	 *				The coordinates to check.
+	 *
 	 * @return	False if none of the neighbouring cubes is passable.
 	 * 			| for (int[] position: neighbours)
-	 *			|	if ( getWorld().getCube(position).isPassable())
+	 *			|	if ( getWorld().getCube(coordinates).isPassable())
 	 * 			|		then result == true
 	 * 			| result == false
 	 */
-	public boolean hasPassableNeighbours(int[] position) {
-		Set<int[]> neighbours = this.getWorld().getNeighbours(position);
+	public boolean hasPassableNeighbours(int[] coordinates) {
+		Set<int[]> neighbours = this.getWorld().getNeighbours(coordinates);
 		for (int[] neighbour: neighbours)
 			if ( this.getWorld().getCube(neighbour).isPassable())
 				return true;
 		return false;
 	}
 	
-	/**
-	 * Checks if the cube which holds the given position 
-	 * is not adjacent to a cube which has a solid terrain type.
-	 * 
-	 * @param	x
-	 * 			The x-coordinate.
-	 * @param	y
-	 * 			The y-coordinate.
-	 * @param	z
-	 * 			The z-coordinate.
-	 * @return	False if none of the neighbouring cubes is solid.
-	 * 			| for (Cube cube: getWorld().getNeighbours(x,y,z) )
-	 * 			|	if ( cube.isPassable() )
-	 * 			|		then result == true
-	 * 			| result == false
-	 * @throws	IllegalArgumentException
-	 * 			The given position is invalid.
-	 */
-	public boolean hasSolidNeighbours(double x, double y, double z) throws IllegalArgumentException {
-		int[] cubePosition = UnitPosition.getCubeCoordinates(new double[]{x,y,z});
-		return this.hasSolidNeighbours(cubePosition);
-	}	
 	
 	//===========================================================================================
 	// Methods for orientation.
 	//===========================================================================================
 	
 	/**
-	 * Return the orientation of this unit.
+	 * Returns the orientation of this unit.
 	 */
 	@Basic @Raw
  	public double getOrientation() {
@@ -1660,7 +1623,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Check whether the given orientation is a valid orientation for  any unit.
+	 * Checks whether the given orientation is a valid orientation for  any unit.
 	 *  
 	 * @param	orientation
 	 *         			The orientation to check.
@@ -1681,7 +1644,7 @@ public class Unit extends Entity{
 	 * Set the orientation of this unit to the given orientation.
 	 * 
 	 * @param	orientation
-	 *         			The orientation angle for this unit.
+	 *				The orientation angle for this unit.
 	 * @post	If the given orientation is a valid orientation for any unit,
 	 *         		the orientation of this new unit is equal to the given orientation
 	 *       		| if (isValidOrientation(orientation))
@@ -1709,7 +1672,7 @@ public class Unit extends Entity{
  	}
 	
 	/**
-	 * A variable that registers the orientation of this unit.
+	 * A variable that holds the orientation of this unit.
 	 */
 	private double orientation;
 	
@@ -1718,7 +1681,7 @@ public class Unit extends Entity{
 	// ==================================================================================
 	
 	/**
-	 * Return the task of this unit.
+	 * Returns the task of this unit.
 	 */
 	@Basic @Raw
 	public Task getTask() {
@@ -1726,22 +1689,22 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Check whether this unit has a task.
+	 * Checks whether this unit has a task.
 	 * @return	True if the task of this unit is effective.
 	 * 			| result == (getTask() != null)
 	 */
 	public boolean hasTask() {
-		return this.getTask() != null;
+		return (this.getTask() != null);
 	}
 	
 	/**
 	 * Checks whether this unit has a proper task attached to it.
 	 * 
 	 * @return	True if and only if the task of this unit does not reference
-	 * 			an effective task, or that task references this unit
-	 * 			as its unit.
-	 * 			| result == ( (this.getTask() == null) || 
-	 * 			|				(this.getTask().getUnit() == this) )
+	 *				an effective task, or that task references this unit
+	 *				as its unit.
+	 *				| result == ( (this.getTask() == null) || 
+	 *				|				(this.getTask().getUnit() == this) )
 	 */
 	public boolean hasProperTask() {
 		return ( (this.getTask() == null) || (this.getTask().getUnit() == this) );
@@ -1751,16 +1714,17 @@ public class Unit extends Entity{
 	 * Sets the task attached to this unit to to the given task.
 	 * 
 	 * @param	task
-	 * 			The task to attach to this unit.
+	 *				The task to attach to this unit.
 	 * @post	This unit references the given task as its task.
-	 * 			| new.getTask() == task
+	 *				| new.getTask() == task
+	 *
 	 * @throws	IllegalArgumentException
-	 * 			The given task is effective but does not references
-	 * 			this unit as its unit.
-	 * 			| (task != null) && (task.getUnit() != this)
-	 * 			Or, the task is not effective and this unit references
-	 * 			a task which still references this unit as its unit.
-	 * 			| (task == null) && (this.hasTask() && (this.getTask().getUnit() == this))
+	 *				The given task is effective but does not references
+	 *				this unit as its unit.
+	 *				| (task != null) && (task.getUnit() != this)
+	 *				Or, the task is not effective and this unit references
+	 *				a task which still references this unit as its unit.
+	 *				| (task == null) && (this.hasTask() && (this.getTask().getUnit() == this))
 	 */
 	public void setTask(@Raw Task task) throws IllegalArgumentException {
 		if ( (task != null) && (task.getUnit() != this) )
@@ -1771,7 +1735,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * A variable referencing the task attached to this unit.
+	 * A variable that holds the task attached to this unit.
 	 */
 	private Task task;
 	
@@ -1781,19 +1745,20 @@ public class Unit extends Entity{
 	 *				| if (this.hasTask())
 	 *				|	then this.getTask().terminate()
 	 * @effect	The task of this unit is finished.
-	 * 			| if this.hasTask()
-	 *			|	then this.getTask().setFinished(true)
+	 *				| if this.hasTask()
+	 *				|	then this.getTask().setFinished(true)
 	 * @post	The task of his unit references no scheduler and
-	 * 			its old schedulers no longer reference this task.
-	 * 			| new.getTask().getScheduler().size() == 0 &&
-	 * 			| for each scheduler in this.getTask().getSchedulers()
-	 * 			|	! scheduler.hasAsTask(new.getTask())
+	 *				its old schedulers no longer reference this task.
+	 *				| new.getTask().getScheduler().size() == 0 &&
+	 *				| for each scheduler in this.getTask().getSchedulers()
+	 *				|	! scheduler.hasAsTask(new.getTask())
 	 */
 	//TODO fix doc, check code
 	private void finishTask() {
 		if (this.hasTask()) 
 			this.getTask().terminate();
 	}
+	
 	
 	// ==================================================================================
 	// Methods for the different activities.
@@ -1808,21 +1773,22 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Sets the current activity of this non-terminated unit.
+	 * Sets the current activity of this non-terminated unit to the given activity.
 	 * 
 	 * @param	activity
-	 * 				The new activity of this unit.
+	 *				The new activity of this unit.
 	 * 
 	 * @post	The given activity is equal to the current activity.
-	 * 				| new.getCurrentActivity() == activity
+	 *				| new.getCurrentActivity() == activity
 	 * @throws	IllegalStateException
-	 * 				The unit is terminated.
-	 * 				| isTerminated()
+	 *				The unit is terminated.
+	 *				| isTerminated()
 	 */
 	@Raw
-	public void setCurrentActivity(Activity activity) {
+	public void setCurrentActivity(Activity activity)  throws IllegalStateException{
 		if (this.isTerminated())
 			throw new IllegalStateException("unit terminated.");
+		
 		this.currentActivity = activity;
 	}
 	
@@ -1832,7 +1798,7 @@ public class Unit extends Entity{
 	private Activity currentActivity = Activity.NOTHING;
 	
 	/**
-	 * Checks whether the time until the current activity of this unit is finished, is a valid time.
+	 * Checks whether the given progress is a valid progress for any unit.
 	 * 
 	 * @param	progress
 	 * 					The progress of the current activity of this unit.
@@ -1841,7 +1807,7 @@ public class Unit extends Entity{
 	 * 					| result == timeToEndOfActivity >= 0
 	 */
 	@Raw
-	public static boolean canHaveAsProgress(double progress){
+	public static boolean isValidProgress(double progress){
 		return progress >= 0 ;
 	}
 	
@@ -1854,7 +1820,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Sets the progress of the current activity.
+	 * Sets the progress of the current activity to the given progress.
 	 * 
 	 * @param	progress
 	 * 					The new progress of the current activity of this unit..
@@ -1863,9 +1829,9 @@ public class Unit extends Entity{
 	 * 				| new.getProgress() == progress
 	 */
 	private void setProgress(double progress) throws IllegalArgumentException{
-		if (progress < 0){
+		if (progress < 0)
 			throw new IllegalArgumentException("The progress for an activity of a unit cannot be negative.");
-		}
+		
 		this.progress = progress;
 	}
 	
@@ -1903,7 +1869,7 @@ public class Unit extends Entity{
 	 * @effect	Makes this unit work at the given target coordinates and disables default behaviour.
 	 *				| this.workAt(workTarget, false)
 	 */
-	public void workAt(int[] workTarget) throws NullPointerException, IllegalArgumentException{
+	public void workAt(int[] workTarget) {
 		this.workAt(workTarget, false);
 	}
 	
@@ -1914,6 +1880,7 @@ public class Unit extends Entity{
 	 *				The position to perform work at.
 	 * @param	thisIsDefaultBehaviour
 	 *				Whether working is called by default behaviour or not.
+	 *
 	 * @post	The new current activity of this unit is equal to WORK.
 	 * 				| new.getCurrentActivity() == Activity.WORK
 	 * @post	The new workTarget of this unit is equal to the given workTarget.
@@ -1921,17 +1888,19 @@ public class Unit extends Entity{
 	 * @post	If workAt is not called by defaultBehaviour, then default behaviour is disabled.
 	 *				| if ( ! thisIsDefaultBehaviour)
 	 *				|	then this.getDefaultBehaviourEnabled() == false 
+	 * @post	The progress of this unit is equal to zero.
+	 * 				|new.getProgress() == 0
 	 */
-	public void workAt(int[] workTarget, boolean thisIsDefaultBehaviour) throws NullPointerException, IllegalArgumentException{
+	public void workAt(int[] workTarget, boolean thisIsDefaultBehaviour){
 		if (thisIsDefaultBehaviour)
 			System.out.println("workAt by defaultBehaviour");
 		try {
 			
 			if ( ! thisIsDefaultBehaviour)
-				this.setDefaultBehaviorEnabled(false);
+				this.stopDefaultBehavior();
 			
 			if(this.hasItem())
-				if (! this.getItem().canHaveAsCoordinates(workTarget))
+				if ( ! this.getItem().canHaveAsCoordinates(workTarget))
 					throw new IllegalArgumentException("cannot drop item here.");
 			
 			
@@ -1954,7 +1923,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Makes this unit start resting.
+	 * Makes this unit start resting and turns of default behaviour.
 	 * 
 	 * @effect Makes this unit start resting.
 	 *				| this.rest(false);
@@ -1968,8 +1937,14 @@ public class Unit extends Entity{
 	 * 
 	 * @param	thisIsDefaultBehaviour
 	 *				Whether resting is called by default behaviour or not.
+	 *
 	 * @post	The new current activity of this unit is equal to REST.
 	 * 				|new.getCurrentActivity() == Activity.REST
+	 * @post	If rest is not called by default behaviour, then it is disabled.
+	 *				| if ( ! thisIsDefaultBehaviour)
+	 *				|	then setDefaultBehaviourEnabled(true)
+	 * @post	The progress of this unit is equal to zero.
+	 * 				|new.getProgress() == 0
 	 * @throws	IllegalStateException
 	 * 				The unit cannot currently rest.
 	 */
@@ -1984,7 +1959,7 @@ public class Unit extends Entity{
 				throw new IllegalStateException();
 			
 			if ( ! thisIsDefaultBehaviour)
-				this.setDefaultBehaviorEnabled(false);
+				this.stopDefaultBehavior();
 			
 			this.setProgress(0);
 			
@@ -2045,7 +2020,7 @@ public class Unit extends Entity{
 	private double timeOfLastRest = 0;
 	
 	/**
-	 * Sets the previous activity of this unit.
+	 * Sets the previous activity of this unit to the given activity.
 	 * @param	activity
 	 * 				The activity to set the previous activity to.
 	 * @post	The previous activity of this unit is equal to the given activity.
@@ -2128,9 +2103,10 @@ public class Unit extends Entity{
 	 * 
 	 * @post	The new current activity of this unit is attacking.
 	 * 				| new.getCurrentActivity() == Activity.ATTACK
-	 * 
-	 * @post	The new unit that is under attack from this unit is equal to the given defender.
+	 * @post	The unit that is under attack from this unit is equal to the given defender.
 	 * 				| new.getUnitThatIsUnderAttack() == defender
+	 * @post	The progress of this unit is equal to zero.
+	 *				| new.getProgress() == 0
 	 */
 	public void attack(Unit defender) throws IllegalStateException{
 			this.setProgress(0);
@@ -2139,7 +2115,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Checks whether this unit is currently fighting
+	 * Checks whether this unit is currently fighting.
 	 * 
 	 * @return	True if and only if this unit is currently attacking or defending.
 	 * 					| result == this.isAttaking()
@@ -2165,7 +2141,7 @@ public class Unit extends Entity{
 	 * 					The given attacker is not an active unit
 	 * 					| attacker == null
 	 */
-	private boolean managedToBlock(Unit attacker){
+	private boolean managedToBlock(Unit attacker) throws NullPointerException{
 		if (attacker == null)
 			throw new NullPointerException("The given attacker is not an active unit.");
 		
@@ -2185,7 +2161,7 @@ public class Unit extends Entity{
 	 * 					The given attacker is not an active unit
 	 * 					| attacker == null
 	 */
-	private boolean managedToDodge(Unit attacker){
+	private boolean managedToDodge(Unit attacker) throws NullPointerException{
 		if (attacker == null)
 			throw new NullPointerException("The given attacker is not an active unit.");
 		
@@ -2242,7 +2218,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Sets whether the unit this unit is attacking managed to block or dodge to the given value.
+	 * Sets whether the unit und attack from this unit managed to block or dodge to the given value.
 	 * 
 	 * @param value
 	 *				The new value to set defenderBlocked to.
@@ -2284,15 +2260,13 @@ public class Unit extends Entity{
 	 * @param	defender
 	 * 					The unit to attack.
 	 * @param	thisIsDefaultBehaviour
-	 *				Whether attacking is called by default behaviour or not.
+	 *					Whether attacking is called by default behaviour or not.
 	 * 
 	 * @post	If fight is not called by default behaviour, then defaultBehaviourEnabled is set to false.
 	 *				| if ( ! thisIsDefaultBehaviour)
 	 *				|	this.setDefaultBehaviourEnabled(false)
-	 * 
 	 * @post	The unit under attack from this unit is set to the given defender.
 	 * 				| this.getUnitUnderAttack() == defender
-	 * 
 	 * @post	If the given defender is in range, the current activity of this unit will be set to ATTACK.
 	 * 				| if ( ! this.isAdjacentTo(other.getPosition().getCubeCoordinates()))
 	 * 				|	then (new this).getUnitBeingFought() == other
@@ -2310,7 +2284,7 @@ public class Unit extends Entity{
 			System.out.println("fight by defaultBehaviour");
 		try {
 			if ( ! thisIsDefaultBehaviour)
-				this.setDefaultBehaviorEnabled(false);
+				this.stopDefaultBehavior();
 			
 			if(defender == null)
 				throw new NullPointerException("The given defender is not an effective unit");
@@ -2366,7 +2340,7 @@ public class Unit extends Entity{
 	}
 
 	/** 
-	 * A variable storing the coordinates this unit should work at.
+	 * A variable that stores the coordinates this unit should work at.
 	 */
 	private int[] workTarget;
 	
@@ -2426,7 +2400,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Variable registering the item carried by this unit.
+	 * Variable that stores the item carried by this unit.
 	 */
 	private Item item;
 	
@@ -2447,10 +2421,12 @@ public class Unit extends Entity{
  	 *
  	 * @throws	IllegalArgumentException
  	 *				The given coordinates are invalid for this item.
+ 	 *				|  (! this.getItem().canHaveAsCoordinates(coordinates))
   	 */
 	private void dropItem(int[] coordinates) throws IllegalArgumentException {
 		if (! this.getItem().canHaveAsCoordinates(coordinates))
 			throw new IllegalArgumentException();
+		
 		Item item = this.getItem();
 		item.moveToWorld();
 		item.getPosition().setCoordinates(Position.getCubeCenter(coordinates));
@@ -2462,11 +2438,9 @@ public class Unit extends Entity{
   	 * @param	item
   	 *				The item to pick up.
  	 * @effect	This unit references the given item as its item.
- 	 * 				| this.setItem(item)
- 	 * @effect	The given item references this unit as its unit,
+ 	 * 				The given item references this unit as its unit,
  	 * 				and no longer references a world.
- 	 * 				| item.setUnit(this) &&
- 	 * 				| item.setWorld(null)
+ 	 * 				| item.moveToUnit(this)
   	 */
 	public void pickUpItem(Item item) throws IllegalStateException, IllegalArgumentException {
 		item.moveToUnit(this);
@@ -2477,7 +2451,7 @@ public class Unit extends Entity{
 	// ===============================================================================
 	
 	/**
-	 * Return whether default behavior is enabled or not.
+	 * Returns whether default behavior is enabled or not.
 	 */
 	@Basic @Raw
 	public boolean getDefaultBehaviorEnabled(){
@@ -2487,18 +2461,20 @@ public class Unit extends Entity{
 	/**
 	 * Sets whether this unit's default behaviour is enabled to the given value.
 	 * @post	The value of whether this unit's default behaviour is enabled, is equal to the given value.
+	 *				|new.getDefaultBehaviourEnabled() == true
 	 * @throws	IllegalStateException
-	 * 			This unit is terminated.
-	 * 			isTerminated()
+	 *				This unit is terminated.
+	 *				| isTerminated()
 	 */
 	private void setDefaultBehaviorEnabled(boolean value) throws IllegalStateException{
 		if (this.isTerminated())
 			throw new IllegalStateException("unit is terminated.");
+		
 		this.defaultBehaviorEnabled = value;
 	}
 	
 	/**
-	 * A variable that records whether this units default behavior is enabled.
+	 * A variable that stores whether this unit's default behavior is enabled.
 	 */
 	private boolean defaultBehaviorEnabled;
 	
@@ -2602,7 +2578,7 @@ public class Unit extends Entity{
 	private final int EXP_LEVELUP = 10;
 	
 	/**
-	 * Return the experience of this unit.
+	 * Returns the experience of this unit.
 	 */
 	@Basic @Raw
 	public int getExperience() {
@@ -2613,10 +2589,11 @@ public class Unit extends Entity{
 	 * Check whether the given experience is a valid experience for
 	 * this unit.
 	 *  
-	 * @param  	experience
+	 * @param	experience
 	 *         	The experience to check.
-	 * @return 	The experience must be greater than or equal to 0 
-	 * 			and the combined experience must be less than or equal to the max value for an integer.
+	 *         
+	 * @return	The experience must be greater than or equal to 0 
+	 * 			and the combined experience must be less than or equal to the maximal value for an integer.
 	 *       	| result == (experience >= 0) && (experience+ this.getExperience() <= Integer.MAX_VALUE)
 	*/
 	public boolean isValidExperience(int experience) {
@@ -2624,10 +2601,11 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Set the experience of this unit to the given experience.
+	 * Sets the experience of this unit to the given experience.
 	 * 
 	 * @param	experience
 	 *				The new experience for this unit.
+	 *
 	 * @post	The experience of this new unit is equal to
 	 *				the given experience.
 	 *				| new.getExperience() == experience
@@ -2644,7 +2622,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Variable registering the experience of this unit.
+	 * Variable that stores the experience of this unit.
 	 */
 	private int experience;
 	
@@ -2667,8 +2645,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Raises one stat of this unit by one. The stat is chosen at random
-	 * and is not yet maxed.
+	 * Raises one stat of this unit by one. The stat is chosen at random and is not yet maxed.
 	 * 
 	 * @post	One of the unit's stats is raised by one. This stat was not yet maxed.
 	 * 			All other stats remain the same.
@@ -2700,6 +2677,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	extraExperience
 	 *				The amount of experience added.
+	 *
 	 * @post	The unit's total experience is raised with the given amount.
 	 *				| new.getExperience() == this.getExperience() + extraExperience
 	 * @post	If the unit levels up, one of the unit's stat is raised by one. 
@@ -2725,8 +2703,9 @@ public class Unit extends Entity{
 	 * Check if this unit has enough experience to level up if it would receive
 	 * the given amount of extra experience.
 	 * 
-	 * @param 	extraExperience
+	 * @param	extraExperience
 	 *				The extra experience added.
+	 *
 	 * @return	True if the new total experience has exceeded the amount needed for leveling up.
 	 *				| result = ((extraExperience + this.getExperience()) / EXP_LEVELUP > this.getExperience() / EXP_LEVELUP)
 	 * @throws	IllegalArgumentException
@@ -2741,10 +2720,10 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Returns the amount of times this unit can level up if it receives the given
-	 * amount of experience.
+	 * Returns the amount of times this unit can level up if it receives the given amount of experience.
 	 * @param 	extraExperience
 	 * 			The given experience.
+	 * 
 	 * @return 	The amount of times this unit can level up.
 	 * 			| result == (((extraExperience + this.getExperience()) / EXP_LEVELUP) - (this.getExperience() / EXP_LEVELUP))
 	 * @throws 	IllegalArgumentException
@@ -2776,6 +2755,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param value
 	 *				The given value.
+	 *
 	 * @post	The value of is-interrupted is equal to the given value.
 	 *				| new.getIsInterrupted() == value
 	 */
@@ -2785,7 +2765,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Value registering the is-interrupted property of this unit.
+	 * Value that stores the is-interrupted property of this unit.
 	 */
 	private boolean isInterrupted = false;
 	
@@ -2803,8 +2783,10 @@ public class Unit extends Entity{
 	// No formal documentation required.
 	/**
 	 * Advances the game time of this unit with a given deltaT.
+	 * 
 	 * @param	deltaT
 	 * 					The time to increase the game time with.
+	 * 
 	 * @post	The gameTime of this  unit is equal to its old game time increased with deltaT.
 	 *       		| new.getGameTime() == this.getGameTime() + deltaT
 	 * @throws	IllegalArgumentException
@@ -3133,7 +3115,7 @@ public class Unit extends Entity{
 			}
 			
 			// The unit has stopped falling
-			if (this.hasSolidNeighbours(targetCoordinates[0], targetCoordinates[1], targetCoordinates[2])) {
+			if (this.hasSolidNeighbours(UnitPosition.getCubeCoordinates(targetCoordinates))) {
 				
 				this.setCoordinates(this.getTargetCoordinates());
 				this.setCurrentActivity(Activity.NOTHING);
