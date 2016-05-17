@@ -1364,6 +1364,30 @@ public class Unit extends Entity{
 	}
 	
 	/**
+	 * Check if this unit can move to the given destination.
+	 * It does not check if there is a full path, bur rather does
+	 * some simple checks.
+	 * @param 	destination
+	 * 			The destination for the unit to move to.
+	 * @return	True if:
+	 * 			- The destination cube is passable, and
+	 * 			- The destination cube has at least one solid neighbour, and
+	 * 			- The destination cube has at least one passable neighbour, and
+	 * 			- The current position has at least one passable neighbour.
+	 * 			| result == (destinationCube.isPassable()) && (this.hasSolidNeighbours(destination)) &&
+	 *			| (this.hasPassableNeighbours(destination)) && 
+	 *			| (this.hasPassableNeighbours(this.getCubeCoordinates()))
+	 */
+	public boolean canMoveTo(int[] destination) {
+		Cube destinationCube = this.getWorld().getCube(destination);
+		
+		return ( (destinationCube.isPassable()) && (this.hasSolidNeighbours(destination)) &&
+				(this.hasPassableNeighbours(destination)) && 
+				(this.hasPassableNeighbours(this.getCubeCoordinates())) );
+		
+	}
+	
+	/**
 	 * Initiates movement to the given coordinates.
 	 * @param	dx
 	 * 				The move to make in the x-direction.
@@ -1479,9 +1503,7 @@ public class Unit extends Entity{
 			throw new IllegalArgumentException();
 		}
 		
-		if ((this.hasSolidNeighbours(destinationCoordinates))
-				&& (this.hasPassableNeighbours(destinationCoordinates))
-				&& (this.hasPassableNeighbours(this.getPosition().getCubeCoordinates()))){
+		if (this.canMoveTo(destinationCoordinates)) {
 		
 			if ( ! thisIsDefaultBehaviour)
 				this.setDefaultBehaviorEnabled(false);

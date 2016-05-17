@@ -8,7 +8,6 @@ import java.util.Map;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.expressions.Expression;
-import hillbillies.expressions.ReadVariableExpression;
 import hillbillies.expressions.booleanType.AndExpression;
 import hillbillies.expressions.booleanType.BooleanExpression;
 import hillbillies.expressions.booleanType.CarriesItemExpression;
@@ -23,11 +22,11 @@ import hillbillies.expressions.booleanType.OrExpression;
 import hillbillies.expressions.booleanType.TrueExpression;
 import hillbillies.expressions.booleanType.VariableBooleanExpression;
 import hillbillies.expressions.positionType.BoulderPositionExpression;
-import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.expressions.positionType.HereExpression;
 import hillbillies.expressions.positionType.LiteralPositionExpression;
 import hillbillies.expressions.positionType.LogPositionExpression;
 import hillbillies.expressions.positionType.NextToExpression;
+import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.expressions.positionType.PositionOfExpression;
 import hillbillies.expressions.positionType.SelectedPositionExpression;
 import hillbillies.expressions.positionType.VariablePositionExpression;
@@ -137,9 +136,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 			return new VariableBooleanExpression(variableName, sourceLocation);
 		else if (value instanceof UnitExpression)
 			return new VariableUnitExpression(variableName, sourceLocation);
-		else if (value instanceof PositionExpression)
+		else
 			return new VariablePositionExpression(variableName, sourceLocation);
-		return new ReadVariableExpression(variableName, sourceLocation);
 	}
 
 	@Override
