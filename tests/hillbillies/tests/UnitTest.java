@@ -16,7 +16,7 @@ import ogp.framework.util.Util;
 
 /**
  * @author Sander Mergan, Thomas Vranken
- * @version 2.3
+ * @version 2.4
  */
 public class UnitTest {
 	
@@ -36,51 +36,6 @@ public class UnitTest {
 	}
 	
 	@Test
-	public final void advanceTimeWorkAtTest_CurrentPosition(){
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		
-		unitMin.workAt(unitMin.getCubeCoordinates());
-		double deltaT = 0.1;
-		assertTrue(unitMin.isWorking());
-		assertTrue(unitMin.getProgress() == 0);
-		
-		advanceTimeFor(unitMin, unitMin.getWorkDuration(), deltaT);
-		
-		assertFalse(unitMin.isWorking());
-		
-	}
-	
-	@Test
-	public final void advanceTimeWorkAtTest_Origin(){
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		
-		unitMin.workAt(new int[] {0,0,0});
-		double deltaT = 0.2;
-		assertTrue(unitMin.isWorking());
-		assertTrue(unitMin.getProgress() == 0);
-		while  (unitMin.getProgress() <  unitMin.getWorkDuration() - deltaT){
-			unitMin.advanceTime(deltaT);
-			assertTrue(unitMin.isWorking());
-		}
-		unitMin.advanceTime(deltaT);
-		assertFalse(unitMin.isWorking());
-		
-	}
-	
-	@Test
-	public final void AdvanceTime_DeltaT() {
-		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		
-		assertTrue(unitMin.getGametime() == 0);
-		
-		unitMin.advanceTime(0.2);
-		assertTrue(Util.fuzzyEquals(unitMin.getGametime(), 0.2));
-	}
-	
-	@Test
 	public final void constructorTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
@@ -94,6 +49,7 @@ public class UnitTest {
 		assertEquals(25, unitMin.getStrength());
 		assertEquals(25, unitMin.getAgility());
 		assertEquals(25, unitMin.getToughness());
+		assertTrue(unitMin.getFaction() != null);
 		
 		Unit unitLowWeight = new Unit(world, "UnitLowWeight", new int[] {world.getMaximumXValue()-world.getMaximumXValue()/2-3, 
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
@@ -109,6 +65,7 @@ public class UnitTest {
 		assertEquals(60, unitLowWeight.getStrength());
 		assertEquals(50, unitLowWeight.getAgility());
 		assertEquals(40, unitLowWeight.getToughness());
+		assertTrue(unitLowWeight.getFaction() != null);
 	}
 
 	@Test
@@ -336,6 +293,51 @@ public class UnitTest {
 		assertTrue(unitMin.getCurrentActivity()== Activity.MOVE);
 		advanceTimeFor(world, 10, 0.2);
 		assertTrue(unitMin.getCurrentActivity() == Activity.NOTHING);
+	}
+	
+	@Test
+	public final void advanceTimeWorkAtTest_CurrentPosition(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		
+		unitMin.workAt(unitMin.getCubeCoordinates());
+		double deltaT = 0.1;
+		assertTrue(unitMin.isWorking());
+		assertTrue(unitMin.getProgress() == 0);
+		
+		advanceTimeFor(unitMin, unitMin.getWorkDuration(), deltaT);
+		
+		assertFalse(unitMin.isWorking());
+		
+	}
+	
+	@Test
+	public final void advanceTimeWorkAtTest_Origin(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		
+		unitMin.workAt(new int[] {0,0,0});
+		double deltaT = 0.2;
+		assertTrue(unitMin.isWorking());
+		assertTrue(unitMin.getProgress() == 0);
+		while  (unitMin.getProgress() <  unitMin.getWorkDuration() - deltaT){
+			unitMin.advanceTime(deltaT);
+			assertTrue(unitMin.isWorking());
+		}
+		unitMin.advanceTime(deltaT);
+		assertFalse(unitMin.isWorking());
+		
+	}
+	
+	@Test
+	public final void AdvanceTimeTest_DeltaT() {
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertTrue(unitMin.getGametime() == 0);
+		
+		unitMin.advanceTime(0.2);
+		assertTrue(Util.fuzzyEquals(unitMin.getGametime(), 0.2));
 	}
 	
 	/**
