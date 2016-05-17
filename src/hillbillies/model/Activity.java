@@ -8,6 +8,16 @@ public enum Activity {
 		REST,	
 		MOVE,
 		ATTACK,
-		NOTHING
+		NOTHING, FREEREST;
 		
+		
+//		public boolean canInterrupt(Activity oldActivity, Activity newActivity) {
+//			if (oldActivity == WORK)
+//				return true;
+//			else if (oldActivity == FREEREST)
+//				return true;
+//			else if (oldActivity == MOVELONG)
+//				return
+//			
+//		}
 }
