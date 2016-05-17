@@ -16,12 +16,9 @@ import ogp.framework.util.Util;
 
 /**
  * @author Sander Mergan, Thomas Vranken
- * @version 2.2
+ * @version 2.3
  */
 public class UnitTest {
-
-	private int[] origin = new int[] {0,0,0};
-	private final int TIMES_TEST = 20;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -42,7 +39,6 @@ public class UnitTest {
 	public final void advanceTimeWorkAtTest_CurrentPosition(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
 		unitMin.workAt(unitMin.getCubeCoordinates());
 		double deltaT = 0.1;
@@ -59,9 +55,8 @@ public class UnitTest {
 	public final void advanceTimeWorkAtTest_Origin(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
-		unitMin.workAt(origin);
+		unitMin.workAt(new int[] {0,0,0});
 		double deltaT = 0.2;
 		assertTrue(unitMin.isWorking());
 		assertTrue(unitMin.getProgress() == 0);
@@ -78,7 +73,6 @@ public class UnitTest {
 	public final void AdvanceTime_DeltaT() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
 		assertTrue(unitMin.getGametime() == 0);
 		
@@ -90,7 +84,6 @@ public class UnitTest {
 	public final void constructorTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
 		assertEquals("UnitMin", unitMin.getName());
 		assertEquals(0.5,unitMin.getPosition().getXCoordinate(),0.0005); // omdat bij van het type double zijn moet je een absolute fout meegeven.
@@ -106,7 +99,6 @@ public class UnitTest {
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
 																														world.getMaximumZValue()-5}, 
 																														25,60,50,40);
-		world.addEntity(unitLowWeight);
 		
 		assertEquals("UnitLowWeight", unitLowWeight.getName());
 		assertEquals(unitLowWeight.getWorld().getMaximumXValue()-unitLowWeight.getWorld().getMaximumXValue()/2-3 +0.5, unitLowWeight.getPosition().getXCoordinate(),0.0005); // omdat bij van het type double zijn moet je een absolute fout meegeven.
@@ -126,7 +118,6 @@ public class UnitTest {
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
 																														world.getMaximumZValue()-5}, 
 																														25,60,50,40);
-		world.addEntity(unitLowWeight);
 		
 		assertEquals(55,unitLowWeight.getMinWeight());
 	}
@@ -143,9 +134,6 @@ public class UnitTest {
 				world.getMaximumYValue()-world.getMaximumYValue()+5, 
 				world.getMaximumZValue()-5}, 
 				25,60,50,40);
-		world.addEntity(unitMin);
-		world.addEntity(unitMax);
-		world.addEntity(unitLowWeight);
 		
 		assertTrue(unitMin.canHaveAsWeight(30));
 		assertFalse(unitMin.canHaveAsWeight(-1));
@@ -165,9 +153,6 @@ public class UnitTest {
 				world.getMaximumYValue()-1, 
 				world.getMaximumZValue()-1},
 				100,100,100,100);
-		world.addEntity(unitMax);
-		world.addEntity(unitMin);
-		world.addEntity(unitLowWeight);
 		
 		assertTrue(unitLowWeight.canHaveAsStrength(150));
 		assertFalse(unitMin.canHaveAsWeight(-1));
@@ -186,9 +171,6 @@ public class UnitTest {
 				world.getMaximumYValue()-1, 
 				world.getMaximumZValue()-1},
 				100,100,100,100);
-		world.addEntity(unitMax);
-		world.addEntity(unitMin);
-		world.addEntity(unitLowWeight);
 		
 		assertTrue(unitLowWeight.canHaveAsAgility(150));
 		assertFalse(unitMin.canHaveAsAgility(-1));
@@ -207,9 +189,6 @@ public class UnitTest {
 				world.getMaximumYValue()-1, 
 				world.getMaximumZValue()-1},
 				100,100,100,100);
-		world.addEntity(unitMax);
-		world.addEntity(unitMin);
-		world.addEntity(unitLowWeight);
 		
 		assertTrue(unitLowWeight.canHaveAsToughness(150));
 		assertFalse(unitMin.canHaveAsToughness(-1));
@@ -223,7 +202,6 @@ public class UnitTest {
 																							world.getMaximumYValue()-1, 
 																							world.getMaximumZValue()-1},
 																							100,100,100,100);
-		world.addEntity(unitMax);
 		
 		assertTrue(unitMax.canHaveAsCurrentHealth(50));
 		assertFalse(unitMax.canHaveAsCurrentHealth(-50));
@@ -237,7 +215,6 @@ public class UnitTest {
 																							world.getMaximumYValue()-1, 
 																							world.getMaximumZValue()-1},
 																							100,100,100,100);
-		world.addEntity(unitMax);
 		
 		assertTrue(unitMax.canHaveAsCurrentStamina(50));
 		assertFalse(unitMax.canHaveAsCurrentStamina(-50));
@@ -270,7 +247,6 @@ public class UnitTest {
 	public final void getCubePosition() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
 		assertTrue(unitMin.getCubeCoordinates()[0] == 0);
 		assertTrue(unitMin.getCubeCoordinates()[1] == 0);
@@ -282,7 +258,6 @@ public class UnitTest {
 		// True case
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
 		double[] target = {unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()};
 		assertTrue(unitMin.canHaveAsTargetCoordinates(target));
@@ -300,7 +275,6 @@ public class UnitTest {
 		// True case
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
 		double[] target = {unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()};
 		assertTrue(unitMin.canHaveAsInitialCoordinates(target));
@@ -316,7 +290,6 @@ public class UnitTest {
 	public final void getWalkSpeedTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
 		double[] target = {unitMin.getPosition().getXCoordinate(),unitMin.getPosition().getYCoordinate(),unitMin.getPosition().getZCoordinate()+1};
 		assertTrue(Util.fuzzyEquals(unitMin.getWalkSpeed(target),0.75));
@@ -327,7 +300,6 @@ public class UnitTest {
 	public final void getVelocityTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitRandom = new Unit(world, "RandomUnit");
-		world.addEntity(unitRandom);
 		
 		// Random case
 		// Execute multiple times because of randomness.
@@ -359,14 +331,12 @@ public class UnitTest {
 	public void moveToAdjacentTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
-		world.addEntity(unitMin);
 		
 		unitMin.moveToAdjacent(0, 0, 1);
 		assertTrue(unitMin.getCurrentActivity()== Activity.MOVE);
 		advanceTimeFor(world, 10, 0.2);
 		assertTrue(unitMin.getCurrentActivity() == Activity.NOTHING);
 	}
-	
 	
 	/**
 	 * Helper method to advance time for the given world by some time.
@@ -383,7 +353,6 @@ public class UnitTest {
 		unit.advanceTime(time - n * step);
 	}
 	
-	
 	/**
 	 * Helper method to advance time for the given world by some time.
 	 * 
@@ -398,7 +367,6 @@ public class UnitTest {
 			world.advanceTime(step);
 		world.advanceTime(time - n * step);
 	}
-	
 	
 	/**
 	 * Helper method to load the terrain for a new world. Only existing terrains should be asked for.

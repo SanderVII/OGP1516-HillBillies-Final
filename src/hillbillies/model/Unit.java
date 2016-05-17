@@ -22,13 +22,13 @@ import hillbillies.positions.UnitPosition;
 
 /**
  * A class of units involving a world, a faction, a name, a position, a number of primary attributes, health and stamina,
- * 	an orientation and a toggle (boolean value) for sprinting.
+ * 	an orientation.
  * 
  * @invar	The current health of each unit must be a valid current health for any unit. 
  *        			| canHaveAsCurrentHealth(getCurrentHealth())
  * @invar	The current stamina of each unit must be a valid current stamina for any unit. 
  *        			| canHaveAsCurrentStamina(getCurrentStamina())
- * @invar	The weight of each unit must be in the range minBaseStat..MaxBaseStat and be at least the average of the strength and agility of this unit. 
+ * @invar	The weight of each unit must be a valid weight for any unit.
  * 					| canHaveAsWeight(getWeight())
  * @invar	The maximum base stat must be a valid maximal base stat for any unit.
  *					| canHaveAsMaxBaseStat(getMaxBaseStat())
@@ -36,14 +36,14 @@ import hillbillies.positions.UnitPosition;
  *					| canHaveAsMinBaseStat(getMinBaseStat())
  * @invar	The name of each unit must be a valid name for any unit.
  *					| isValidName(getName())
- * @invar	The position of each unit must be a valid position for any unit.
- * 					|canHaveAsUnitPosition(getPosition())
+ * @invar	The coordinates of each unit must be valid coordiniates for any unit.
+ * 					|getPosition().canHaveAsCoordinates(getPosition().getCoordinates())
  * @invar	The orientation of each unit must be a valid orientation for any unit.
  * 					| isValidOrientation(getAngle())
- * @invar	The initial position of each unit must be a valid initial position for any unit.
- *       			| isValidInitialPosition(getInitialPosition())
- * @invar	The target position of each unit must be a valid target position for any unit.
- *       			| isValidTargetPosition(getTargetPosition())
+ * @invar	The initial coordiniates of each unit must be valid initial coordiniates for any unit.
+ *       			| canHaveAsInitialCoordinates(getInitialCoordinates())
+ * @invar	The target coordiniates of each unit must be valid target coordiniates for any unit.
+ *       			| canHaveAsTargetCoordinates(getTargetCoordinates())
  * @invar	The is-sprinting value of each unit must be a valid is-sprinting value for any unit.
  *       			| isValidIsSprinting(getIsSprinting())
  * @invar	The experience of each unit must be a valid experience for any unit.
@@ -69,17 +69,17 @@ public class Unit extends Entity{
 	 * @param	faction
 	 * 					The faction of this new unit.
 	 * @param	name
-	 * 					The name for this new unit.
-	 * @param	position
-	 * 					The initial position for this new unit.
+	 * 					The name of this new unit.
+	 * @param	coordinates
+	 * 					The cube coordiniates of this new unit.
 	 * @param	weight 
-	 * 					The weight for this new unit.
+	 * 					The weight of this new unit.
 	 * @param	strength
-	 * 					The strength for this new unit.
+	 * 					The strength of this new unit.
 	 * @param	agility
-	 * 					The agility for this new unit.
+	 * 					The agility of this new unit.
 	 * @param	toughness
-	 * 					The toughness for this new unit.
+	 * 					The toughness of this new unit.
 	 * 
 	 * @effect	Sets the initial weight of this new unit to the given initial weight.
 	 *					| this.setInitialWeight(weight)
@@ -99,40 +99,22 @@ public class Unit extends Entity{
 	 * @post	The faction of this unit is set to the given faction.
 	 * 				| new.getFaction() == faction
 	 * 
-	 * @post	The current health of the new unit is equal to the maximal health of that unit.
+	 * @post	The current health of the new unit is equal to the maximal health of this unit.
 	 * 				| new.getCurrentHealth() == new.getMaxPoints()
 	 * 
-	 * @post	The current stamina of the new unit is equal to the maximal stamina of that unit.
+	 * @post	The current stamina of the new unit is equal to the maximal stamina of this unit.
 	 * 				| new.getCurrentStamina() == new.getMaxPoints
 	 * 
-	 * @post	The name of this unit is equal to that given name.
+	 * @post	The name of this unit is equal to the given name.
 	 * 				| new.getName(name)
 	 * 
-	 * @post	The position of this unit is equal to the given position.
-	 * 				| (new.getPosition() == position)
-	 * 
-	 * @throws	IllegalArgumentException
-	 * 				This unit cannot have the given world as its world,
-	 * 				Or the world is at its maximum capacity.
-	 * 				| (! canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD)
-	 * 
-	 * @throws	IllegalArgumentException
-	 * 				This unit cannot have the given faction as its faction,
-	 * 				Or the faction is at its maximum capacity.
-	 * 				| (! canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION)
-	 * 
-	 * @throws	IllegalArgumentException
-	 * 				The given name is not a valid name.
-	 *  			| ! isValidName(name)
-	 *  
-	 * @throws	IllegalArgumentException
-	 * 				The given position is not a valid position.
-	 *  			| ! canHaveAsUnitPosition(position)
+	 * @post	The coordinates of this unit are equal to the given coordinates.
+	 * 				| (new.getPosition().getCubeCoordinates() == position)
 	 */
-	public Unit(World world, Faction faction, String name, int[] position, 
+	public Unit(World world, Faction faction, String name, int[] coordinates, 
 			int weight, int strength, int agility, int toughness) throws IllegalArgumentException {
 		
-		super(world, position);
+		super(world, coordinates);
 
 		this.setFaction(faction);
 		
@@ -140,7 +122,7 @@ public class Unit extends Entity{
 		this.setName(name);
 		
 		// Upon creation, places this unit in the center of a cube.
-		this.setPosition( new UnitPosition(this.getWorld(), Position.getCubeCenter(position)) );
+		this.setPosition( new UnitPosition(this.getWorld(), Position.getCubeCenter(coordinates)) );
 		
 		this.setInitialStrength(strength);
 		
@@ -150,7 +132,8 @@ public class Unit extends Entity{
 		
 		this.setInitialWeight(weight);
 		
-		this.setOrientation(Math.PI);
+		// Default orientation is PI/2
+		this.setOrientation(Math.PI/2.0);
 		
 		// Precondition is checked in setCurrentHealth method itself.
 		this.setCurrentHealth(this.getMaxPoints());
