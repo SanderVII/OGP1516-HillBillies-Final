@@ -16,7 +16,7 @@ import hillbillies.positions.UnitPosition;
 //TODO de fouten zoeken in defaultBehaviour. 
 
 /** 
- * @version 2.19
+ * @version 2.20
  */
 
 /**
@@ -228,6 +228,7 @@ public class Unit extends Entity{
 	 * @post   This unit's current activity is NOTHING.
 	 * 		 | new.getCurrentActivity() == Activity.NOTHING
 	 */
+	@Override
 	 public void terminate() {
 		 if (! this.isTerminated()) {
 			 this.getWorld().removeEntity(this);
@@ -246,21 +247,7 @@ public class Unit extends Entity{
 			this.isTerminated = true;
 		 }
 	 }
-	 
-	 /**
-	  * Return a boolean indicating whether or not this unit
-	  * is terminated.
-	  */
-	 @Basic @Raw
-	 public boolean isTerminated() {
-		 return this.isTerminated;
-	 }
-	 
-	 /**
-	  * Variable registering whether this person is terminated.
-	  */
-	 private boolean isTerminated = false;
-	 
+	
 	
 	//=============================================================================
 	// Methods for name and primary attributes.
@@ -375,15 +362,15 @@ public class Unit extends Entity{
 	}
 
 	/**
- 		* Set the name of this unit to the given name.
- 		* 
- 		* @param  name
- 		*				The new name for this unit.
- 	 	* @post The name of this new unit is equal to the given name.
-	 	*				| new.getName() == name
-	 	* @throws		IllegalArgumentException
-	 	*				The given name is not a valid name for any unit.
-	 	*				| ! isValidName(getName())
+	* Set the name of this unit to the given name.
+	* 
+	* @param  name
+	*				The new name for this unit.
+ 	* @post The name of this new unit is equal to the given name.
+ 	*				| new.getName() == name
+ 	* @throws		IllegalArgumentException
+ 	*				The given name is not a valid name for any unit.
+ 	*				| ! isValidName(getName())
 	 */
 	@Raw
 	public void setName(String name) throws IllegalArgumentException {
@@ -436,8 +423,7 @@ public class Unit extends Entity{
 	}
 
 	/**
-	 * Returns the minimal weight of this unit based on the given strength and
-	 * agility.
+	 * Returns the minimal weight of this unit based on the given strength and agility.
 	 * 
 	 * @param	strength
 	 *           		The strength of this unit.
@@ -498,13 +484,12 @@ public class Unit extends Entity{
 	 */
 	@Override
 	public void setWeight(int weight) {
-		if (weight > getMaxBaseStat()) {
+		if (weight > getMaxBaseStat())
 			this.weight = getMaxBaseStat();
-		}else if (weight >= this.getMinWeight()) {
+		else if (weight >= this.getMinWeight())
 			this.weight = weight;
-		} else if (weight < this.getMinWeight()) {
+		else if (weight < this.getMinWeight())
 			this.weight = getMinWeight(); 
-		}
 	}
 
 	/**
@@ -524,20 +509,14 @@ public class Unit extends Entity{
 	 *       		| 	then new.getWeight() == getMaxInitialBaseStat()
 	 */
 	public void setInitialWeight(int weight) {
-		if (weight > getMaxInitialBaseStat()) {
+		if (weight > getMaxInitialBaseStat())
 			this.setWeight(getMaxInitialBaseStat());
-		} else if (weight < getMinInitialBaseStat()) {
+		else if (weight < getMinInitialBaseStat())
 			this.setWeight(getMinInitialBaseStat());
-		} else {
+		else
 			this.setWeight(weight);
-		}
 	}
 	
-	/**
-	 * A variable that registers the weight of this unit.
-	 */
-	private int weight;
-
 	/**
 	 * Returns the strength of this unit.
 	 */
@@ -551,7 +530,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	strength
 	 * 					The strength of this unit.
-	 * @return	True if and only if the giveen strength is in the range this.getMinBaseStat()..this.getMaxBaseStat().
+	 * @return	True if and only if the given strength is in the range this.getMinBaseStat()..this.getMaxBaseStat().
 	 * 					|result == (strength >= this.getMinBaseStat()) && (strength <= this.getMaxBaseStat())
 	*/
 	public boolean canHaveAsStrength(int strength){
@@ -563,13 +542,13 @@ public class Unit extends Entity{
 	 * 
 	 * @param	strength
 	 *          		The new strength of this unit.
-	 * @post	If the given strength is in the range this.getMinBaseStat()..this.getMaxBaseStat(), the strength of this unit is set to the given strength. 
+	 * @post	If the given strength is in the range this.getMinBaseStat()..this.getMaxBaseStat(), the strength of this unit is equal to the given strength. 
 	 *       		| if (canHaveAsStrength(strength)) 
 	 *       		| 	then new.getStrength() == strength
-	 * @post If the given strength is lower than this.getMinBaseStat(), the strength of this unit is set to this.getMinBaseStat(). 
+	 * @post If the given strength is lower than this.getMinBaseStat(), the strength of this unit is equal to this.getMinBaseStat(). 
 	 *       		| if (strength < this.getMinBaseStat()) 
 	 *       		|	then new.getStrength() == this.getMinBaseStat()
-	 * @post If the given strength exceeds this.getMaxBaseStat(), the strength of this unit is set to this.getMaxBaseStat(). 
+	 * @post If the given strength exceeds this.getMaxBaseStat(), the strength of this unit is equal to this.getMaxBaseStat(). 
 	 *       		| if (strength > this.getMaxBaseStat()) 
 	 *       		| 	then new.getStrength() == this.getMaxBaseStat()
 	 * @post If changing the strength of this unit makes its current weigth invalid (by raising the minimal weight), 
@@ -578,26 +557,22 @@ public class Unit extends Entity{
 	 *       		| 	then new.getWeight() == this.getMinWeight()
 	 */
 	public void setStrength(int strength) {
-		if (this.canHaveAsStrength(strength)) {
+		if (this.canHaveAsStrength(strength)) 
 			this.strength = strength;
-			if (this.getWeight() < getMinWeight(strength, this.getAgility())) {
-				this.setWeight(getMinWeight(strength, this.getAgility()));
-			}
-		} else if (strength < getMinBaseStat()) {
+		else if (strength < getMinBaseStat()) 
 			this.strength = getMinBaseStat();
-		} else if (strength > getMaxBaseStat()) {
+		else if (strength > getMaxBaseStat()) 
 			this.strength = getMaxBaseStat();
-			if (this.getWeight() < getMinWeight(strength, this.getAgility())) {
-				this.setWeight(getMinWeight(strength, this.getAgility()));
-			}
-		}
+		
+		if (this.getWeight() < this.getMinWeight()) 
+			this.setWeight(this.getMinWeight());
 	}
 
 	/**
 	 * Sets the initial strength of this unit to the given strength.
 	 * 
 	 * @param	strength
-	 * 					The strength for this new unit,
+	 * 					The strength for this new unit.
 	 * 
 	 * @post	If the given strength is in the range getMinInitialBaseStat()..getMaxInitialBaseStat(), the strength of this unit is equal to the given strength. 
 	 *       		| if ( (strength >= getMinInitialBaseStat()) && (strength <=getMaxInitialBaseStat()) ) 
@@ -610,17 +585,19 @@ public class Unit extends Entity{
 	 *       		| 	then new.getStrength() == getMaxInitialBaseStat()
 	 */
 	public void setInitialStrength(int strength) {
-		if (strength > getMaxInitialBaseStat()) {
+		if (strength > getMaxInitialBaseStat())
 			this.setStrength(getMaxInitialBaseStat());
-		} else if (strength < getMinInitialBaseStat()) {
+		else if (strength < getMinInitialBaseStat())
 			this.setStrength(getMinInitialBaseStat());
-		} else {
+		else
 			this.setStrength(strength);
-		}
+		
+		if (this.getWeight() < this.getMinWeight())
+			setInitialWeight(this.getMinWeight());
 	}
 	
 	/**
-	 * A variable that registers the strength of this unit.
+	 * A variable that holds the strength of this unit.
 	 */
 	private int strength;
 
@@ -650,13 +627,13 @@ public class Unit extends Entity{
 	 * @param	agility
 	 *          		The new agility of this unit.
 	 * @post	If the given agility is in the range this.getMinBaseStat()..this.getMaxBaseStat(), 
-	 * 				the agility of this unit is set to the given agility. 
+	 * 				the agility of this unit is equal to the given agility. 
 	 *       		|if (this.canHaveAsAgility())
 	 *       		|	then new.getAgility() == agility
-	 * @post	If the given agility is lower than this.getMinBaseStat(), the agility of this unit is set to this.getMinBaseStat(). 
+	 * @post	If the given agility is lower than this.getMinBaseStat(), the agility of this unit is equal to this.getMinBaseStat(). 
 	 *       		|if (agility < this.getMinBaseStat()) 
 	 *       		|	then new.getAgility() == this.getMinBaseStat()
-	 * @post	If the given agility exceeds this.getMaxBaseStat(), the agility of this unit is set to this.getMaxBaseStat(). 
+	 * @post	If the given agility exceeds this.getMaxBaseStat(), the agility of this unit is equal to this.getMaxBaseStat(). 
 	 *       		|if (agility > this.getMaxBaseStat()) 
 	 *       		|	then new.getAgility() == this.getMaxBaseStat()
 	 * @post	if changing the agility of this unit makes its weigth (by raising the minimal weight), 
@@ -665,26 +642,22 @@ public class Unit extends Entity{
 	 *       		|	then new.getWeight() == this.getWeight()
 	 */
 	public void setAgility(int agility) {
-		if (this.canHaveAsAgility(agility)) {
+		if (this.canHaveAsAgility(agility))
 			this.agility = agility;
-			if (this.getWeight() < getMinWeight(this.getStrength(), agility)) {
-				setWeight(getMinWeight(this.getStrength(), agility));
-			}
-		} else if (agility <  getMinBaseStat()) {
+		else if (agility <  getMinBaseStat()) 
 			this.agility =  getMinBaseStat();
-		} else if (agility >  getMaxBaseStat()) {
+		else if (agility >  getMaxBaseStat()) 
 			this.agility =  getMaxBaseStat();
-			if (this.getWeight() < getMinWeight(this.getStrength(), agility)) {
-				setWeight(getMinWeight(this.getStrength(), agility));
-			}
-		}
+		
+		if (this.getWeight() < getMinWeight()) 
+			setWeight(getMinWeight());
 	}
 	
 	/**
 	 * Sets the initial agility of this unit to the given agility.
 	 * 
 	 * @param	agility
-	 * 					The agility for this new unit,
+	 * 					The agility for this new unit.
 	 * 
 	 * @post	If the given agility is in the range getMinInitialBaseStat()..getMaxInitialBaseStat(), the agility of this unit is equal to the given agility. 
 	 *       		| if ( (agility >= getMinInitialBaseStat()) && (agility <=getMaxInitialBaseStat()) ) 
@@ -697,17 +670,19 @@ public class Unit extends Entity{
 	 *       		| 	then new.getAgility() == getMaxInitialBaseStat()
 	 */
 	public void setInitialAgility(int agility) {
-		if (agility > getMaxInitialBaseStat()) {
+		if (agility > getMaxInitialBaseStat())
 			this.setAgility(getMaxInitialBaseStat());
-		} else if (agility < getMinInitialBaseStat()) {
+		else if (agility < getMinInitialBaseStat())
 			this.setAgility(getMinInitialBaseStat());
-		} else {
+		else
 			this.setAgility(agility);
-		}
+	
+		if (this.getWeight() < this.getMinWeight())
+			setInitialWeight(this.getMinWeight());
 	}
 
 	/**
-	 * A variable that registers the agility of this unit.
+	 * A variable that stores the agility of this unit.
 	 */
 	private int agility;
 	
@@ -736,27 +711,26 @@ public class Unit extends Entity{
 	 * 
 	 * @param	toughness
 	 *          		The new toughness of this unit.
-	 * @post If the given toughness is in the range this.getMinBaseStat()..this.getMaxBaseStat(), 
-	 * 				the toughness of this unit is set to the given toughness. 
+	 * @post	If the given toughness is in the range this.getMinBaseStat()..this.getMaxBaseStat(), 
+	 * 				the toughness of this unit is equal to the given toughness. 
 	 *       		|if (this.canHaveAsToughness(toughness)) 
 	 *       		|	then new.getToughness() == toughness
 	 * @post	If the given toughness is lower than this.getMinBaseStat(), 
-	 * 				the toughness of this unit is set to this.getMinBaseStat(). 
+	 * 				the toughness of this unit is equal to this.getMinBaseStat(). 
 	 *       		|if (toughness < this.getMinBaseStat()) 
 	 *       		|	then new.getToughness() == this.getMinBaseStat()
 	 * @post	If the given toughness exceeds this.getMaxBaseStat(), 
-	 * 				the toughness of this unit is set to this.getMaxBaseStat(). 
+	 * 				the toughness of this unit is equal to this.getMaxBaseStat(). 
 	 *       		|if (toughness > this.getMaxBaseStat()) 
 	 *       		|	then new.getToughness() == this.getMaxBaseStat()
 	 */
 	public void setToughness(int toughness) {
-		if (this.canHaveAsToughness(toughness)) {
+		if (this.canHaveAsToughness(toughness))
 			this.toughness = toughness;
-		} else if (toughness < getMinBaseStat()) {
+		else if (toughness < getMinBaseStat())
 			this.toughness = getMinBaseStat();
-		} else if (toughness > getMaxBaseStat()) {
+		else if (toughness > getMaxBaseStat())
 			this.toughness = getMaxBaseStat();
-		}
 	}
 	
 	/**
@@ -776,17 +750,17 @@ public class Unit extends Entity{
 	 *       		| 	then new.getToughness() == getMaxInitialBaseStat()
 	 */
 	public void setInitialToughness(int toughness) {
-		if (toughness > getMaxInitialBaseStat()) {
+		if (toughness > getMaxInitialBaseStat()) 
 			this.setToughness(getMaxInitialBaseStat());
-		} else if (toughness < getMinInitialBaseStat()) {
+		else if (toughness < getMinInitialBaseStat()) 
 			this.setToughness(getMinInitialBaseStat());
-		} else {
+		else 
 			this.setToughness(toughness);
-		}
+		
 	}
 	
 	/**
-	 * A variable that registers the toughness of this unit.
+	 * A variable that stores the toughness of this unit.
 	 */
 	private int toughness;
 
@@ -809,31 +783,30 @@ public class Unit extends Entity{
 	 * 
 	 * @param 	faction
 	 *			The faction to check.
-	 * @return	If this unit is terminated, true if the given faction
-	 * 			is not effective.
-	 * 			| if (isTerminated())
-	 * 			|	then result == (faction == null)
-	 * 			Else, true if the given faction is effective
-	 * 			and not yet terminated.
-	 * 			| else
-	 * 			|	then result == (faction != null) && (!faction.isTerminated())
+	 * @return	If this unit is terminated, true if the given faction is not effective.
+	 *				| if (isTerminated())
+	 *				|	then result == (faction == null)
+	 *				Else, true if the given faction is effective
+	 *				and not yet terminated.
+	 *				| else
+	 *				|	then result == (faction != null) && ( ! faction.isTerminated())
 	 */
 	@Raw
 	public boolean canHaveAsFaction(@Raw Faction faction) {
 		if (this.isTerminated)
 			return faction == null;
 		else
-			return (faction != null) && (! faction.isTerminated());
+			return (faction != null) && ( ! faction.isTerminated());
 	}
 	
 	/**
 	 * Checks whether this unit has a proper faction to which it is attached.
 	 * 
 	 * @return	True if and only if this unit can have the faction to which it
-	 * 			is attached as its faction, and if that faction is either not
-	 * 			effective or has this unit as one of its units.
-	 * 			| (this.canHaveAsFaction(this.getFaction()) 
-	 *			|  && ( (this.getFaction() == null) || (this.getFaction().hasAsUnit(this))) )
+	 *				is attached as its faction, and if that faction is either not
+	 *				effective or has this unit as one of its units.
+	 *				| (this.canHaveAsFaction(this.getFaction()) 
+	 *				|  && ( (this.getFaction() == null) || (this.getFaction().hasAsUnit(this))) )
 	 */
 	public boolean hasProperFaction() {
 		return ( this.canHaveAsFaction(this.getFaction()) 
@@ -850,16 +823,16 @@ public class Unit extends Entity{
 	 * @throws	IllegalArgumentException
 	 * 			This unit cannot have the given faction as its faction,
 	 * 			or the faction is at its maximum capacity.
-	 * 			| (! canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION)
+	 * 			| ( ! canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION)
 	 */
 	public void setFaction(@Raw Faction faction) throws IllegalArgumentException {
-		if ( (! this.canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION) )
+		if ( ( ! this.canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION) )
 			throw new IllegalArgumentException(faction.toString());
 		this.faction = faction;
 	}
 	
 	/**
-	 * A variable referencing the faction to which this unit is attached.
+	 * A variable that stores the faction to which this unit is attached.
 	 */
 	private Faction faction;
 	
@@ -881,7 +854,7 @@ public class Unit extends Entity{
 	 * @param	currentHealth
 	 * 					The current health to check.
 	 * @return	True only if the current stamina is greater than or equal to 0,
-	 *         			and lesser than or equal to its max value. 
+	 *         			and lesser than or equal to its maximal value. 
 	 *         			| result == ((currentStamina >= 0) && (currentStamina <= getMaxPoints()))
 	 */
 	public boolean canHaveAsCurrentHealth(double currentHealth) {
@@ -904,7 +877,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Variable that registers the current health of this unit.
+	 * Variable that stores the current health of this unit.
 	 */
 	private double currentHealth;
 	
@@ -945,7 +918,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Variable registering the current stamina of this unit.
+	 * Variable that stores the current stamina of this unit.
 	 */
 	private double currentStamina;
 	
@@ -954,13 +927,10 @@ public class Unit extends Entity{
 	 * 
 	 * @return The maximum points for health and stamina are both determined as
 	 *         			 200 * weight/100 * toughness/100, rounded up to the next integer. 
-	 *         			| result == (int) Math.ceil(getWeight() * getToughness() / 50.0)
+	 *         			| result == getMaxPoints(this.weight, getToughness())
 	 */
 	public int getMaxPoints() {
-		if (this.hasItem())
-			return this.getMaxPoints(this.getWeight()-this.getItem().getWeight(),this.getToughness());
-		else
-			return getMaxPoints(this.getWeight() , this.getToughness());
+		return this.getMaxPoints(this.weight,this.getToughness());
 	}
 
 	/**
@@ -978,19 +948,15 @@ public class Unit extends Entity{
 		return (int) Math.ceil(weight * toughness / 50.0);
 	}
 	
-	/* Methods for positions and coordinates. */
 	
-	/**
-	 * Returns the length of one cube.
-	 */
-	@Basic @Raw
-	public int getCubeLength(){
-		return Cube.CUBE_LENGHT;
-	}
+	// ======================================================================================
+	// Methods for positions and coordinates.
+	// ======================================================================================
 
 	/**
 	 * Return the exact position of this unit.
 	 */
+	@Override
 	@Basic @Raw
 	public UnitPosition getPosition(){
 		return (UnitPosition) this.position;
@@ -1002,23 +968,23 @@ public class Unit extends Entity{
  	 * is the same as this unit's z-coordinate.
  	 * 
  	 * @return	The coordinates of the center of the cube this unit occupies.
- 	 * 				| result == getSurfaceCenter(getPosition())
+ 	 * 				| result == Position.getSurfaceCenter(getPosition().getCoordinates)
  	 */
  	public double[] getSurfaceCenter() {
  		return (Position.getSurfaceCenter(this.getPosition().getCoordinates()));
  	}
  
 	/**
-	 * Sets the position of this unit to the given position.
+	 * Sets the coordinates of this unit to the given position.
 	 *  
-	 * @param	position
-	 * 					The new position of this unit.
+	 * @param	coordinates
+	 * 					The new coordinates of this unit.
 	 * @throws 	IllegalArgumentException
-	 * 					The given position is not a valid position for any unit..
-	 * 					|! canHaveAsPosition(getPosition())
+	 * 					The given position are not  valid coordinates for any unit..
+	 * 					|! canHaveAsCoordinates(getPosition().getCoordinates())
 	 */
-	public void setCoordinates(double[] position) throws IllegalArgumentException{
-		this.position.setCoordinates(position);
+	public void setCoordinates(double[] coordinates) throws IllegalArgumentException{
+		this.position.setCoordinates(coordinates);
 	}
 	
 	
@@ -1027,14 +993,6 @@ public class Unit extends Entity{
 	// Terminated units must still satisfy their invariants.
 	// Their world is set to null.
 	//===============================================================================
-
-	/**
-	 * Return the world this unit is part of.
-	 */
-	@Basic @Raw
-	public World getWorld() {
-		return this.world;
-	}
 	
 	/**
 	 * Checks whether this unit can have the given world as its world.
@@ -1091,17 +1049,11 @@ public class Unit extends Entity{
 	 * 			| (! canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD)
 	 */
 	public void setWorld(@Raw World world) throws IllegalArgumentException {
-		if ( (! this.canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD) ){
-			
+		if ( (! this.canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD) )
 			throw new IllegalArgumentException();
-	}
+		
 		this.world = world;
 	}
-	
-	/**
-	 * A variable referencing the world to which this unit is attached.
-	 */
-	private World world;
 	
 	
 	// ===================================================================================
