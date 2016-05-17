@@ -55,9 +55,7 @@ public class ItemTest {
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "TestUnit",new int[]{0,0,0}, 100, 100, 100, 100);
-		world.addEntity(unit);
 		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log);
 		assertTrue(world.hasAsEntity(unit));
 		assertTrue(world.hasAsEntity(log));
 		
@@ -100,7 +98,6 @@ public class ItemTest {
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log);
 		
 		assertFalse(log.canHaveAsWeight(Item.MINIMAL_WEIGHT-1));
 		assertTrue(log.canHaveAsWeight(Item.MINIMAL_WEIGHT));
@@ -116,9 +113,7 @@ public class ItemTest {
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "TestUnit",new int[]{0,0,0}, 100, 100, 100, 100);
-		world.addEntity(unit);
 		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log);
 		assertTrue(world.hasAsEntity(unit));
 		assertTrue(world.hasAsEntity(log));
 		
@@ -145,12 +140,9 @@ public class ItemTest {
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		World world2 = new World(terrain, new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "TestUnit",new int[]{0,0,0}, 100, 100, 100, 100);
-		world.addEntity(unit);
 		Unit unit2 = new Unit(world2, "TestUnit",new int[]{0,0,0}, 100, 100, 100, 100);
-		world2.addEntity(unit2);
 		
 		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log);
 		assertTrue(world.hasAsEntity(unit));
 		assertTrue(world.hasAsEntity(log));
 		assertTrue(log.canHaveAsUnit(null));
@@ -162,7 +154,6 @@ public class ItemTest {
 		assertTrue(log.hasProperUnit());
 		
 		Log log2 = new Log(world, new int[]{1,0,0}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log2);
 		unit.workAt(new int[]{1,0,0});
 		advanceTimeFor(world, 100, 0.15);
 		assertTrue(unit.getItem() == log2);
@@ -183,11 +174,8 @@ public class ItemTest {
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		
 		Log log = new Log(world, new int[]{0,0,3}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log);
-		System.out.println(Arrays.toString(log.getPosition().getCubeCoordinates()));
 		assertTrue(Position.equals(log.getPosition().getCubeCoordinates(), new int[]{0,0,3}));
 		advanceTimeFor(world, 20, 0.1);
-		System.out.println(Arrays.toString(log.getPosition().getCubeCoordinates()));
 		assertTrue(Position.equals(log.getPosition().getCubeCoordinates(), new int[]{0,0,0}));
 	}
 	

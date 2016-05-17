@@ -27,6 +27,7 @@ public class Log extends Item {
 	 */
 	public Log(World world, int[] coordinates, int weight) throws IllegalArgumentException{
 		super(world, coordinates,weight);
+		world.addEntity(this);
 	}
 	
 	/**
@@ -43,5 +44,6 @@ public class Log extends Item {
 	 */
 	public Log(World world, int[] coordinates) {
 		super(world, coordinates, new Random().nextInt(41)+10);
+		world.addEntity(this);
 	}
 }

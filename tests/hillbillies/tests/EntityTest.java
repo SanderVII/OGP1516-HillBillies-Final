@@ -52,7 +52,6 @@ public class EntityTest {
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log);
 		
 		assertTrue(world.hasAsEntity(log));
 		
@@ -75,9 +74,6 @@ public class EntityTest {
 		
 		assertTrue(log.canHaveAsWorld(world));
 		assertTrue(log.canHaveAsWorld(null));
-		
-		world.addEntity(log);
-		
 		assertTrue(log.hasProperWorld());
 		
 		log.terminate();
@@ -120,10 +116,6 @@ public class EntityTest {
 		Log log2 = new Log(world, new int[]{0,0,1}, Item.MINIMAL_WEIGHT);
 		Log log3 = new Log(world, new int[]{1,1,2}, Item.MINIMAL_WEIGHT);
 		Log log4 = new Log(world, new int[]{1,1,3}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log);
-		world.addEntity(log2);
-		world.addEntity(log3);
-		world.addEntity(log4);
 		assertFalse(log.isFalling());
 		assertFalse(log.getIsFalling());
 		assertTrue(log2.isFalling());
@@ -178,7 +170,6 @@ public class EntityTest {
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
-		world.addEntity(log);
 		assertTrue(log.isValidGametime(0));
 		assertTrue(log.isValidGametime(100));
 		assertFalse(log.isValidGametime(-0.0001));
