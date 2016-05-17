@@ -12,7 +12,7 @@ public class WorkAtStatement<E extends PositionExpression>
 	
 	@Override
 	public void execute() {
-		int[] dummy = this.getExpression().evaluate();
+		int[] dummy = (this.getExpression()).evaluate();
 		this.getSuperTask().getUnit().workAt(dummy,true);
 	}
 }

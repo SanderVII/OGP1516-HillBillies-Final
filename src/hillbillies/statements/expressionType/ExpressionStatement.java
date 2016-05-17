@@ -1,10 +1,10 @@
 package hillbillies.statements.expressionType;
 
-import hillbillies.expressions.IExpression;
+import hillbillies.expressions.Expression;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.statements.Statement;
 
-public abstract class ExpressionStatement<E extends IExpression>
+public abstract class ExpressionStatement<E extends Expression>
 		extends Statement {
 
 	public ExpressionStatement(E expression, SourceLocation sourceLocation) {

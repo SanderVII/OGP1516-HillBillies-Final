@@ -1,8 +1,12 @@
 package hillbillies.tasks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.expressions.Expression;
 import hillbillies.expressions.ReadVariableExpression;
 import hillbillies.expressions.booleanType.AndExpression;
@@ -17,6 +21,7 @@ import hillbillies.expressions.booleanType.IsSolidExpression;
 import hillbillies.expressions.booleanType.NotExpression;
 import hillbillies.expressions.booleanType.OrExpression;
 import hillbillies.expressions.booleanType.TrueExpression;
+import hillbillies.expressions.booleanType.VariableBooleanExpression;
 import hillbillies.expressions.positionType.BoulderPositionExpression;
 import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.expressions.positionType.HereExpression;
@@ -25,12 +30,14 @@ import hillbillies.expressions.positionType.LogPositionExpression;
 import hillbillies.expressions.positionType.NextToExpression;
 import hillbillies.expressions.positionType.PositionOfExpression;
 import hillbillies.expressions.positionType.SelectedPositionExpression;
+import hillbillies.expressions.positionType.VariablePositionExpression;
 import hillbillies.expressions.positionType.WorkshopPositionExpression;
 import hillbillies.expressions.unitType.AnyExpression;
 import hillbillies.expressions.unitType.EnemyExpression;
 import hillbillies.expressions.unitType.FriendExpression;
 import hillbillies.expressions.unitType.ThisExpression;
 import hillbillies.expressions.unitType.UnitExpression;
+import hillbillies.expressions.unitType.VariableUnitExpression;
 import hillbillies.model.Task;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
@@ -46,7 +53,6 @@ import hillbillies.statements.expressionType.actions.FollowStatement;
 import hillbillies.statements.expressionType.actions.MoveToStatement;
 import hillbillies.statements.expressionType.actions.WorkAtStatement;
 
-//TODO no expression checker for most statements.
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	
 	public TaskFactory() {
@@ -68,6 +74,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createAssignment(String variableName, Expression value, SourceLocation sourceLocation) {
+		this.addVariable(variableName, value);
 		return new AssignmentStatement<Expression>(variableName, value, sourceLocation);
 	}
 
@@ -125,6 +132,13 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
+		Expression value = this.getValue(variableName);
+		if (value instanceof BooleanExpression)
+			return new VariableBooleanExpression(variableName, sourceLocation);
+		else if (value instanceof UnitExpression)
+			return new VariableUnitExpression(variableName, sourceLocation);
+		else if (value instanceof PositionExpression)
+			return new VariablePositionExpression(variableName, sourceLocation);
 		return new ReadVariableExpression(variableName, sourceLocation);
 	}
 
@@ -245,6 +259,116 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Expression createFalse(SourceLocation sourceLocation) {
 		return new FalseExpression(sourceLocation);
+	}
+	
+	/**
+	 * Check whether this taskfactory has the given variable as one of its
+	 * variables.
+	 * 
+	 * @param  variable
+	 *         The variable to check.
+	 */
+	@Basic
+	@Raw
+	public boolean hasAsVariable(String variable) {
+		return variables.containsKey(variable);
+	}
+
+	/**
+	 * Check whether this taskfactory can have the given variable
+	 * as one of its variables.
+	 * 
+	 * @param  variable
+	 *         The variable to check.
+	 * @return True if and only if the given variable is effective.
+	 */
+	@Raw
+	public boolean canHaveAsVariable(String variable, Expression value) {
+		return value != null;
+	}
+
+	/**
+	 * Check whether this taskfactory has proper variables attached to it.
+	 * 
+	 * @return True if and only if this taskfactory can have each of the
+	 *         variables attached to it as one of its variables.
+	 */
+	public boolean hasProperVariables() {
+		for (String variable : variables.keySet()) {
+			if (!canHaveAsVariable(variable,variables.get(variable)))
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Return the number of variables associated with this taskfactory.
+	 *
+	 * @return  The total number of variables collected in this taskfactory.
+	 */
+	public int getNbVariables() {
+		return variables.size();
+	}
+
+	/**
+	 * Add the given variable with expression to the map of variables of this taskfactory.
+	 * 
+	 * @param  	variable
+	 *         	The variable to be added.
+	 * @param	The value to store for the variable.
+	 * @pre    	The given variable is effective.
+	 * @post   	This task has the given variable as one of its variables.
+	 */
+	public void addVariable(String variable, Expression value) {
+		assert (variable != null);
+		variables.put(variable, value);
+	}
+
+	/**
+	 * Remove the given variable from the set of variables of this taskfactory.
+	 * 
+	 * @param  variable
+	 *         The variable to be removed.
+	 * @pre    This task taskfactory the given variable as one of
+	 *         its variables.
+	 * @post   This taskfactory no longer has the given variable as
+	 *         one of its variables.
+	 */
+	@Raw
+	public void removeVariable(String variable) {
+		assert this.hasAsVariable(variable);
+		variables.remove(variable);
+	}
+
+	/**
+	 * Variable referencing a map collecting all the variables
+	 * of this taskfactory and their values.
+	 * 
+	 * @invar  The referenced map is effective.
+	 *       | variables != null
+	 * @invar  Each variable registered in the referenced map is
+	 *         effective.
+	 */
+	private final Map<String, Expression> variables = new HashMap<>();
+	
+	/**
+	 * Returns a map collecting all the variables of this taskfactory. 
+	 * 
+	 * @return	A map in which each variable value is effective.
+	 */
+	public Map<String, Expression> getVariables() {
+		return new HashMap<>(variables);
+	}
+	
+	/**
+	 * Return the value of the given variable.
+	 * 
+	 * @param 	variable
+	 * 			The variable which holds the value.
+	 * @return	The corresponding value of the variable.
+	 */
+	public Expression getValue(String variable) {
+		return variables.get(variable);
 	}
 
 

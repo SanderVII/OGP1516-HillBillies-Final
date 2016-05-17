@@ -1,10 +1,9 @@
 package hillbillies.expressions.booleanType;
 
-import hillbillies.exceptions.IllegalVariableTypeException;
-import hillbillies.expressions.IUnitVariableExpression;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class IsFriendExpression<E extends IUnitVariableExpression> 
+public class IsFriendExpression<E extends UnitExpression> 
 		extends SingleBooleanUnitExpression<E> {
 
 
@@ -12,13 +11,9 @@ public class IsFriendExpression<E extends IUnitVariableExpression>
 		super(unit, sourceLocation);
 	}
 	
-	/*
-	 * TODO Liskov: method throws can only be narrowed => should all super evaluates
-	 * also throw an exception?
-	 */
 	@Override
-	public Boolean evaluate() throws IllegalVariableTypeException {
-			return this.getUnit().getFaction() == (this.getExpressionEvaluation()).getFaction();
+	public Boolean evaluate() {
+			return this.getUnit().getFaction() == (this.getExpression().evaluate()).getFaction();
 	}
 
 }

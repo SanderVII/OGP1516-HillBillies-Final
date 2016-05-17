@@ -3,12 +3,9 @@ package hillbillies.expressions.positionType;
 import java.util.Random;
 import java.util.Set;
 
-import hillbillies.exceptions.IllegalVariableTypeException;
-import hillbillies.expressions.IPositionVariableExpression;
-import hillbillies.expressions.ReadVariableExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class NextToExpression<E extends IPositionVariableExpression> 
+public class NextToExpression<E extends PositionExpression> 
 		extends ExtendedPositionExpression<E> {
 
 	public NextToExpression(E position, SourceLocation sourceLocation) {
@@ -18,14 +15,7 @@ public class NextToExpression<E extends IPositionVariableExpression>
 	@Override
 	public int[] evaluate() {
 		int[] dummy = new int[3];
-		if (this.getExpression() instanceof ReadVariableExpression) {
-			if (((ReadVariableExpression) this.getExpression()).isValidVariableFor(this))
-				dummy =  (int[]) this.getExpression().evaluate();
-			else
-				throw new IllegalVariableTypeException();
-		}
-		else
-			dummy =  ((PositionExpression)this.getExpression()).evaluate();
+		dummy =  this.getExpression().evaluate();
 		
 		Set<int[]> directlyAdjacentCoordinates = this.getUnit().getWorld().
 				getDirectlyAdjacentCoordinates(dummy[0], dummy[1], dummy[2]);

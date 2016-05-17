@@ -18,8 +18,8 @@ public class SequenceStatement extends Statement {
 	@Override
 	public void execute() {
 		this.getStatementAt(getCursor()).execute();
-		
-		this.setCursor(getCursor()+1);
+		if (this.getStatementAt(getCursor()).getStatus() == Status.DONE)
+			this.setCursor(getCursor()+1);
 	}
 	
 	public int getNbStatements() {

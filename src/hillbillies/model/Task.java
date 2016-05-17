@@ -599,7 +599,7 @@ public class Task implements Comparable<Task> {
 	 * @param 	variable
 	 * 			The variable which holds the value.
 	 * @return	The corresponding value of the variable.
-	 * 			| resull == variables.get(variable)
+	 * 			| result == variables.get(variable)
 	 */
 	public Expression getValue(String variable) {
 		return variables.get(variable);
