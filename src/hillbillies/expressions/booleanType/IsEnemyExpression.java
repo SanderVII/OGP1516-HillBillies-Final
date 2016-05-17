@@ -1,10 +1,9 @@
 package hillbillies.expressions.booleanType;
 
-import hillbillies.exceptions.IllegalVariableTypeException;
-import hillbillies.expressions.IUnitVariableExpression;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class IsEnemyExpression<E extends IUnitVariableExpression> 
+public class IsEnemyExpression<E extends UnitExpression> 
 		extends SingleBooleanUnitExpression<E> {
 
 	
@@ -17,8 +16,8 @@ public class IsEnemyExpression<E extends IUnitVariableExpression>
 	 * also throw an exception?
 	 */
 	@Override
-	public Boolean evaluate() throws IllegalVariableTypeException {
-			return this.getUnit().getFaction() != (this.getExpressionEvaluation()).getFaction();
+	public Boolean evaluate() {
+			return this.getUnit().getFaction() != (this.getExpression().evaluate()).getFaction();
 	}
 
 }

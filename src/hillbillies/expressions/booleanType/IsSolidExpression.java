@@ -1,10 +1,9 @@
 package hillbillies.expressions.booleanType;
 
-import hillbillies.exceptions.IllegalVariableTypeException;
-import hillbillies.expressions.IPositionVariableExpression;
+import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class IsSolidExpression<E extends IPositionVariableExpression> 
+public class IsSolidExpression<E extends PositionExpression> 
 		extends SingleBooleanPositionExpression<E> {
 
 	public IsSolidExpression(E position, SourceLocation sourceLocation) {
@@ -12,7 +11,7 @@ public class IsSolidExpression<E extends IPositionVariableExpression>
 	}
 
 	@Override
-	public Boolean evaluate() throws IllegalVariableTypeException {
-		return ! (this.getUnit().getWorld().getCube(this.getExpressionEvaluation()).isPassable());
+	public Boolean evaluate() {
+		return !(this.getUnit().getWorld().getCube(this.getExpression().evaluate()).isPassable());
 	}
 }

@@ -1,9 +1,8 @@
 package hillbillies.expressions.booleanType;
 
-import hillbillies.expressions.IBooleanVariableExpression;
 import hillbillies.part3.programs.SourceLocation;
 
-public class OrExpression<E extends IBooleanVariableExpression> 
+public class OrExpression<E extends BooleanExpression> 
 		extends CombinedBooleanExpression<E> {
 
 	public OrExpression(E left, E right, SourceLocation sourceLocation) {
@@ -11,8 +10,8 @@ public class OrExpression<E extends IBooleanVariableExpression>
 	}
 	
 	public Boolean evaluate() throws IllegalArgumentException {
-		boolean leftBoolean = this.getLeftExpressionEvaluation();
-		boolean rightBoolean = this.getRightExpressionEvaluation();
+		boolean leftBoolean = this.getLeft().evaluate();
+		boolean rightBoolean = this.getRight().evaluate();
 		if (leftBoolean || rightBoolean)
 			return true;
 		else

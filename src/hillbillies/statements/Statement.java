@@ -75,9 +75,6 @@ public abstract class Statement extends TextObject {
 
 	/**
 	 * Check if this statement is being executed by a task.
-	 * 
-	 * @return True if the task executing this statement is effective. | result
-	 *         == (getTask() != null)
 	 */
 	public boolean hasTask() {
 		return this.getTask() != null;
@@ -85,34 +82,14 @@ public abstract class Statement extends TextObject {
 
 	/**
 	 * Checks whether this statement can have the given task as its task.
-	 * 
-	 * @param task
-	 *            The task to check.
-	 * @return If this statement is terminated, true if the given task is not
-	 *         effective. | if (isTerminated()) | then result == (task == null)
-	 *         Else if the task is effective, true if the given task is not yet
-	 *         terminated. | else if (task!= null) | then result ==
-	 *         (!task.isTerminated()) Else, return true. | else | then result ==
-	 *         true
 	 */
 	@Raw
 	public boolean canHaveAsTask(@Raw Task task) {
-		// if (this.isTerminated)
-		// return task == null;
-		// else if (task != null)
-		// return !task.isTerminated();
-		// else
 		return true;
 	}
 
 	/**
 	 * Checks whether this statement has a proper task to which it is attached.
-	 * 
-	 * @return True if and only if this statement can have the task to which it
-	 *         is attached as its task, and if that task is either not effective
-	 *         or has this statement as one of its statements. |
-	 *         (this.canHaveAsTask(this.getTask()) | && ( (this.getTask() ==
-	 *         null) || (this.getTask().hasAsStatement(this))) )
 	 */
 	public boolean hasProperTask() {
 		return (this.canHaveAsTask(this.getTask())
@@ -121,14 +98,6 @@ public abstract class Statement extends TextObject {
 
 	/**
 	 * Sets the task to which this statement is attached to to the given task.
-	 * 
-	 * @param task
-	 *            The task to attach this statement to.
-	 * @post This statement references the given task as the task to which it is
-	 *       attached. | new.getTask() == task
-	 * @throws IllegalArgumentException
-	 *             This statement cannot have the given task as its task. | (!
-	 *             canHaveAsTask(task))
 	 */
 	public void setTask(@Raw Task task) throws IllegalArgumentException {
 		if (!this.canHaveAsTask(task))

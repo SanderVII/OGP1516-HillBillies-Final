@@ -23,9 +23,9 @@ public abstract class Expression extends TextObject implements IExpression {
 		return this.superText;
 	}
 	
-//	public boolean hasSuperText() {
-//		return this.superText != null;
-//	}
+	public boolean hasSuperText() {
+		return this.superText != null;
+	}
 	
 	public void setSuperText(TextObject superText) {
 		this.superText = superText;

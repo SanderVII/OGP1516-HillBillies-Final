@@ -9,14 +9,6 @@ import hillbillies.tasks.TextObject;
  */
 public interface IExpression {
 	
-//	/**
-//	 * Mainly used for determining the type of variable expressions.
-//	 * @return
-//	 */
-//	public default Class<? extends Expression> getType() {
-//		return Expression.class;
-//	}
-	
 	public abstract Object evaluate();
 	
 	/**
