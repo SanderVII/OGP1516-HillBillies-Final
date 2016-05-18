@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import hillbillies.model.Activity;
 import hillbillies.model.Faction;
+import hillbillies.model.Log;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.internal.map.CubeType;
@@ -165,17 +166,87 @@ public class UnitTest {
 	}
 	
 	@Test 
-	public void canHaveAsMinBaseStat(){
+	public void canHaveAsMinBaseStatTest(){
 		assertTrue(Unit.canHaveAsMinBaseStat(1));
 		assertTrue(Unit.canHaveAsMinBaseStat(100));
 		assertFalse(Unit.canHaveAsMinBaseStat(0));
 	}
 	
 	@Test 
-	public void canHaveAsMaxBaseStat(){
-		assertTrue(Unit.canHaveAsMinBaseStat(1));
-		assertTrue(Unit.canHaveAsMinBaseStat(100));
-		assertFalse(Unit.canHaveAsMinBaseStat(0));
+	public void canHaveAsMaxBaseStatTest(){
+		assertTrue(Unit.canHaveAsMinBaseStat(Unit.getMinBaseStat()));
+		assertTrue(Unit.canHaveAsMinBaseStat(Unit.getMinBaseStat()+100));
+		assertFalse(Unit.canHaveAsMinBaseStat(Unit.getMinBaseStat()-1));
+	}
+	
+	@Test 
+	public void canHaveAsMinInitialBaseStatTest(){
+		assertTrue(Unit.canHaveAsMinInitialBaseStat(1));
+		assertTrue(Unit.canHaveAsMinInitialBaseStat(100));
+		assertFalse(Unit.canHaveAsMinInitialBaseStat(0));
+	}
+	
+	@Test 
+	public void canHaveAsMaxInitialBaseStatTest(){
+		assertTrue(Unit.canHaveAsMaxInitialBaseStat(Unit.getMinInitialBaseStat()));
+		assertTrue(Unit.canHaveAsMaxInitialBaseStat(Unit.getMinInitialBaseStat()+100));
+		assertFalse(Unit.canHaveAsMaxInitialBaseStat(0));
+		assertFalse(Unit.canHaveAsMaxInitialBaseStat(Unit.getMinInitialBaseStat()-1));
+	}
+	
+	@Test
+	public void setNameTest() {
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit",new int[]{world.getMaximumXValue()-1, 
+				world.getMaximumYValue()-1, 
+				world.getMaximumZValue()-1},
+				100,100,100,100);
+		
+		try{unit.setName("UnitMin"); assertTrue(true);} catch(IllegalArgumentException e){ assertTrue(false);}
+		try{unit.setName("Unit Min"); assertTrue(true);} catch(IllegalArgumentException e){ assertTrue(false);}
+		try{unit.setName("Unit'\" Min"); assertTrue(true);} catch(IllegalArgumentException e){ assertTrue(false);}
+		try{unit.setName("U "); assertTrue(true);} catch(IllegalArgumentException e){ assertTrue(false);}
+		try{unit.setName("UNIT MIN"); assertTrue(true);} catch(IllegalArgumentException e){ assertTrue(false);}
+		try{unit.setName("\'\'\'\"\"\""); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		try{unit.setName("uNIT MIN"); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		try{unit.setName("M"); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		try{unit.setName("M35"); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+	}
+	
+	@Test
+	public void isValidNameTest() {
+		//	Valid No spaces.
+		assertTrue(Unit.isValidName("UnitMin"));
+		// Valid With spaces.
+		assertTrue(Unit.isValidName("Unit Min"));
+		// Valid with spaces and quotes.
+		assertTrue(Unit.isValidName("Unit'\" Min"));
+		// Valid two characters.
+		assertTrue(Unit.isValidName("U "));
+		// Valid spaces and all capital letters.
+		assertTrue(Unit.isValidName("UNIT MIN"));
+		// Invalid only quotes.
+		assertFalse(Unit.isValidName("\'\'\'\"\"\""));
+		// Invalid first letter not capital.
+		assertFalse(Unit.isValidName("uNIT MIN"));
+		// Invalid only one character.
+		assertFalse(Unit.isValidName("M"));
+		// Invalid digit in name.
+		assertFalse(Unit.isValidName("M35"));
+	}
+	
+	@Test
+	public void getWeightTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 100,100,100,100);
+		Log log = new Log(world, new int[]{0, 0, 1});
+		
+		assertTrue(unit.getWeight() == 100);
+		
+		unit.workAt(new int[]{0, 0, 1});
+		advanceTimeFor(world, 50, 0.1);
+		
+		assertTrue(unit.getWeight() == (100+log.getWeight()));
 	}
 	
 	@Test
@@ -186,7 +257,8 @@ public class UnitTest {
 																														world.getMaximumZValue()-5}, 
 																														25,60,50,40);
 		
-		assertEquals(55,unitLowWeight.getMinWeight());
+		assertEquals(55, unitLowWeight.getMinWeight());
+		assertEquals(55, Unit.getMinWeight(60, 50));
 	}
 	
 	@Test
@@ -209,6 +281,96 @@ public class UnitTest {
 	}
 	
 	@Test
+	public void setWeightTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 100,95,95,100);
+		Log log = new Log(world, new int[]{0, 0, 1});
+		assertTrue(unit.getWeight() == 100);
+		
+		unit.setWeight(Unit.getMaxBaseStat()+1);
+		assertTrue(unit.getWeight() == Unit.getMaxBaseStat());
+		unit.setWeight(Unit.getMinBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight());
+		unit.setWeight(Unit.getMaxBaseStat());
+		assertTrue(unit.getWeight() == Unit.getMaxBaseStat());
+		unit.setWeight(Unit.getMinBaseStat());
+		assertTrue(unit.getWeight() == unit.getMinWeight());
+		
+		unit.setWeight(100);
+		unit.workAt(new int[]{0, 0, 1});
+		advanceTimeFor(world, 50, 0.1);
+		
+		assertTrue(unit.getWeight() == 100+log.getWeight());
+		unit.setWeight(Unit.getMaxBaseStat()+1);
+		assertTrue(unit.getWeight() == Unit.getMaxBaseStat()+log.getWeight());
+		unit.setWeight(Unit.getMinBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight()+log.getWeight());
+		unit.setWeight(Unit.getMaxBaseStat());
+		assertTrue(unit.getWeight() == Unit.getMaxBaseStat()+log.getWeight());
+		unit.setWeight(Unit.getMinBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight()+log.getWeight());
+		
+		unit.setWeight(100);
+		unit.workAt(new int[]{0, 0, 1});
+		advanceTimeFor(world, 50, 0.1);
+		
+		assertTrue(unit.getWeight() == 100);
+		unit.setWeight(Unit.getMaxBaseStat()+1);
+		assertTrue(unit.getWeight() == Unit.getMaxBaseStat());
+		unit.setWeight(Unit.getMinBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight());
+		unit.setWeight(Unit.getMaxBaseStat());
+		assertTrue(unit.getWeight() == Unit.getMaxBaseStat());
+		unit.setWeight(Unit.getMinBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight());
+	}
+	
+	@Test
+	public void setInitialWeightTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 100,95,95,100);
+		Log log = new Log(world, new int[]{0, 0, 1});
+		assertTrue(unit.getWeight() == 100);
+		
+		unit.setInitialWeight(Unit.getMaxInitialBaseStat()+1);
+		assertTrue(unit.getWeight() == Unit.getMaxInitialBaseStat());
+		unit.setInitialWeight(Unit.getMinInitialBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight());
+		unit.setInitialWeight(Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getWeight() == Unit.getMaxInitialBaseStat());
+		unit.setInitialWeight(Unit.getMinInitialBaseStat());
+		assertTrue(unit.getWeight() == unit.getMinWeight());
+		
+		unit.setInitialWeight(100);
+		unit.workAt(new int[]{0, 0, 1});
+		advanceTimeFor(world, 50, 0.1);
+		
+		assertTrue(unit.getWeight() == 100+log.getWeight());
+		unit.setInitialWeight(Unit.getMaxInitialBaseStat()+1);
+		assertTrue(unit.getWeight() == Unit.getMaxInitialBaseStat()+log.getWeight());
+		unit.setInitialWeight(Unit.getMinInitialBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight()+log.getWeight());
+		unit.setInitialWeight(Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getWeight() == Unit.getMaxInitialBaseStat()+log.getWeight());
+		unit.setInitialWeight(Unit.getMinInitialBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight()+log.getWeight());
+		
+		unit.setInitialWeight(100);
+		unit.workAt(new int[]{0, 0, 1});
+		advanceTimeFor(world, 50, 0.1);
+		
+		assertTrue(unit.getWeight() == 100);
+		unit.setInitialWeight(Unit.getMaxInitialBaseStat()+1);
+		assertTrue(unit.getWeight() == Unit.getMaxInitialBaseStat());
+		unit.setInitialWeight(Unit.getMinInitialBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight());
+		unit.setInitialWeight(Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getWeight() == Unit.getMaxInitialBaseStat());
+		unit.setInitialWeight(Unit.getMinInitialBaseStat()-1);
+		assertTrue(unit.getWeight() == unit.getMinWeight());
+	}
+	
+	@Test
 	public void canHaveAsStrengthTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitLowWeight = new Unit(world, "UnitLowWeight", new int[] {world.getMaximumXValue()-world.getMaximumXValue()/2-3, 
@@ -227,7 +389,49 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void canHaveAsAgility_TrueCase() {
+	public void setStrengthTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 100,95,95,100);
+		assertTrue(unit.getStrength() == 95);
+		
+		unit.setStrength(Unit.getMaxBaseStat()+1);
+		assertTrue(unit.getStrength() == Unit.getMaxBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxBaseStat()+95)/2);
+		unit.setStrength(Unit.getMinBaseStat()-1);
+		assertTrue(unit.getStrength() == Unit.getMinBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxBaseStat()+95)/2);
+		unit.setStrength(Unit.getMaxBaseStat());
+		assertTrue(unit.getStrength() == Unit.getMaxBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxBaseStat()+95)/2);
+		unit.setStrength(Unit.getMinBaseStat());
+		assertTrue(unit.getStrength() == Unit.getMinBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxBaseStat()+95)/2);
+		
+	}
+	
+	@Test
+	public void setInitialStrengthTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 90,95,95,100);
+		assertTrue(unit.getStrength() == 95);
+		
+		unit.setInitialStrength(Unit.getMaxInitialBaseStat()+1);
+		assertTrue(unit.getStrength() == Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxInitialBaseStat()+95)/2);
+		unit.setInitialStrength(Unit.getMinInitialBaseStat()-1);
+		assertTrue(unit.getStrength() == Unit.getMinInitialBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxInitialBaseStat()+95)/2);
+		unit.setInitialStrength(Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getStrength() == Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxInitialBaseStat()+95)/2);
+		unit.setInitialStrength(Unit.getMinInitialBaseStat());
+		assertTrue(unit.getStrength() == Unit.getMinInitialBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxInitialBaseStat()+95)/2);
+		
+	}
+	
+	@Test
+	public void canHaveAsAgilityTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitLowWeight = new Unit(world, "UnitLowWeight", new int[] {world.getMaximumXValue()-world.getMaximumXValue()/2-3, 
 																														world.getMaximumYValue()-world.getMaximumYValue()+5, 
@@ -242,6 +446,48 @@ public class UnitTest {
 		assertTrue(unitLowWeight.canHaveAsAgility(150));
 		assertFalse(unitMin.canHaveAsAgility(-1));
 		assertFalse(unitMax.canHaveAsAgility(201));
+	}
+	
+	@Test
+	public void setAgilityTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 100,95,95,100);
+		assertTrue(unit.getAgility() == 95);
+		
+		unit.setAgility(Unit.getMaxBaseStat()+1);
+		assertTrue(unit.getAgility() == Unit.getMaxBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxBaseStat()+95)/2);
+		unit.setAgility(Unit.getMinBaseStat()-1);
+		assertTrue(unit.getAgility() == Unit.getMinBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxBaseStat()+95)/2);
+		unit.setAgility(Unit.getMaxBaseStat());
+		assertTrue(unit.getAgility() == Unit.getMaxBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxBaseStat()+95)/2);
+		unit.setAgility(Unit.getMinBaseStat());
+		assertTrue(unit.getAgility() == Unit.getMinBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxBaseStat()+95)/2);
+		
+	}
+	
+	@Test
+	public void setInitialAgilityTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 90,95,95,100);
+		assertTrue(unit.getAgility() == 95);
+		
+		unit.setInitialAgility(Unit.getMaxInitialBaseStat()+1);
+		assertTrue(unit.getAgility() == Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxInitialBaseStat()+95)/2);
+		unit.setInitialAgility(Unit.getMinInitialBaseStat()-1);
+		assertTrue(unit.getAgility() == Unit.getMinInitialBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxInitialBaseStat()+95)/2);
+		unit.setInitialAgility(Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getAgility() == Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxInitialBaseStat()+95)/2);
+		unit.setInitialAgility(Unit.getMinInitialBaseStat());
+		assertTrue(unit.getAgility() == Unit.getMinInitialBaseStat());
+		assertTrue(unit.getWeight() == (Unit.getMaxInitialBaseStat()+95)/2);
+		
 	}
 	
 	@Test
@@ -260,6 +506,40 @@ public class UnitTest {
 		assertTrue(unitLowWeight.canHaveAsToughness(150));
 		assertFalse(unitMin.canHaveAsToughness(-1));
 		assertFalse(unitMax.canHaveAsToughness(201));
+	}
+	
+	@Test
+	public void setToughnessTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 100,95,95, 95);
+		assertTrue(unit.getToughness() == 95);
+		
+		unit.setToughness(Unit.getMaxBaseStat()+1);
+		assertTrue(unit.getToughness() == Unit.getMaxBaseStat());
+		unit.setToughness(Unit.getMinBaseStat()-1);
+		assertTrue(unit.getToughness() == Unit.getMinBaseStat());
+		unit.setToughness(Unit.getMaxBaseStat());
+		assertTrue(unit.getToughness() == Unit.getMaxBaseStat());
+		unit.setToughness(Unit.getMinBaseStat());
+		assertTrue(unit.getToughness() == Unit.getMinBaseStat());
+		
+	}
+	
+	@Test
+	public void setInitialToughnessTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1}, 90,95,95,95);
+		assertTrue(unit.getToughness() == 95);
+		
+		unit.setInitialToughness(Unit.getMaxInitialBaseStat()+1);
+		assertTrue(unit.getToughness() == Unit.getMaxInitialBaseStat());
+		unit.setInitialToughness(Unit.getMinInitialBaseStat()-1);
+		assertTrue(unit.getToughness() == Unit.getMinInitialBaseStat());
+		unit.setInitialToughness(Unit.getMaxInitialBaseStat());
+		assertTrue(unit.getToughness() == Unit.getMaxInitialBaseStat());
+		unit.setInitialToughness(Unit.getMinInitialBaseStat());
+		assertTrue(unit.getToughness() == Unit.getMinInitialBaseStat());
+		
 	}
 	
 	@Test
@@ -288,27 +568,7 @@ public class UnitTest {
 		assertFalse(unitMax.canHaveAsCurrentStamina(250));
 	}
 
-	@Test
-	public void canHaveAsName() {
-		//	Valid No spaces.
-		assertTrue(Unit.isValidName("UnitMin"));
-		// Valid With spaces.
-		assertTrue(Unit.isValidName("Unit Min"));
-		// Valid with spaces and quotes.
-		assertTrue(Unit.isValidName("Unit'\" Min"));
-		// Valid two characters.
-		assertTrue(Unit.isValidName("U "));
-		// Valid spaces and all capital letters.
-		assertTrue(Unit.isValidName("UNIT MIN"));
-		// Invalid only quotes.
-		assertFalse(Unit.isValidName("\'\'\'\"\"\""));
-		// Invalid first letter not capital.
-		assertFalse(Unit.isValidName("uNIT MIN"));
-		// Invalid only one character.
-		assertFalse(Unit.isValidName("M"));
-		// Invalid digit in name.
-		assertFalse(Unit.isValidName("M35"));
-	}
+
 	
 	@Test
 	public void getCubePosition() {

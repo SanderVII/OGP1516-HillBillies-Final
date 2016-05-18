@@ -253,8 +253,10 @@ public class Unit extends Entity{
 	
 	/**
 	 * Checks whether the given minimal base stat is a valid minimal base stat for any unit.
+	 * 
 	 * @param	minBaseStat
 	 * 					The minimal base stat to check.
+	 * 
 	 * @return	True if and only if the given minimal base stat is equal to or greater than one.
 	 * 					|result == (minBaseStat >= 1)
 	 */
@@ -278,8 +280,10 @@ public class Unit extends Entity{
 	
 	/**
 	 * Checks whether the given maximal base stat is a valid maximal base stat for any unit.
+	 * 
 	 * @param	maxBaseStat
 	 * 					The maximal base stat to check.
+	 * 
 	 * @return	True if and only if the given maximal base stat is equal to or greater than this units minimal base stat.
 	 * 					|result == (maxBaseStat >= this.getMinBaseStat())
 	 */
@@ -303,8 +307,10 @@ public class Unit extends Entity{
 
 	/**
 	 * Checks whether the given minimal initial base stat is a valid minimal initial base stat for any unit.
+	 * 
 	 * @param	minInitialBaseStat
 	 * 					The minimal initial base stat to check.
+	 * 
 	 * @return	True if and only if the given minimal initial base stat is equal to or greater than 1.
 	 * 					|result == (minInitialBaseStat >= 1)
 	 */
@@ -328,8 +334,10 @@ public class Unit extends Entity{
 	
 	/**
 	 * Checks whether the given maximal initial base stat is a valid maximal initial base stat for any unit.
+	 * 
 	 * @param	maxInitialBaseStat
 	 * 					The maximal initial base stat to check.
+	 * 
 	 * @return	True if and only if the given maximal initial base stat is equal to or greater than this units minimal initial base stat.
 	 * 					|result == maxInitialBaseStat >= this.getMinInitialBaseStat()
 	 */
@@ -364,6 +372,7 @@ public class Unit extends Entity{
 	* 
 	* @param  name
 	*				The new name for this unit.
+	*
  	* @post The name of this new unit is equal to the given name.
  	*				| new.getName() == name
  	* @throws		IllegalArgumentException
@@ -383,6 +392,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	name
 	 *            		The name to be checked.
+	 *            
 	 * @return	Returns true if and only if the given name is not null, has at least 2 legal characters and the first
 	 * 					character is an uppercase letter.
 	 * 					Legal characters are: uppercase and lowercase letters, single and double quotes and spaces.
@@ -410,7 +420,6 @@ public class Unit extends Entity{
 	 * Returns the weight of this unit.
 	 */
 	@Override
-	@Basic @Raw
 	public int getWeight() {
 		int weight = 0;
 		if (this.hasItem())
@@ -469,6 +478,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	weight
 	 *				The new weight of this unit.
+	 *
 	 * @post	If the given weight is a valid weight, the weight of this unit is equal to the given weight.
 	 *       		| if (this.canHaveAsWeight()) 
 	 *       		| 	then new.getWeight() == weight
@@ -494,7 +504,7 @@ public class Unit extends Entity{
 	 * Sets the initial weight of this unit to the given weight.
 	 * 
 	 * @param	weight
-	 * 					The weight for this new unit,
+	 * 					The weight for this new unit.
 	 * 
 	 * @post	If the given weight is in the range getMinInitialBaseStat()..getMaxInitialBaseStat(), the weight of this unit is equal to the given weight. 
 	 *       		| if ( (weight >= getMinInitialBaseStat()) && (weight <=getMaxInitialBaseStat()) ) 
@@ -528,6 +538,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	strength
 	 * 					The strength of this unit.
+	 * 
 	 * @return	True if and only if the given strength is in the range this.getMinBaseStat()..this.getMaxBaseStat().
 	 * 					|result == (strength >= this.getMinBaseStat()) && (strength <= this.getMaxBaseStat())
 	*/
@@ -540,6 +551,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	strength
 	 *          		The new strength of this unit.
+	 *          
 	 * @post	If the given strength is in the range this.getMinBaseStat()..this.getMaxBaseStat(), the strength of this unit is equal to the given strength. 
 	 *       		| if (canHaveAsStrength(strength)) 
 	 *       		| 	then new.getStrength() == strength
@@ -612,6 +624,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	agility
 	 * 					The agility of this unit.
+	 * 
 	 * @return	True if and only if agility is in the range this.getMinBaseStat()..this.getMaxBaseStat().
 	 * 					|result == (agility >= this.getMinBaseStat()) && (agility <= this.getMaxBaseStat())
 	*/
@@ -624,6 +637,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	agility
 	 *          		The new agility of this unit.
+	 *          
 	 * @post	If the given agility is in the range this.getMinBaseStat()..this.getMaxBaseStat(), 
 	 * 				the agility of this unit is equal to the given agility. 
 	 *       		|if (this.canHaveAsAgility())
@@ -697,6 +711,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	toughness
 	 * 					The toughness of this unit.
+	 * 
 	 * @return	True if and only if toughness is in the range this.getMinBaseStat()..this.getMaxBaseStat().
 	 * 					|result == (toughness >= this.getMinBaseStat()) && ((toughness <= this.getMaxBaseStat())
 	*/
@@ -709,6 +724,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	toughness
 	 *          		The new toughness of this unit.
+	 *          
 	 * @post	If the given toughness is in the range this.getMinBaseStat()..this.getMaxBaseStat(), 
 	 * 				the toughness of this unit is equal to the given toughness. 
 	 *       		|if (this.canHaveAsToughness(toughness)) 
@@ -735,7 +751,7 @@ public class Unit extends Entity{
 	 * Sets the initial toughness of this unit to the given toughness.
 	 * 
 	 * @param	toughness
-	 * 					The toughness for this new unit,
+	 * 					The toughness for this new unit.
 	 * 
 	 * @post	If the given toughness is in the range getMinInitialBaseStat()..getMaxInitialBaseStat(), the toughness of this unit is equal to the given toughness. 
 	 *       		| if ( (toughness >= getMinInitialBaseStat()) && (toughness <=getMaxInitialBaseStat()) ) 
@@ -769,7 +785,7 @@ public class Unit extends Entity{
 	// ==============================================================================
 
 	/**
-	 * Return the faction this unit is part of.
+	 * Returns the faction this unit is part of.
 	 */
 	@Basic @Raw
 	public Faction getFaction() {
