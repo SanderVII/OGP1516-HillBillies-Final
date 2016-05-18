@@ -13,14 +13,14 @@ public class DefaultManager {
 	 * 			The unit to check.
 	 * @return	True if the unit does not have a task and its default behavior is enabled.
 	 */
-	public boolean canDoRandomDefault(Unit unit) {
+	public static boolean canDoRandomDefault(Unit unit) {
 		return (!unit.hasTask()) && (unit.getDefaultBehaviorEnabled());
 	}
 	
 	/**
 	 * Starts the random default behavior of the given unit.
 	 */
-	public void startRandomDefaultBehavior(Unit unit) {
+	public static void startRandomDefaultBehavior(Unit unit) {
 		
 	}
 	
@@ -29,9 +29,17 @@ public class DefaultManager {
 	 * @param unit
 	 */
 	//TODO
-	public List<ActivityData> getAvailableRandomActivities(Unit unit) {
-		List<ActivityData> result = new ArrayList<>();
-		return null;
+	public static List<Activity> getAvailableRandomActivities(Unit unit) {
+		List<Activity> result = new ArrayList<>();
+		if (DefaultManager.getAvailableEnemies(unit).size() != 0)
+			result.add(Activity.ATTACK);
+		if (DefaultManager.getAvailableMoveCubes(unit).size() != 0)
+			result.add(Activity.MOVE);
+		if (DefaultManager.getAvailableWorkCubes(unit).size() != 0)
+			result.add(Activity.WORK);
+		if (unit.getCurrentHealth() < unit.getMaxPoints() || unit.getCurrentStamina() < unit.getMaxPoints())
+			result.add(Activity.REST);
+		return result;
 	}
 	
 	/**
@@ -41,7 +49,7 @@ public class DefaultManager {
 	 * @return	A set of units in which each unit is an enemy of the given unit
 	 * 			and is at most one cube away from him.
 	 */
-	public Set<Unit> getAvailableEnemies(Unit unit) {
+	public static Set<Unit> getAvailableEnemies(Unit unit) {
 		Set<Unit> result = new HashSet<>();
 		Set<int[]>neighbourCubes = unit.getWorld().getValidCubeCoordinatesInRange(unit.getCubeCoordinates(), 1);
 		for(int[] cube: neighbourCubes) {
@@ -60,7 +68,7 @@ public class DefaultManager {
 	 * @return	A set of coordinates which are only one cube away and are valid
 	 * 			for the world of the unit.
 	 */
-	public Set<int[]> getAvailableWorkCubes(Unit unit) {
+	public static Set<int[]> getAvailableWorkCubes(Unit unit) {
 		return unit.getWorld().getValidCubeCoordinatesInRange(unit.getCubeCoordinates(), 1);
 	}
 	
@@ -70,7 +78,7 @@ public class DefaultManager {
 	 * 			The unit to search for destinations for.
 	 * @return	All cubes which the unit can move to according to the canMoveTo-method.
 	 */
-	public Set<int[]> getAvailableMoveCubes(Unit unit) {
+	public static Set<int[]> getAvailableMoveCubes(Unit unit) {
 		Set<int[]> result = new HashSet<>();
 		World unitWorld = unit.getWorld();
 		for (int x = World.CUBE_COORDINATE_MIN; x < unitWorld.getMaximumXValue(); x++) {
@@ -86,13 +94,20 @@ public class DefaultManager {
 	}
 	
 	/**
-	 * Return a random activity which the unit can execute.
-	 * @param unit
-	 * @return
+	 * Return a set of cubes which the given unit can move to.
+	 * @param 	unit
+	 * 			The unit to search for destinations for.
+	 * @return	All cubes which the unit can move to according to the canMoveTo-method.
 	 */
-	//TODO
-	public ActivityData getRandomActivity(Unit unit) {
-		return null;
+	public static Set<int[]> getAvailableMoveCubes(Unit unit, int range) {
+		Set<int[]> result = new HashSet<>();
+		World unitWorld = unit.getWorld();
+		Set<int[]> cubes = unitWorld.getValidCubeCoordinatesInRange(unit.getCubeCoordinates(), range);
+		for (int[] cube: cubes) {
+			if (unit.canMoveTo(cube))
+					result.add(cube);
+		}
+		return result;
 	}
 	
 	/**

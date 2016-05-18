@@ -21,7 +21,6 @@ import be.kuleuven.cs.som.annotate.*;
  * @note	Must be documented both formally and informally.
  */
 public class Scheduler {
-	//TODO keuze implementatie tasks: LinkedList voor sorteren priority.
 	
 	/**
 	 * Creates a new scheduler.

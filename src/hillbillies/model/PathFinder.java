@@ -7,13 +7,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import hillbillies.exceptions.MaxIterationException;
 import hillbillies.positions.Position;
 
 public class PathFinder {
 	
+	public static final int MAX_ITERATION = 500;
+	public static final boolean ALLOW_DIAGONAL = true;
+	
+	public static List<int[]> getPath (int[] start, int[] destination, World world) {
+		return getPath(start, destination, world, ALLOW_DIAGONAL);
+	}
 	
 	public static List<int[]> getPath (int[] start, int[] destination, World world, boolean diagonalMovesAllowed){
-		
+		// counter for amount of iterations
+		int iteration = 0;
 		// The set of nodes already evaluated.
 		Set<int[]>closedSet = new HashSet<>();
 		// The set of currently discovered nodes still to be evaluated.
@@ -38,7 +46,9 @@ public class PathFinder {
 		fScore.put(start, heuristicCostEstimate(start, destination));
 		
 		while ( openSet.size() != 0){
-			
+			if (iteration >= MAX_ITERATION)
+				throw new MaxIterationException();
+			iteration ++;
 			// current is the position in openSet having the lowest fScore[] value
 			int[] current = getCoordinatesWithLowestFScoreFrom(openSet, fScore);
 			

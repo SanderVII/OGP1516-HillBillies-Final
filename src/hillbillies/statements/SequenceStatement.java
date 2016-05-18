@@ -17,9 +17,17 @@ public class SequenceStatement extends Statement {
 	
 	@Override
 	public void execute() {
+		this.setStatus(Status.EXECUTING);
 		this.getStatementAt(getCursor()).execute();
-		if (this.getStatementAt(getCursor()).getStatus() == Status.DONE)
-			this.setCursor(getCursor()+1);
+		Status status = this.getStatementAt(getCursor()).getStatus();
+		if (status == Status.DONE) {
+			if (this.getCursor() == (getNbStatements() - 1))
+				this.setStatus(Status.DONE);
+			else
+				this.setCursor(getCursor()+1);
+		}
+		else if (status == Status.FAILED)
+			this.setStatus(Status.FAILED);
 	}
 	
 	public int getNbStatements() {
@@ -44,6 +52,7 @@ public class SequenceStatement extends Statement {
 	}
 	
 	protected void setCursor(int cursor) {
+		assert cursor < this.getNbStatements();
 		this.cursor = cursor;
 	}
 }

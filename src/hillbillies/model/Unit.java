@@ -12,6 +12,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.exceptions.UnitMaxedOutException;
 import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
+import util.RandomSetElement;
 
 //TODO de fouten zoeken in defaultBehaviour. 
 
@@ -1527,7 +1528,7 @@ public class Unit extends Entity{
 	 * @return	A list a cube coordinates which represent the path from the start coordinates to the destination coordinates.
 	 */
 	private List<int[]> searchPath(int[] startCoordinates, int[] destinationCoordinates) {
-		return PathFinder.getPath(startCoordinates, destinationCoordinates, this.getWorld(), false); 
+		return PathFinder.getPath(startCoordinates, destinationCoordinates, this.getWorld()); 
 		/* Pick true if you want to allow diagonal movement in moveTo.*/
 	}
 
@@ -2504,52 +2505,64 @@ public class Unit extends Entity{
 	 * as these take a huge amount of time to calculate paths for and may even cause the game to crash. 
 	 * If the path finding  algorithm is better optimized, this value can be raised or even ignored.
 	 */
-	private final static int MAX_RANGE_DEFAULTMOVE = 2;
+	private final static int MAX_RANGE_DEFAULTMOVE = 3;
 	
 	/**
 	 * Starts the default behavior of this unit.
 	 * @effect	The unit starts one of the possible activities.
 	 * 					| new.getCurrentActivity == (MOVE || WORK || REST || ATTACK)
 	 */
+	//TODO doc
 	public void startDefaultBehavior() throws IllegalArgumentException, NullPointerException {
 		this.setDefaultBehaviorEnabled(true);
-		// TODO default behaviour volgens part 3 implementeren.
-		Scheduler scheduler = this.getFaction().getScheduler();
-		List<Task> availableTasks = scheduler.getUnassignedTasks();
-		if (availableTasks.size() != 0) {
-			availableTasks.get(0).assignTo(this);
-			this.getTask().getStatement().execute();
-		}
-		else {
-//		try {
-			int choice =  new Random().nextInt(4);
-			if (choice == 0){
-				// The unit chose to work. 
-				this.workAt(this.getWorld().getRandomValidCubeCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
-			}
-			else if (choice == 1){
-				// The unit chose to rest.
-				this.rest(true);
-			}
-			else if (choice == 2){
-				// The unit chose to go to a random position. Once the unit is moving, it can decide to start sprinting until it runs out of stamina.
-				int[] randomPosition = this.getWorld().getRandomUnitCoordinatesInRange(this.getPosition().getCoordinates(), MAX_RANGE_DEFAULTMOVE);
-				this.moveTo(randomPosition, true);
-			}
-			else if (choice == 3){
-				//	The unit chose to attack a random unit in its reach.
-				// If there are no attackable units in its reach, then a new behaviour is chosen.
-				Unit combattant = this.getUnitThatCanBeAtacked();
-				if (combattant == null)
-					this.startDefaultBehavior();
-				else 
-					this.fight(combattant, true); 
-			}
-//		} catch (Exception e){
-//			// Do nothing
-//			System.out.println("I do nothing now because I failed at default behaviour.");
+	}
+//		this.setDefaultBehaviorEnabled(true);
+//		// TODO default behaviour volgens part 3 implementeren.
+//		Scheduler scheduler = this.getFaction().getScheduler();
+//		List<Task> availableTasks = scheduler.getUnassignedTasks();
+//		if (availableTasks.size() != 0) {
+//			availableTasks.get(0).assignTo(this);
+//			this.getTask().getStatement().execute();
 //		}
-		}
+//		else {
+////		try {
+//			int choice =  new Random().nextInt(4);
+//			if (choice == 0){
+//				// The unit chose to work. 
+//				this.workAt(this.getWorld().getRandomValidCubeCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
+//			}
+//			else if (choice == 1){
+//				// The unit chose to rest.
+//				this.rest(true);
+//			}
+//			else if (choice == 2){
+//				// The unit chose to go to a random position. Once the unit is moving, it can decide to start sprinting until it runs out of stamina.
+//				int[] randomPosition = this.getWorld().getRandomUnitCoordinatesInRange(this.getPosition().getCoordinates(), MAX_RANGE_DEFAULTMOVE);
+//				this.moveTo(randomPosition, true);
+//			}
+//			else if (choice == 3){
+//				//	The unit chose to attack a random unit in its reach.
+//				// If there are no attackable units in its reach, then a new behaviour is chosen.
+//				Unit combattant = this.getUnitThatCanBeAtacked();
+//				if (combattant == null)
+//					this.startDefaultBehavior();
+//				else 
+//					this.fight(combattant, true); 
+//			}
+////		} catch (Exception e){
+////			// Do nothing
+////			System.out.println("I do nothing now because I failed at default behaviour.");
+////		}
+//		}
+//	}
+	
+	/**
+	 * End the default behavior of this unit.
+	 * @post	The default behavior of this unit is set to false.
+	 */
+	//TODO doc
+	public void endDefaultBehavior() throws IllegalArgumentException, NullPointerException {
+		this.setDefaultBehaviorEnabled(false);
 	}
 	
 	/**
@@ -2848,10 +2861,6 @@ public class Unit extends Entity{
 			if ( (this.getGametime() - this.getTimeOfLastRest()) >= 180.0 ) 
 				this.rest(this.getDefaultBehaviorEnabled());
 		}
-		
-		if (this.hasTask()) {
-			this.advanceTimeTask(deltaT);
-		}
 
 		// Actual implementation of activities.
 		switch(this.getCurrentActivity()) {
@@ -2870,7 +2879,11 @@ public class Unit extends Entity{
 			case REST:
 				advanceTimeRest(deltaT);
 				break;
-				
+			
+			case NOTHING:
+				if (this.getDefaultBehaviorEnabled())
+					advanceTimeDefault(deltaT);
+				break;
 			default:
 				break;
 		}
@@ -2910,9 +2923,9 @@ public class Unit extends Entity{
 		if ( (this.getCurrentHealth() == this.getMaxPoints()) && (this.getCurrentStamina() == this.getMaxPoints())
 				&& this.getInitialRestTimePassed() ) {
 			// If default behavior is enabled, then a new activity is chosen.
-			if ( this.getDefaultBehaviorEnabled())
-				this.startDefaultBehavior();
-			else if (this.getPreviousActivity() != null)
+//			if ( this.getDefaultBehaviorEnabled())
+//				this.startDefaultBehavior();
+			if (this.getPreviousActivity() != null)
 				this.setCurrentActivity(this.getPreviousActivity());
 			else
 				this.setCurrentActivity(Activity.NOTHING);
@@ -3036,8 +3049,8 @@ public class Unit extends Entity{
 			if ( this.getDefaultBehaviorEnabled() &&
 					(this.getCurrentStamina()>=staminaDrain+1)){
 				
-				// chance: 0.1% per deltaT
-				int chance = new Random().nextInt(1000);
+				// chance: 1% per deltaT
+				int chance = new Random().nextInt(100);
 				if (chance < 1)
 					this.setIsSprinting(true);
 			}
@@ -3080,10 +3093,6 @@ public class Unit extends Entity{
 				if (moveToPath.size() ==0) {
 					this.setCurrentActivity(Activity.NOTHING);
 					this.resetCoordinates();
-						
-					// Continue default behavior if it is enabled.
-					if (this.getDefaultBehaviorEnabled())
-						this.startDefaultBehavior();
 				}
 			} else {
 				// Set unit position to the calculated position.
@@ -3095,7 +3104,7 @@ public class Unit extends Entity{
 				if (this.getCurrentStamina()>staminaDrain+1)
 					this.setCurrentStamina(this.getCurrentStamina()-staminaDrain);
 				else {
-					this.setCurrentStamina(MIN_BASE_STAT);
+					this.setCurrentStamina(0);
 					this.setIsSprinting(false);
 				}
 			}
@@ -3146,6 +3155,78 @@ public class Unit extends Entity{
 			this.setCoordinates(newCoordinates); 				
 		}	
 	}
+	
+	/**
+	 * Implements the default behavior. The unit either starts to execute a task,
+	 * or choses a random valid activity.
+	 * @param deltaT
+	 */
+	private void advanceTimeDefault(double deltaT) {
+		
+		Scheduler scheduler = this.getFaction().getScheduler();
+		List<Task> availableTasks = scheduler.getUnassignedTasks();
+		if (availableTasks.size() != 0) {
+			availableTasks.get(0).assignTo(this);
+			this.getTask().getStatement().execute();
+		}
+		else {
+			List<Activity> options = DefaultManager.getAvailableRandomActivities(this);
+			int choice = new Random().nextInt(options.size());
+			Activity randomActivity = options.get(choice);
+			if (randomActivity == Activity.WORK) {
+				RandomSetElement<int[]> randomElement = new RandomSetElement<>();
+				Set<int[]> cubes = DefaultManager.getAvailableWorkCubes(this);
+				int[] cube = randomElement.getRandomElement(cubes);
+				this.workAt(cube,true);
+			}
+			
+			if (randomActivity == Activity.MOVE) {
+				RandomSetElement<int[]> randomElement = new RandomSetElement<>();
+				Set<int[]> cubes = DefaultManager.getAvailableMoveCubes(this, Unit.MAX_RANGE_DEFAULTMOVE);
+				int[] cube = randomElement.getRandomElement(cubes);
+				this.moveTo(cube,true);
+			}
+			
+			if (randomActivity == Activity.ATTACK) {
+				RandomSetElement<Unit> randomElement = new RandomSetElement<>();
+				Set<Unit> units = DefaultManager.getAvailableEnemies(this);
+				Unit unit= randomElement.getRandomElement(units);
+				this.attack(unit);
+			}
+			
+			if (randomActivity == Activity.REST) {
+				this.rest(true);
+			}
+		}	
+			
+//			int choice =  new Random().nextInt(4);
+//			if (choice == 0){
+//				// The unit chose to work. 
+//				this.workAt(this.getWorld().getRandomValidCubeCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
+//			}
+//			else if (choice == 1){
+//				// The unit chose to rest.
+//				this.rest(true);
+//			}
+//			else if (choice == 2){
+//				// The unit chose to go to a random position. Once the unit is moving, it can decide to start sprinting until it runs out of stamina.
+//				int[] randomPosition = this.getWorld().getRandomUnitCoordinatesInRange(this.getPosition().getCoordinates(), MAX_RANGE_DEFAULTMOVE);
+//				this.moveTo(randomPosition, true);
+//			}
+//			else if (choice == 3){
+//				//	The unit chose to attack a random unit in its reach.
+//				// If there are no attackable units in its reach, then a new behaviour is chosen.
+//				Unit combattant = this.getUnitThatCanBeAtacked();
+//				if (combattant == null)
+//					this.startDefaultBehavior();
+//				else 
+//					this.fight(combattant, true); 
+			}
+//		} catch (Exception e){
+//			// Do nothing
+//			System.out.println("I do nothing now because I failed at default behaviour.");
+//		}
+		
 	
 	private void advanceTimeTask(double deltaT) {
 //		Statement statement = this.getTask().getStatement();
