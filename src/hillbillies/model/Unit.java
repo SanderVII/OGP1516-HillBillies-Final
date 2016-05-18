@@ -1467,7 +1467,7 @@ public class Unit extends Entity{
 	 * @note Throws no exception because Exception is caught.
 	 */
 	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) {
-		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling. Done?
+		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling.
 		try {
 			this.setProgress(0);
 			
@@ -1562,13 +1562,14 @@ public class Unit extends Entity{
 			// Readability
 			int[] currentCoordinates =  this.getPosition().getCubeCoordinates();	
 			
-	 		if (moveToPath.size() != 0){
-	 			// Clear the moveToPath to interrupt an earlier moveTo. 
-	 			// A moveToAdjacent should never be interrupted so keep the one next move in line (and only that one). 
-	 			int[] dummy = moveToPath.get(0);
-	 			moveToPath.clear();
-	 			moveToPath.add(dummy);
-			}
+//	 		if (moveToPath.size() != 0){
+//	 			// Clear the moveToPath to interrupt an earlier moveTo. 
+//	 			// A moveToAdjacent should never be interrupted so keep the one next move in line (and only that one). 
+//	 			int[] dummy = moveToPath.get(0);
+//	 			moveToPath.clear();
+//	 			moveToPath.add(dummy);
+//			}
+	 		
 	 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
 	 		this.setPreviousActivity(this.getCurrentActivity());
 	 		this.setCurrentActivity(Activity.MOVE);
@@ -1596,7 +1597,7 @@ public class Unit extends Entity{
 	 * A list that stores the path this unit has to follow.
 	 * It is filled when executing moveTo() and it is used during advanceTime to decide the next coordinates to move to.
 	 */
-	private List<int[]> moveToPath = new ArrayList<>();
+	public List<int[]> moveToPath = new ArrayList<>();
 	
 	/**
    	 * Cancels the move-to command of this non-terminated unit.
@@ -1635,7 +1636,7 @@ public class Unit extends Entity{
 	 * 			The unit does not occupy a valid cube.
 	 */
    	@Override
-	public boolean isFalling() throws IllegalArgumentException {
+	protected boolean isFalling() throws IllegalArgumentException {
 		// NOTE: do not change the is-falling property in this method itself! 
 		// It will break the code (not to mention it is bad practice to return and change values in one method).
 		if (this.getIsFalling())
@@ -1660,7 +1661,7 @@ public class Unit extends Entity{
 	 *				|		then result == true
 	 *				| result == false
 	 */
-	public boolean hasSolidNeighbours(int[] coordinates) {
+	public boolean hasSolidNeighbours(int[] coordinates) throws IllegalArgumentException {
 		Set<int[]> neighbours = this.getWorld().getNeighbours(coordinates);
 		for (int[] neighbour: neighbours)
 			if ( ! this.getWorld().getCube(neighbour).isPassable())
@@ -1681,7 +1682,7 @@ public class Unit extends Entity{
 	 *				|		then result == true
 	 *				| result == false
 	 */
-	public boolean hasPassableNeighbours(int[] coordinates) {
+	public boolean hasPassableNeighbours(int[] coordinates) throws IllegalArgumentException {
 		Set<int[]> neighbours = this.getWorld().getNeighbours(coordinates);
 		for (int[] neighbour: neighbours)
 			if ( this.getWorld().getCube(neighbour).isPassable())
@@ -1710,6 +1711,7 @@ public class Unit extends Entity{
 	 *         
 	 * @return	True if and only if the angle is in between -PI and PI, inclusively.
 	 *				| result == (orientation <=PI) && (orientation >= -PI)
+	 *
 	 * @note	The orientation is often the angle in polar coordinates 
 	 *				of a point with cartesic coordinates (x,y). It is mostly calculated
 	 *				using atan(double y, double x). This method returns, under 
@@ -1725,10 +1727,10 @@ public class Unit extends Entity{
 	 * Sets the orientation of this unit to the given orientation.
 	 * 
 	 * @param	orientation
-	 *				The orientation angle for this unit.
+	 *				The new orientation angle for this unit.
 	 *
 	 * @post	If the given orientation is a valid orientation for any unit,
-	 *				the orientation of this new unit is equal to the given orientation
+	 *				the orientation of this new unit is equal to the given orientation.
 	 *				| if (isValidOrientation(orientation))
 	 *				|   then new.getOrientation() == orientation
 	 */
@@ -1754,7 +1756,7 @@ public class Unit extends Entity{
  	}
 	
 	/**
-	 * A variable that holds the orientation of this unit.
+	 * A variable that stores the orientation of this unit.
 	 */
 	private double orientation;
 	
@@ -3122,7 +3124,6 @@ public class Unit extends Entity{
 					moveToPath.remove(0);
 					// Recalculate the path since it may have changed by the time this unit moved one cube.
 					if (moveToPath.size() >= 1){
-						System.out.println(this.moveToPath.size()-1);
 						this.moveTo(this.moveToPath.get(this.moveToPath.size()-1), this.getDefaultBehaviorEnabled());
 					}
 				}

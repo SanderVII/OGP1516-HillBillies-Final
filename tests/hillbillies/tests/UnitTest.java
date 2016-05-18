@@ -2,6 +2,8 @@ package hillbillies.tests;
 
 import static org.junit.Assert.*;
 import java.io.IOException;
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import hillbillies.model.Activity;
@@ -870,15 +872,111 @@ public class UnitTest {
 		assertFalse(unit2.canDoMoveToAdjacent());
 	}
 	
+	// TODO tests for not interrupting moveToAdjacent. (not implemented in unit yet.)
 	@Test
 	public void moveToTest() {
+		World world = new World(terrain("20x40x10IsolatedAirPosition"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitTwo", new int[]{15, 3, 2},25,25,25, 25);
+		
+		unit.moveTo(new int[]{4, 5, 2});
+		assertTrue(unit.moveToPath.size() == 5);
+		assertTrue(unit.isMoving());
+		assertTrue(unit.getProgress() == 0);
+		assertTrue(UnitPosition.equals(unit.moveToPath.get(unit.moveToPath.size()-1), new int[]{4, 5, 2}));
+		assertTrue(UnitPosition.equals(unit.getInitialCoordinates(), unit.getCoordinates()));
+		
+		advanceTimeFor(world, 20, 0.2);
+		assertTrue(unit.moveToPath.size() == 0);
+		assertFalse(unit.isMoving());
+		
+		try{unit.moveTo(new int[]{-1, 0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		try{unit.moveTo(new int[]{0, 0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		
+		unit2.moveTo(new int[]{0, 0, 1});
+		assertFalse(unit2.isMoving());
+		try{unit2.moveTo(new int[]{-1, 0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		try{unit2.moveTo(new int[]{0, 0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		unit2.moveTo(new int[]{19, 39, 9});
+		assertFalse(unit2.isMoving());
+	}
+	
+	@Test
+	public void cancelMoveToTest() {
+		World world = new World(terrain("20x40x10IsolatedAirPosition"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		unit.moveTo(new int[]{4, 5, 2});
+		assertTrue(unit.moveToPath.size() == 5);
+		assertTrue(unit.isMoving());
+		assertTrue(unit.getProgress() == 0);
+		assertTrue(UnitPosition.equals(unit.moveToPath.get(unit.moveToPath.size()-1), new int[]{4, 5, 2}));
+		assertTrue(UnitPosition.equals(unit.getInitialCoordinates(), unit.getCoordinates()));
+		
+		advanceTimeFor(world, 0.25, 0.0078125);
+		
+		unit.cancelMoveTo();
+		assertTrue(unit.moveToPath.size() == 0);
+		assertFalse(unit.isMoving());
+		assertTrue(unit.getTargetCoordinates() == null);
+		assertTrue(unit.getInitialCoordinates() == null);
+		assertTrue(UnitPosition.equals(unit.getCoordinates(), new double[]{0.5, 0.5, 1.5}));
+	}
+	
+	@Test
+	public void hasSolidNeighboursTest() {
+		World world = new World(terrain("20x40x10IsolatedAirPosition"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertTrue(unit.hasSolidNeighbours(new int[]{0, 0, 1}));
+		assertFalse(unit.hasSolidNeighbours(new int[]{19, 39, 9}));
+		assertTrue(unit.hasSolidNeighbours(new int[]{0, 0, 0}));
+		try{unit.hasSolidNeighbours(new int[]{-1, 0, 0}); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+	}
+	
+	@Test
+	public void hasPassableNeighboursTest() {
+		World world = new World(terrain("20x40x10IsolatedAirPosition"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertTrue(unit.hasPassableNeighbours(new int[]{0, 0, 1}));
+		assertTrue(unit.hasPassableNeighbours(new int[]{19, 39, 9}));
+		assertFalse(unit.hasPassableNeighbours(new int[]{5, 5, 0}));
+		try{unit.hasPassableNeighbours(new int[]{-1, 0, 0}); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+	}
+	
+	@Test
+	public void isValidOrientationTest(){
+		assertFalse(Unit.isValidOrientation(-4));
+		assertTrue(Unit.isValidOrientation(Math.PI));
+		assertTrue(Unit.isValidOrientation(-Math.PI));
+		assertTrue(Unit.isValidOrientation(0));
+		assertFalse(Unit.isValidOrientation(4));
+	}
+	
+	@Test
+	public void setOrientationTest(){
+		World world = new World(terrain("20x40x10IsolatedAirPosition"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		unit.setOrientation(-1,-1);
+		assertTrue(unit.getOrientation() == Math.atan2(-1, -1));
+		unit.setOrientation(-1, 1);
+		assertEquals(unit.getOrientation(), Math.atan2(1, -1), 0.00005);
+		unit.setOrientation(1, 1);
+		assertEquals(unit.getOrientation(), Math.atan2(1, 1), 0.00005);
+		unit.setOrientation(1,  -1);
+		assertEquals(unit.getOrientation(), Math.atan2(-1, 1), 0.00005);
+		unit.setOrientation(0, 0);
+		assertEquals(unit.getOrientation(), Math.atan2(0, 0), 0.00005);
+	}
+	
+	@Test
+	public void hasTask(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
-		@SuppressWarnings("unused")
-		Unit unit2 = new Unit(world, "UnitTwo", new int[]{19, 39, 9},25,25,25, 25);
 		
-		unit.moveTo(new int[]{0, 0, 1});
-		// TODO The whole test actually.
+		assertFalse(unit.hasTask());
 	}
 	
 	@Test

@@ -294,7 +294,7 @@ public abstract class Entity {
 	 * 			| else
 	 * 			| 	result == (this.getWorld().getCubeBelow(this.getPosition()).isPassable())
 	 */
-	public boolean isFalling() throws IllegalArgumentException {
+	protected boolean isFalling() throws IllegalArgumentException {
 		if (this.getIsFalling())
 			return true;
 		else if (this.getPosition().getCubeCoordinates()[2] == 0)
