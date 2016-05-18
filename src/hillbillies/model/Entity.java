@@ -189,7 +189,7 @@ public abstract class Entity {
 	public boolean canHaveAsPosition(Position position) {
 		if (position == null)
 			return false;
-		return (this.getWorld() == position.getWorld());
+		return ( (this.getWorld() == position.getWorld()) );
 	}
 	
 	/**
@@ -200,7 +200,7 @@ public abstract class Entity {
 	 * @return 	True if the cube coordinates are within the world boundaries
 	 * 			of this entity, and the corresponding cube is passable. 
 	*/
-	protected boolean canHaveAsCoordinates(int[] coordinates) {
+	public boolean canHaveAsCoordinates(int[] coordinates) {
 		return this.getWorld().canHaveAsCoordinates(coordinates) && 
 				this.getWorld().getCube(coordinates).isPassable();
 	}

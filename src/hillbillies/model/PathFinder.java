@@ -11,7 +11,7 @@ import hillbillies.exceptions.MaxIterationException;
 import hillbillies.positions.Position;
 
 public class PathFinder {
-	
+	// TODO documentation
 	public static final int MAX_ITERATION = 500;
 	public static final boolean ALLOW_DIAGONAL = true;
 	
@@ -132,7 +132,6 @@ public class PathFinder {
 
 	/**
 	 * Returns the position with the lowest fScore in openSet
-	 * TODO Maak hier een lamba functie van.
 	 * @param openSet
 	 * @param fScore
 	 * @return

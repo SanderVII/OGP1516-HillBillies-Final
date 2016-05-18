@@ -30,18 +30,19 @@ public class Faction {
 	 * 				The given unit.
 	 * @param	world
 	 * 				The world to connect this faction to.
+	 * 
 	 * @post	This new faction has the given unit as one of its units.
 	 * @post	The given unit has this faction as its faction.
 	 * @post	This new faction has the given world as its world.
 	 * @post	The given world has this faction as its faction.
 	 * @effect	A new scheduler is created for this faction.
-	 * 			The scheduler references this faction and vice-versa.
+	 *				The scheduler references this faction and vice-versa.
+	 * 
 	 * @throws	IllegalArgumentException
 	 * 			The given unit is invalid, or the unit has a proper world 
 	 * 			which is not the given world.
 	 */
 	@Raw
-	//TODO controleer association
 	public Faction(Unit unit, World world) throws IllegalArgumentException{	
 		if ((unit.hasProperWorld()) && (unit.getWorld() != world))
 			throw new IllegalArgumentException("the unit's world is not the given world.");
@@ -98,6 +99,9 @@ public class Faction {
 		this.setWorld(unit.getWorld());
 		this.addUnit(unit);
 		this.getWorld().addFaction(this);
+		
+		Scheduler scheduler = new Scheduler(this);
+		this.setScheduler(scheduler);
 	}
 	
 	/**
@@ -125,7 +129,7 @@ public class Faction {
 	 * @post   All units in this faction, if any, are terminated.
 	 *       
 	 */
-	//TODO terminate all connections.
+	//TODO terminate all connections. (schedulers)
 	 public void terminate() {
 		 if (! this.isTerminated()) {
 			 if (this.getNbUnits() > 0)

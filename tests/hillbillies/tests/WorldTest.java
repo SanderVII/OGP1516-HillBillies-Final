@@ -358,7 +358,7 @@ public class WorldTest {
 		assertTrue(world.hasAsEntity(log));
 		assertTrue(world.hasAsEntity(boulder));
 		assertFalse(world.hasAsEntity(null));
-		assertFalse(world.hasAsEntity(log2));
+		assertTrue(world.hasAsEntity(log2));
 		
 	}
 	
@@ -452,7 +452,7 @@ public class WorldTest {
 		assertTrue(world.hasAsEntity(log2));
 		assertTrue(world.getNbEntities() == 4);
 		
-		world.removeEntity(unit);
+		unit.terminate();
 		assertTrue(world.getNbEntities() == 3);
 		assertFalse(world.hasAsEntity(unit));
 		world.removeEntity(boulder);
@@ -648,15 +648,16 @@ public class WorldTest {
 		
 		assertTrue(world.isSolidConnectedToBorder(1, 1, 0));
 		assertTrue(world.isSolidConnectedToBorder(1, 1, 1));
+		for(Entity entity: world.getEntities()){
+			assertTrue(Util.fuzzyEquals(entity.getGametime(), 0, 0.0005));
+		}
 		unit.workAt(new int[]{1, 1, 0});
 		advanceTimeFor(world, 100, 0.02);
 		assertEquals(TYPE_AIR, world.getTerrain(1, 1, 0).ordinal());
 		//	The second one collapses because it is no longer connected to a solid cube or the border of the world.
 		assertEquals(TYPE_AIR, world.getTerrain(1, 1, 1).ordinal());
-		
 		for(Entity entity: world.getEntities()){
-			System.out.println(entity.getGametime());
-			assertTrue(Util.fuzzyEquals(entity.getGametime(), 100));
+			assertTrue(Util.fuzzyLessThanOrEqualTo(entity.getGametime(), 100));
 		}
 	}
 	

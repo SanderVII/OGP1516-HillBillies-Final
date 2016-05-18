@@ -114,7 +114,7 @@ public class UnitTest {
 		
 		Unit unit2 = new Unit(world, "UnitTwo");
 		assertEquals("UnitTwo", unit2.getName());
-		assertTrue(unit2.canHaveAsCoordinates(unit2.getPosition().getCoordinates()));
+		assertTrue(unit2.canHaveAsCoordinates(unit2.getCoordinates()));
 		assertTrue(unit2.canHaveAsStrength(unit2.getStrength()));
 		assertTrue(unit2.canHaveAsAgility(unit2.getAgility()));
 		assertTrue(unit2.canHaveAsToughness(unit2.getToughness()));
@@ -724,13 +724,8 @@ public class UnitTest {
 		assertFalse(unitMin.canHaveAsTargetCoordinates(target2));
 	}
 	
-	@Test 
-	public void setTargetCoordinatesTest(){
-		
-	}
-	
 	@Test
-	public void canHAveAsInitialCoordinatesTest() throws Exception {
+	public void canHaveAsInitialCoordinatesTest() throws Exception {
 		// True case
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
@@ -764,18 +759,18 @@ public class UnitTest {
 		// Execute multiple times because of randomness.
 		for (int count = 0; count < 10; count++) {
 			double[] target = Position.getCubeCenter(
-					unitRandom.getWorld().getRandomUnitCoordinatesInRange(unitRandom.getPosition().getCoordinates(), 2));
+					unitRandom.getWorld().getRandomUnitCoordinatesInRange(unitRandom.getCoordinates(), 2));
 			double speed = unitRandom.getWalkSpeed(target);
 			
 			assertTrue(Position.fuzzyEquals(unitRandom.getVelocity(target), 
-					Position.getVelocity(unitRandom.getPosition().getCoordinates(), target, speed)));
+					Position.getVelocity(unitRandom.getCoordinates(), target, speed)));
 		}
 		
 		// No distance case
-		double[] target = unitRandom.getPosition().getCoordinates() ;
+		double[] target = unitRandom.getCoordinates() ;
 		double speed = unitRandom.getWalkSpeed(target);
 		assertTrue(Position.fuzzyEquals(unitRandom.getVelocity(target), 
-				Position.getVelocity(unitRandom.getPosition().getCoordinates(), target, speed)));
+				Position.getVelocity(unitRandom.getCoordinates(), target, speed)));
 	}
 	
 	@Test
