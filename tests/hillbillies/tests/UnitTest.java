@@ -575,7 +575,6 @@ public class UnitTest {
 		assertTrue(unit.canHaveAsFaction(faction));
 		assertTrue(unit.canHaveAsFaction(faction2));
 		assertFalse(unit.canHaveAsFaction(null));
-		unit.setFaction(faction2);
 		try{unit.setFaction(faction2); assertTrue(true);}catch(IllegalArgumentException e){assertTrue(false);}
 		try{unit.setFaction(null); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
 		
@@ -638,17 +637,74 @@ public class UnitTest {
 		
 		assertEquals(unit.getMaxPoints(), 200);
 		assertEquals(Unit.getMaxPoints(100, 100), 200);
-		assertEquals(Unit.getMaxPoints(59, 149), 188);
+		assertEquals(Unit.getMaxPoints(59, 149), 176);
+	}
+	
+	@Test 
+	public void canHaveAsWorldTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		World world2 = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world2, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
+		
+		assertTrue(unit.canHaveAsWorld(world));
+		assertFalse(unit.canHaveAsFaction(null));
+		
+		world.terminate();
+		
+		assertFalse(unit.canHaveAsWorld(world));
+		assertFalse(unit.canHaveAsWorld(null));
+		
+		unit.terminate();
+		
+		assertFalse(unit.canHaveAsWorld(world2));
+		assertFalse(unit.canHaveAsWorld(world));
+		assertTrue(unit.canHaveAsWorld(null));
+		
 	}
 	
 	@Test
-	public void getCubePosition() {
+	public void hasProperWorldTest(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit = new Unit(world, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
 		
-		assertTrue(unitMin.getCubeCoordinates()[0] == 0);
-		assertTrue(unitMin.getCubeCoordinates()[1] == 0);
-		assertTrue(unitMin.getCubeCoordinates()[2] == 1);
+		assertTrue(unit.hasProperWorld());
+	}
+	
+	@Test
+	public void setWorldTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		World world2 = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world2, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
+		Unit unit2 = new Unit(world2, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
+		
+		assertTrue(unit.canHaveAsWorld(world));
+		assertTrue(unit.canHaveAsWorld(world2));
+		assertFalse(unit.canHaveAsWorld(null));
+		try{unit.setWorld(world2); assertTrue(true);}catch(IllegalArgumentException e){assertTrue(false);}
+		try{unit.setWorld(null); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		
+		world.terminate();
+		
+		assertFalse(unit.canHaveAsWorld(world));
+		assertFalse(unit.canHaveAsWorld(null));
+		try{unit.setWorld(null); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		try{unit.setWorld(world); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		
+		unit.terminate();
+		
+		assertFalse(unit.canHaveAsWorld(world2));
+		assertFalse(unit.canHaveAsWorld(world));
+		assertTrue(unit.canHaveAsWorld(null));
+		try{unit.setWorld(world); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		try{unit.setWorld(world2); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		try{unit.setWorld(null); assertTrue(true);}catch(IllegalArgumentException e){assertTrue(false);}
+		
+		for (int x=0; x< World.MAX_UNITS_WORLD; x++){
+			world2.spawnUnit(false);
+		}
+		
+		assertTrue(world2.getNbUnits() == World.MAX_UNITS_WORLD);
+		try{unit2.setWorld(world2); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
 	}
 	
 	@Test
@@ -666,6 +722,11 @@ public class UnitTest {
 		double[] target2 = {unitMin.getPosition().getXCoordinate(),-1,unitMin.getPosition().getZCoordinate()};
 		assertFalse(unitMin.canHaveAsTargetCoordinates(target1));
 		assertFalse(unitMin.canHaveAsTargetCoordinates(target2));
+	}
+	
+	@Test 
+	public void setTargetCoordinatesTest(){
+		
 	}
 	
 	@Test
