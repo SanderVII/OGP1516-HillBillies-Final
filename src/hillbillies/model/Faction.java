@@ -132,10 +132,10 @@ public class Faction {
 				 for (Unit unit: units)
 					 unit.terminate();
 			 World formerWorld = this.getWorld();
+			 this.isTerminated = true;
 			 this.setWorld(null);
 			 formerWorld.removeFaction(this);
 		 }
-		 this.isTerminated = true;
 	 }
 	 
 	 /**
@@ -256,6 +256,7 @@ public class Faction {
 	public void removeUnit(Unit unit) {
 		assert this.hasAsUnit(unit) && (unit.getFaction() == null);
 		units.remove(unit);
+		unit.setFaction(null);
 	}
 
 	/**
@@ -347,8 +348,11 @@ public class Faction {
 	 * 			| (! canHaveAsWorld(world)) || (world.getNbFactions() >= World.MAX_FACTIONS)
 	 */
 	public void setWorld(@Raw World world) throws IllegalArgumentException {
-		if ( (! this.canHaveAsWorld(world)) || (world.getNbActiveFactions() >= World.MAX_FACTIONS) )
+		if ( ! this.canHaveAsWorld(world))
 			throw new IllegalArgumentException();
+		if (( ! this.isTerminated()) && (world.getNbActiveFactions() >= World.MAX_FACTIONS))
+			throw new IllegalArgumentException();
+		
 		this.world = world;
 	}
 	
@@ -418,5 +422,10 @@ public class Faction {
 	 * A variable referencing the scheduler attached to this faction.
 	 */
 	private Scheduler scheduler;
+	/**
+	 * Symbolic constant denoting the maximum amount of units
+	 * belonging to the same faction.
+	 */
+	public static final int MAX_UNITS_FACTION = 50;
 	
 }

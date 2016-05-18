@@ -330,7 +330,7 @@ public class World {
 	private Faction getAvailableFactionWithLeastMembers() {
 		Faction availableFactionWithLeastMembers = null;
 		for (Faction faction: this.getFactions()){
-			if (faction.getNbUnits() < MAX_UNITS_FACTION){
+			if (faction.getNbUnits() < Faction.MAX_UNITS_FACTION){
 				if ( (availableFactionWithLeastMembers == null) || (faction.getNbUnits() < availableFactionWithLeastMembers.getNbUnits()) ){
 					availableFactionWithLeastMembers = faction;
 				}
@@ -349,12 +349,6 @@ public class World {
 	 * Symbolic constant denoting the maximum amount of units in this world.
 	 */
 	public static final int MAX_UNITS_WORLD = 100;
-	
-	/**
-	 * Symbolic constant denoting the maximum amount of units
-	 * belonging to the same faction.
-	 */
-	public static final int MAX_UNITS_FACTION = 50;
 	
 	/**
 	 * Symbolic constant denoting the maximum amount of factions in this world.
@@ -943,6 +937,7 @@ public class World {
 	public void removeEntity(Entity entity) {
 		assert this.hasAsEntity(entity) && (entity.getWorld() == null);
 		entities.remove(entity);
+		entity.setWorld(null);
 	}
 
 	/**

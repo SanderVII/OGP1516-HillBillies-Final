@@ -27,37 +27,37 @@ import util.RandomSetElement;
  * 	an orientation.
  * 
  * @invar	The current health of each unit must be a valid current health for any unit. 
- *        			| canHaveAsCurrentHealth(getCurrentHealth())
+ *				| canHaveAsCurrentHealth(getCurrentHealth())
  * @invar	The current stamina of each unit must be a valid current stamina for any unit. 
- *        			| canHaveAsCurrentStamina(getCurrentStamina())
+ *				| canHaveAsCurrentStamina(getCurrentStamina())
  * @invar	The weight of each unit must be a valid weight for any unit.
- * 					| canHaveAsWeight(getWeight())
+ *				| canHaveAsWeight(getWeight())
  * @invar	The maximum base stat must be a valid maximal base stat for any unit.
- *					| canHaveAsMaxBaseStat(getMaxBaseStat())
+ *				| canHaveAsMaxBaseStat(getMaxBaseStat())
  * @invar	The minimal base stat must be a valid minimal base stat for any unit.
- *					| canHaveAsMinBaseStat(getMinBaseStat())
+ *				| canHaveAsMinBaseStat(getMinBaseStat())
  * @invar	The name of each unit must be a valid name for any unit.
- *					| isValidName(getName())
+ *				| isValidName(getName())
  * @invar	The coordinates of each unit must be valid coordiniates for any unit.
- * 					|getPosition().canHaveAsCoordinates(getPosition().getCoordinates())
+ *				|getPosition().canHaveAsCoordinates(getPosition().getCoordinates())
  * @invar	The orientation of each unit must be a valid orientation for any unit.
- * 					| isValidOrientation(getAngle())
+ *				| isValidOrientation(getAngle())
  * @invar	The initial coordiniates of each unit must be valid initial coordiniates for any unit.
- *       			| canHaveAsInitialCoordinates(getInitialCoordinates())
+ *				| canHaveAsInitialCoordinates(getInitialCoordinates())
  * @invar	The target coordiniates of each unit must be valid target coordiniates for any unit.
- *       			| canHaveAsTargetCoordinates(getTargetCoordinates())
+ *				| canHaveAsTargetCoordinates(getTargetCoordinates())
  * @invar	The is-sprinting value of each unit must be a valid is-sprinting value for any unit.
- *       			| isValidIsSprinting(getIsSprinting())
+ *				| isValidIsSprinting(getIsSprinting())
  * @invar	The experience of each unit must be a valid experience for any unit.
- *       			| isValidExperience(getExperience())
+ *				| isValidExperience(getExperience())
  * @invar	Each unit must have a proper world to which it is attached.
- * 					| hasProperWorld()
+ *				| hasProperWorld()
  * @invar	Each unit must have a proper faction to which it is attached.
- * 					| hasProperFaction()
+ *				| hasProperFaction()
  * @invar	Each unit must have a proper task.
- * 					| hasProperTask()
+ *				| hasProperTask()
  * @invar	The is-falling property of each unit must be a valid is-falling property for any unit.
- *					| isValidIsFalling(getIsFalling())
+ *				| isValidIsFalling(getIsFalling())
  * 
  * @author Sander Mergan, Thomas Vranken
  */
@@ -67,51 +67,44 @@ public class Unit extends Entity{
 	 * Initialize this new unit with the given world, faction, name, position, weight, strength, agility, toughness.
 	 * 
 	 * @param	world
-	 * 					The world of this new unit.
+	 *				The world of this new unit.
 	 * @param	faction
-	 * 					The faction of this new unit.
+	 *				The faction of this new unit.
 	 * @param	name
-	 * 					The name of this new unit.
+	 *				The name of this new unit.
 	 * @param	coordinates
-	 * 					The cube coordiniates of this new unit.
+	 *				The cube coordiniates of this new unit.
 	 * @param	weight 
-	 * 					The weight of this new unit.
+	 *				The weight of this new unit.
 	 * @param	strength
-	 * 					The strength of this new unit.
+	 *				The strength of this new unit.
 	 * @param	agility
-	 * 					The agility of this new unit.
+	 *				The agility of this new unit.
 	 * @param	toughness
-	 * 					The toughness of this new unit.
+	 *				The toughness of this new unit.
 	 * 
 	 * @effect	Sets the initial weight of this new unit to the given initial weight.
-	 *					| this.setInitialWeight(weight)
-	 *    
+	 *				| this.setInitialWeight(weight)
 	 * @effect	Sets the strength of this new unit to the given initial strength.
-	 *					| this.setInitialStrength(strength)
-	 * 
+	 *				| this.setInitialStrength(strength)
 	 * @effect	Sets the agility of this new unit to the given initial agility.
-	 *					| this.setInitialAgility(agility)
-	 *
+	 *				| this.setInitialAgility(agility)
 	 * @effect	Sets the toughness of this new unit to the given initial toughness.
-	 *					| this.setInitialToughness(toughness)
-	 *
-	 * @post	The world of this unit is set to the given world.
-	 * 				| new.getWorld() == world
-	 * 
-	 * @post	The faction of this unit is set to the given faction.
-	 * 				| new.getFaction() == faction
-	 * 
-	 * @post	The current health of the new unit is equal to the maximal health of this unit.
-	 * 				| new.getCurrentHealth() == new.getMaxPoints()
-	 * 
-	 * @post	The current stamina of the new unit is equal to the maximal stamina of this unit.
-	 * 				| new.getCurrentStamina() == new.getMaxPoints
-	 * 
-	 * @post	The name of this unit is equal to the given name.
-	 * 				| new.getName(name)
-	 * 
-	 * @post	The coordinates of this unit are equal to the given coordinates.
-	 * 				| (new.getPosition().getCubeCoordinates() == position)
+	 *				| this.setInitialToughness(toughness)
+	 * @effect	Sets the world of this unit to the given world.
+	 *				| this.setWorld(world)
+	 * @effect	Sets the faction of this unit to the given faction.
+	 *				| this.setFaction(faction)
+	 * @effect	Sets the current health of the new unitl to the maximal health of this unit.
+	 *				| this.setCurrentHealth(getMaxPoints())
+	 * @effect	Sets the current stamina of the new unit to the maximal stamina of this unit.
+	 *				| this.setCurrentStamina(getMaxPoints)
+	 * @effect	Sets the name of this unit to the given name.
+	 *				| this.setName(name)
+	 * @effect	Sets the coordinates of this unit to the given coordinates.
+	 *				| this.setCoordinates(Position.getCubeCenter(coordinates))
+	 * @effect	Sets the orientation of this unit to Pi/2.0
+	 *				| this.setOrientation(Math.PI/2.0)
 	 */
 	public Unit(World world, Faction faction, String name, int[] coordinates, 
 			int weight, int strength, int agility, int toughness) throws IllegalArgumentException {
@@ -149,24 +142,26 @@ public class Unit extends Entity{
 	/**
 	 * Initialize this new unit with the given world, name, coordinates, weight, strength, agility, toughness.
 	 * The unit is added to a newly created faction of that world.
+	 * 
 	 * @param	world
-	 * 					The world of this new unit.
+	 *				The world of this new unit.
 	 * @param	name
-	 * 					The name of this new unit.
+	 *				The name of this new unit.
 	 * @param	coordinates
-	 * 					The coordinates of this new unit.
+	 *				The coordinates of this new unit.
 	 * @param	weight 
-	 * 					The weight of this new unit.
+	 *				The weight of this new unit.
 	 * @param	strength
-	 * 					The strength of this new unit.
+	 *				The strength of this new unit.
 	 * @param	agility
-	 * 					The agility of this new unit.
+	 *				The agility of this new unit.
 	 * @param	toughness
-	 * 					The toughness of this new unit.
+	 *				The toughness of this new unit.
+	 * 
 	 * @effect	A new faction in the given world is created.
-	 * 					|	new Faction(world)
+	 *				|	new Faction(world)
 	 * @effect	This unit is initialized with the given attributes and the newly created faction as its faction.
-	 * 					| this(world, new Faction(world), name, position, weight, strength, agility, toughness)
+	 *				| this(world, new Faction(world), name, position, weight, strength, agility, toughness)
 	 */
 	public Unit(World world, String name, int[] coordinates, 
 			int weight, int strength, int agility, int toughness) throws IllegalArgumentException {
@@ -177,12 +172,14 @@ public class Unit extends Entity{
 	 * Initialize this new unit with the given world and name. All of its stats are chosen randomly
 	 * between valid initial values. The unit is added to a newly created faction of that world.
 	 * Its position is randomly chosen and is valid for any unit in the given world.
+	 * 
 	 * @param	world
-	 * 					The world of this new unit.
+	 *				The world of this new unit.
 	 * @param	name
-	 * 					The name of this new unit.
+	 *				The name of this new unit.
+	 * 
 	 * @effect	This unit is initialized with random attributes, coordinates and a new faction.
-	 * 					| this(world, name, randomCoordinates, randomWeight, randomStrength, randomAgility, randomToughness)
+	 *				| this(world, name, randomCoordinates, randomWeight, randomStrength, randomAgility, randomToughness)
 	 */
 	public Unit(World world, String name) throws IllegalArgumentException {
 		this(world, name, world.getRandomAvailableUnitCoordinates(),
@@ -199,8 +196,8 @@ public class Unit extends Entity{
 	public String toString() {
 		return "Unit\n"+"name: " + getName() +"\n"
 				+ "position: " + this.getPosition().toString() +"\n"
-				+ "faction: " + getFaction() +"\n"
-				+ "world: " + getWorld() + "\n"
+				+ "faction: " + this.getFaction() +"\n"
+				+ "world: " + this.getWorld() + "\n"
 				+"=====";
 	}
 	
@@ -212,42 +209,42 @@ public class Unit extends Entity{
 	/**
 	 * Terminate this unit.
 	 *
-	 * @post   This unit  is terminated.
-	 *       | new.isTerminated()
-	 * @post   No world is connected with this unit.
-	 *       | ( ! new.hasWorld())
-	 * @post   The world this unit was part of no longer references this unit.
-	 * 		 | if (hasWorld())
-	 * 		 |	then (! getWorld().getAllUnits().contains(new))
-	 * @post   The faction this unit was part of no longer references this unit.
-	 * 		 | if (hasFaction())
-	 * 		 |	then (! getFaction().getAllUnits().contains(new))
-	 * @post   The log this unit was carrying is dropped.
-	 * 		 | if (isCarryingLog())
-	 * 		 |	then ( dropLog() )
-	 * @post   The boulder this unit was carrying is dropped on the ground.
-	 * 		 | if (isCarryingBoulder())
-	 * 		 |	then ( dropBoulder() )
-	 * @post   This unit's current activity is NOTHING.
-	 * 		 | new.getCurrentActivity() == Activity.NOTHING
+	 * @post	This unit  is terminated.
+	 *				| new.isTerminated()
+	 * @post	The world this unit was part of no longer references this unit.
+	 *				| if (hasWorld())
+	 *				|	then ( ! getWorld().getAllUnits().contains(new))
+	 * @post	No world is connected with this unit.
+	 *				| ( ! new.hasWorld())
+	 * @post	The faction this unit was part of no longer references this unit.
+	 *				| if (hasFaction())
+	 *				|	then (! getFaction().getAllUnits().contains(new))
+	 * @effect	The item this unit was carrying is dropped.
+	 *				| if (hasItem())
+	 *				|	then ( dropItem() )
+	 * @effect	Sets this unit's current activity to NOTHING.
+	 *				| new.getCurrentActivity() == Activity.NOTHING
+	 * @effect	This unit stops sprinting.
+	 *				| this.stopSprinting()
+	 * @effect	Resets the targetCoordinates and initialCoordinates of this unit.
+	 *				| this.stopSprinting()
 	 */
 	@Override
 	 public void terminate() {
 		 if (! this.isTerminated()) {
-			 this.getWorld().removeEntity(this);
 			 
-			 if (this.hasProperFaction())
-				 this.getFaction().removeUnit(this);
-	
-			this.setCurrentActivity(Activity.NOTHING);
+			 this.setCurrentActivity(Activity.NOTHING);
 			this.stopSprinting();
 			this.stopDefaultBehavior();
 			this.resetCoordinates();
 			
 			if (this.hasItem())
 				this.dropItem(this.getCubeCoordinates());
-	
+			
 			this.isTerminated = true;
+			
+			 this.getFaction().removeUnit(this);
+			 this.getWorld().removeEntity(this);
 		 }
 	 }
 	
@@ -258,10 +255,12 @@ public class Unit extends Entity{
 	
 	/**
 	 * Checks whether the given minimal base stat is a valid minimal base stat for any unit.
+	 * 
 	 * @param	minBaseStat
-	 * 					The minimal base stat to check.
+	 *				The minimal base stat to check.
+	 * 
 	 * @return	True if and only if the given minimal base stat is equal to or greater than one.
-	 * 					|result == (minBaseStat >= 1)
+	 *				|result == (minBaseStat >= 1)
 	 */
 	@Raw
 	public static boolean canHaveAsMinBaseStat(int minBaseStat){
@@ -283,10 +282,12 @@ public class Unit extends Entity{
 	
 	/**
 	 * Checks whether the given maximal base stat is a valid maximal base stat for any unit.
+	 * 
 	 * @param	maxBaseStat
-	 * 					The maximal base stat to check.
+	 *				The maximal base stat to check.
+	 * 
 	 * @return	True if and only if the given maximal base stat is equal to or greater than this units minimal base stat.
-	 * 					|result == (maxBaseStat >= this.getMinBaseStat())
+	 *				|result == (maxBaseStat >= this.getMinBaseStat())
 	 */
 	@Raw
 	public static boolean canHaveAsMaxBaseStat(int maxBaseStat){
@@ -308,10 +309,12 @@ public class Unit extends Entity{
 
 	/**
 	 * Checks whether the given minimal initial base stat is a valid minimal initial base stat for any unit.
+	 * 
 	 * @param	minInitialBaseStat
-	 * 					The minimal initial base stat to check.
+	 *				The minimal initial base stat to check.
+	 * 
 	 * @return	True if and only if the given minimal initial base stat is equal to or greater than 1.
-	 * 					|result == (minInitialBaseStat >= 1)
+	 *				|result == (minInitialBaseStat >= 1)
 	 */
 	@Raw
 	public static boolean canHaveAsMinInitialBaseStat(int minInitialBaseStat){
@@ -333,10 +336,12 @@ public class Unit extends Entity{
 	
 	/**
 	 * Checks whether the given maximal initial base stat is a valid maximal initial base stat for any unit.
+	 * 
 	 * @param	maxInitialBaseStat
-	 * 					The maximal initial base stat to check.
+	 *				The maximal initial base stat to check.
+	 * 
 	 * @return	True if and only if the given maximal initial base stat is equal to or greater than this units minimal initial base stat.
-	 * 					|result == maxInitialBaseStat >= this.getMinInitialBaseStat()
+	 *				|result == maxInitialBaseStat >= this.getMinInitialBaseStat()
 	 */
 	@Raw
 	public static boolean canHaveAsMaxInitialBaseStat(int maxInitialBaseStat){
@@ -367,9 +372,10 @@ public class Unit extends Entity{
 	/**
 	* Set the name of this unit to the given name.
 	* 
-	* @param  name
+	* @param	name
 	*				The new name for this unit.
- 	* @post The name of this new unit is equal to the given name.
+	*
+ 	* @post	The name of this new unit is equal to the given name.
  	*				| new.getName() == name
  	* @throws		IllegalArgumentException
  	*				The given name is not a valid name for any unit.
@@ -387,11 +393,12 @@ public class Unit extends Entity{
 	 * Returns whether a name is a valid name.
 	 * 
 	 * @param	name
-	 *            		The name to be checked.
+	 *				The name to be checked.
+	 *            
 	 * @return	Returns true if and only if the given name is not null, has at least 2 legal characters and the first
-	 * 					character is an uppercase letter.
-	 * 					Legal characters are: uppercase and lowercase letters, single and double quotes and spaces.
-	 * 					| result == ( (name != null) && (name.matches("[A-Z]([a-zA-Z\\s\'\"])+"))) 
+	 *				character is an uppercase letter.
+	 *				Legal characters are: uppercase and lowercase letters, single and double quotes and spaces.
+	 *				| result == ( (name != null) && (name.matches("[A-Z]([a-zA-Z\\s\'\"])+"))) 
 	 */
 	@Raw
 	public static boolean isValidName(String name) {
@@ -415,7 +422,6 @@ public class Unit extends Entity{
 	 * Returns the weight of this unit.
 	 */
 	@Override
-	@Basic @Raw
 	public int getWeight() {
 		int weight = 0;
 		if (this.hasItem())
@@ -429,11 +435,11 @@ public class Unit extends Entity{
 	 * Returns the minimal weight of this unit based on the given strength and agility.
 	 * 
 	 * @param	strength
-	 *           		The strength of this unit.
+	 *				The strength of this unit.
 	 * @param	agility
-	 *            		The agility of this unit.
+	 *				The agility of this unit.
 	 * @return The minimal value for the weight of this unit.
-	 *         			| result == (strength + agility)/2
+	*				| result == (strength + agility)/2
 	 */
 	@Raw
 	public static int getMinWeight(int strength, int agility) {
@@ -444,7 +450,7 @@ public class Unit extends Entity{
 	 * Returns the minimal weight of this unit based on this units strength and agility.
 	 *
 	 * @return The minimal value for the weight of this unit.
-	 *             		| result == getMinWeight(this.getStrength(), this.getAgility())
+	 *				| result == getMinWeight(this.getStrength(), this.getAgility())
 	 */
 	public int getMinWeight() {
 		return getMinWeight(this.getStrength(), this.getAgility());
@@ -454,11 +460,11 @@ public class Unit extends Entity{
 	 * Return whether the given weight is valid.
 	 * 
 	 * @param	weight
-	 * 					The weight to be checked.
+	 *				The weight to be checked.
 	 * @return	True if and only if the given weight is in the range this.getMinBaseStat()..this.getMaxBaseStat() and 
-	 * 					weight exceeds (or is equal to) the minimal weight for this unit. 
-	 * 					|result == (weight >= this.getMinBaseStat()) && (weight <= this.getMaxBaseStat() && 
-	 *       			|	(weight >= this.getMinWeight())
+	 *				weight exceeds (or is equal to) the minimal weight for this unit. 
+	 *				|result == (weight >= this.getMinBaseStat()) && (weight <= this.getMaxBaseStat() && 
+	 *				|	(weight >= this.getMinWeight())
 	 */
 	@Override
 	public boolean canHaveAsWeight(int weight){
@@ -474,16 +480,17 @@ public class Unit extends Entity{
 	 * 
 	 * @param	weight
 	 *				The new weight of this unit.
+	 *
 	 * @post	If the given weight is a valid weight, the weight of this unit is equal to the given weight.
-	 *       		| if (this.canHaveAsWeight()) 
-	 *       		| 	then new.getWeight() == weight
+	 * 				| if (this.canHaveAsWeight()) 
+	 *				| 	then new.getWeight() == weight
 	 * @post	If the given weight is lower than the minimal weight for this unit, 
 	 *				then the weight of this unit is equal to the minimal weight for this unit .
-	 *       		| if (weight < (this.getMinWeight()) 
-	 *       		| 	then new.getWeight() == (this.getMinWeight())
+	 *				| if (weight < (this.getMinWeight()) 
+	 *				| 	then new.getWeight() == (this.getMinWeight())
 	 * @post	If the given weight exceeds the maximum base stat, the weight of this unit is equal to that maximum base stat. 
-	 * 				| if (weight > this.getMaxBaseStat()) 
-	 * 				| 	then new.getWeight == this.getMaxBaseStat()
+	 *				| if (weight > this.getMaxBaseStat()) 
+	 *				| 	then new.getWeight == this.getMaxBaseStat()
 	 */
 	@Override
 	public void setWeight(int weight) {
@@ -499,17 +506,17 @@ public class Unit extends Entity{
 	 * Sets the initial weight of this unit to the given weight.
 	 * 
 	 * @param	weight
-	 * 					The weight for this new unit,
+	 *				The weight for this new unit.
 	 * 
 	 * @post	If the given weight is in the range getMinInitialBaseStat()..getMaxInitialBaseStat(), the weight of this unit is equal to the given weight. 
-	 *       		| if ( (weight >= getMinInitialBaseStat()) && (weight <=getMaxInitialBaseStat()) ) 
-	 *       		| 	then new.getWeight() == weight
+	 *				| if ( (weight >= getMinInitialBaseStat()) && (weight <=getMaxInitialBaseStat()) ) 
+	 *				| 	then new.getWeight() == weight
 	 * @post	If the given weight is lower than getMinInitialBaseStat(), the weight of this unit is equal to getMinInitialBaseStat(). 
-	 *       		| if (weight < getMinInitialBaseStat()) 
-	 *       		|	then new.getWeight() == getMinInitialBaseStat()
+	 *				| if (weight < getMinInitialBaseStat()) 
+	 *				|	then new.getWeight() == getMinInitialBaseStat()
 	 * @post	If the given weight exceeds getMaxInitialBaseStat(), the weight of this unit is equal to getMaxInitialBaseStat(). 
-	 *       		| if (weight > getMaxInitialBaseStat()) 
-	 *       		| 	then new.getWeight() == getMaxInitialBaseStat()
+	 *				| if (weight > getMaxInitialBaseStat()) 
+	 *				| 	then new.getWeight() == getMaxInitialBaseStat()
 	 */
 	public void setInitialWeight(int weight) {
 		if (weight > getMaxInitialBaseStat())
@@ -532,9 +539,10 @@ public class Unit extends Entity{
 	 * Checks whether the given strength is valid.
 	 * 
 	 * @param	strength
-	 * 					The strength of this unit.
+	 *				The strength of this unit.
+	 * 
 	 * @return	True if and only if the given strength is in the range this.getMinBaseStat()..this.getMaxBaseStat().
-	 * 					|result == (strength >= this.getMinBaseStat()) && (strength <= this.getMaxBaseStat())
+	 *				|result == (strength >= this.getMinBaseStat()) && (strength <= this.getMaxBaseStat())
 	*/
 	public boolean canHaveAsStrength(int strength){
 		return ((strength >= getMinBaseStat()) && (strength <= getMaxBaseStat()));
@@ -544,20 +552,21 @@ public class Unit extends Entity{
 	 * Sets the strength of this unit to the given strength.
 	 * 
 	 * @param	strength
-	 *          		The new strength of this unit.
+	 *				The new strength of this unit.
+	 *          
 	 * @post	If the given strength is in the range this.getMinBaseStat()..this.getMaxBaseStat(), the strength of this unit is equal to the given strength. 
-	 *       		| if (canHaveAsStrength(strength)) 
-	 *       		| 	then new.getStrength() == strength
+	 *				| if (canHaveAsStrength(strength)) 
+	 *				| 	then new.getStrength() == strength
 	 * @post If the given strength is lower than this.getMinBaseStat(), the strength of this unit is equal to this.getMinBaseStat(). 
-	 *       		| if (strength < this.getMinBaseStat()) 
-	 *       		|	then new.getStrength() == this.getMinBaseStat()
+	 *				| if (strength < this.getMinBaseStat()) 
+	 *				|	then new.getStrength() == this.getMinBaseStat()
 	 * @post If the given strength exceeds this.getMaxBaseStat(), the strength of this unit is equal to this.getMaxBaseStat(). 
-	 *       		| if (strength > this.getMaxBaseStat()) 
-	 *       		| 	then new.getStrength() == this.getMaxBaseStat()
+	 *				| if (strength > this.getMaxBaseStat()) 
+	 *				| 	then new.getStrength() == this.getMaxBaseStat()
 	 * @post If changing the strength of this unit makes its current weigth invalid (by raising the minimal weight), 
-	 * 				the weight of this unit changes to the new minimal weight. 
-	 *       		| if (this.getWeight < this.getMinWeight()) 
-	 *       		| 	then new.getWeight() == this.getMinWeight()
+	 *				the weight of this unit changes to the new minimal weight. 
+	 *				| if (this.getWeight < this.getMinWeight()) 
+	 *				| 	then new.getWeight() == this.getMinWeight()
 	 */
 	public void setStrength(int strength) {
 		if (this.canHaveAsStrength(strength)) 
@@ -575,17 +584,17 @@ public class Unit extends Entity{
 	 * Sets the initial strength of this unit to the given strength.
 	 * 
 	 * @param	strength
-	 * 					The strength for this new unit.
+	 *				The strength for this new unit.
 	 * 
 	 * @post	If the given strength is in the range getMinInitialBaseStat()..getMaxInitialBaseStat(), the strength of this unit is equal to the given strength. 
-	 *       		| if ( (strength >= getMinInitialBaseStat()) && (strength <=getMaxInitialBaseStat()) ) 
-	 *       		| 	then new.getStrength() == strength
+	 *				| if ( (strength >= getMinInitialBaseStat()) && (strength <=getMaxInitialBaseStat()) ) 
+	 *				| 	then new.getStrength() == strength
 	 * @post	If the given strength is lower than getMinInitialBaseStat(), the strength of this unit is equal to getMinInitialBaseStat(). 
-	 *       		| if (strength < getMinInitialBaseStat()) 
-	 *       		|	then new.getStrength() == getMinInitialBaseStat()
+	 *				| if (strength < getMinInitialBaseStat()) 
+	 *				|	then new.getStrength() == getMinInitialBaseStat()
 	 * @post	If the given strength exceeds getMaxInitialBaseStat(), the strength of this unit is equal to getMaxInitialBaseStat(). 
-	 *       		| if (strength > getMaxInitialBaseStat()) 
-	 *       		| 	then new.getStrength() == getMaxInitialBaseStat()
+	 *				| if (strength > getMaxInitialBaseStat()) 
+	 *				| 	then new.getStrength() == getMaxInitialBaseStat()
 	 */
 	public void setInitialStrength(int strength) {
 		if (strength > getMaxInitialBaseStat())
@@ -616,9 +625,10 @@ public class Unit extends Entity{
 	 * Checks whether the given agility is valid.
 	 * 
 	 * @param	agility
-	 * 					The agility of this unit.
+	 *				The agility of this unit.
+	 * 
 	 * @return	True if and only if agility is in the range this.getMinBaseStat()..this.getMaxBaseStat().
-	 * 					|result == (agility >= this.getMinBaseStat()) && (agility <= this.getMaxBaseStat())
+	 *				|result == (agility >= this.getMinBaseStat()) && (agility <= this.getMaxBaseStat())
 	*/
 	public boolean canHaveAsAgility(int agility){
 		return ((agility >=  getMinBaseStat()) && (agility <=  getMaxBaseStat()));
@@ -628,21 +638,22 @@ public class Unit extends Entity{
 	 * Sets the agility of this unit to the given agility.
 	 * 
 	 * @param	agility
-	 *          		The new agility of this unit.
+	 *				The new agility of this unit.
+	 *          
 	 * @post	If the given agility is in the range this.getMinBaseStat()..this.getMaxBaseStat(), 
-	 * 				the agility of this unit is equal to the given agility. 
-	 *       		|if (this.canHaveAsAgility())
-	 *       		|	then new.getAgility() == agility
+	 *				the agility of this unit is equal to the given agility. 
+	 *				|if (this.canHaveAsAgility())
+	 *				|	then new.getAgility() == agility
 	 * @post	If the given agility is lower than this.getMinBaseStat(), the agility of this unit is equal to this.getMinBaseStat(). 
-	 *       		|if (agility < this.getMinBaseStat()) 
-	 *       		|	then new.getAgility() == this.getMinBaseStat()
+	 *				|if (agility < this.getMinBaseStat()) 
+	 *				|	then new.getAgility() == this.getMinBaseStat()
 	 * @post	If the given agility exceeds this.getMaxBaseStat(), the agility of this unit is equal to this.getMaxBaseStat(). 
-	 *       		|if (agility > this.getMaxBaseStat()) 
-	 *       		|	then new.getAgility() == this.getMaxBaseStat()
+	 *				|if (agility > this.getMaxBaseStat()) 
+	 *				|	then new.getAgility() == this.getMaxBaseStat()
 	 * @post	if changing the agility of this unit makes its weigth (by raising the minimal weight), 
-	 * 				the weight of this unit changes to the new minimal weight. 
-	 *       		|if (this.getWeight() < (this.getStrength() + agility)/2)) 
-	 *       		|	then new.getWeight() == this.getWeight()
+	 *				the weight of this unit changes to the new minimal weight. 
+	 *				|if (this.getWeight() < (this.getStrength() + agility)/2)) 
+	 *				|	then new.getWeight() == this.getWeight()
 	 */
 	public void setAgility(int agility) {
 		if (this.canHaveAsAgility(agility))
@@ -660,17 +671,17 @@ public class Unit extends Entity{
 	 * Sets the initial agility of this unit to the given agility.
 	 * 
 	 * @param	agility
-	 * 					The agility for this new unit.
+	 *				The agility for this new unit.
 	 * 
 	 * @post	If the given agility is in the range getMinInitialBaseStat()..getMaxInitialBaseStat(), the agility of this unit is equal to the given agility. 
-	 *       		| if ( (agility >= getMinInitialBaseStat()) && (agility <=getMaxInitialBaseStat()) ) 
-	 *       		| 	then new.getAgility() == agility
+	 *				| if ( (agility >= getMinInitialBaseStat()) && (agility <=getMaxInitialBaseStat()) ) 
+	 *				| 	then new.getAgility() == agility
 	 * @post	If the given agility is lower than getMinInitialBaseStat(), the agility of this unit is equal to getMinInitialBaseStat(). 
-	 *       		| if (agility < getMinInitialBaseStat()) 
-	 *       		|	then new.getAgility() == getMinInitialBaseStat()
+	 *				| if (agility < getMinInitialBaseStat()) 
+	 *				|	then new.getAgility() == getMinInitialBaseStat()
 	 * @post	If the given agility exceeds getMaxInitialBaseStat(), the agility of this unit is equal to getMaxInitialBaseStat(). 
-	 *       		| if (agility > getMaxInitialBaseStat()) 
-	 *       		| 	then new.getAgility() == getMaxInitialBaseStat()
+	 *				| if (agility > getMaxInitialBaseStat()) 
+	 *				| 	then new.getAgility() == getMaxInitialBaseStat()
 	 */
 	public void setInitialAgility(int agility) {
 		if (agility > getMaxInitialBaseStat())
@@ -701,9 +712,10 @@ public class Unit extends Entity{
 	 * Checks whether the given toughness is valid.
 	 * 
 	 * @param	toughness
-	 * 					The toughness of this unit.
+	 *				The toughness of this unit.
+	 * 
 	 * @return	True if and only if toughness is in the range this.getMinBaseStat()..this.getMaxBaseStat().
-	 * 					|result == (toughness >= this.getMinBaseStat()) && ((toughness <= this.getMaxBaseStat())
+	 *				|result == (toughness >= this.getMinBaseStat()) && ((toughness <= this.getMaxBaseStat())
 	*/
 	public boolean canHaveAsToughness(int toughness){
 		return ((toughness >=  getMinBaseStat()) && (toughness <=  getMaxBaseStat()));
@@ -713,19 +725,20 @@ public class Unit extends Entity{
 	 * Sets the toughness of this unit to the given toughness.
 	 * 
 	 * @param	toughness
-	 *          		The new toughness of this unit.
+	 *				The new toughness of this unit.
+	 *          
 	 * @post	If the given toughness is in the range this.getMinBaseStat()..this.getMaxBaseStat(), 
-	 * 				the toughness of this unit is equal to the given toughness. 
-	 *       		|if (this.canHaveAsToughness(toughness)) 
-	 *       		|	then new.getToughness() == toughness
+	 *				the toughness of this unit is equal to the given toughness. 
+	 *				|if (this.canHaveAsToughness(toughness)) 
+	 *				|	then new.getToughness() == toughness
 	 * @post	If the given toughness is lower than this.getMinBaseStat(), 
-	 * 				the toughness of this unit is equal to this.getMinBaseStat(). 
-	 *       		|if (toughness < this.getMinBaseStat()) 
-	 *       		|	then new.getToughness() == this.getMinBaseStat()
+	 *				the toughness of this unit is equal to this.getMinBaseStat(). 
+	 *				|if (toughness < this.getMinBaseStat()) 
+	 *				|	then new.getToughness() == this.getMinBaseStat()
 	 * @post	If the given toughness exceeds this.getMaxBaseStat(), 
-	 * 				the toughness of this unit is equal to this.getMaxBaseStat(). 
-	 *       		|if (toughness > this.getMaxBaseStat()) 
-	 *       		|	then new.getToughness() == this.getMaxBaseStat()
+	 *				the toughness of this unit is equal to this.getMaxBaseStat(). 
+	 *				|if (toughness > this.getMaxBaseStat()) 
+	 *				|	then new.getToughness() == this.getMaxBaseStat()
 	 */
 	public void setToughness(int toughness) {
 		if (this.canHaveAsToughness(toughness))
@@ -740,17 +753,17 @@ public class Unit extends Entity{
 	 * Sets the initial toughness of this unit to the given toughness.
 	 * 
 	 * @param	toughness
-	 * 					The toughness for this new unit,
+	 *				The toughness for this new unit.
 	 * 
 	 * @post	If the given toughness is in the range getMinInitialBaseStat()..getMaxInitialBaseStat(), the toughness of this unit is equal to the given toughness. 
-	 *       		| if ( (toughness >= getMinInitialBaseStat()) && (toughness <=getMaxInitialBaseStat()) ) 
-	 *       		| 	then new.getToughness() == toughness
+	 *				| if ( (toughness >= getMinInitialBaseStat()) && (toughness <=getMaxInitialBaseStat()) ) 
+	 *				| 	then new.getToughness() == toughness
 	 * @post	If the given toughness is lower than getMinInitialBaseStat(), the toughness of this unit is equal to getMinInitialBaseStat(). 
-	 *       		| if (toughness < getMinInitialBaseStat()) 
-	 *       		|	then new.getToughness() == getMinInitialBaseStat()
+	 *				| if (toughness < getMinInitialBaseStat()) 
+	 *				|	then new.getToughness() == getMinInitialBaseStat()
 	 * @post	If the given toughness exceeds getMaxInitialBaseStat(), the toughness of this unit is equal to getMaxInitialBaseStat(). 
-	 *       		| if (toughness > getMaxInitialBaseStat()) 
-	 *       		| 	then new.getToughness() == getMaxInitialBaseStat()
+	 *				| if (toughness > getMaxInitialBaseStat()) 
+	 *				| 	then new.getToughness() == getMaxInitialBaseStat()
 	 */
 	public void setInitialToughness(int toughness) {
 		if (toughness > getMaxInitialBaseStat()) 
@@ -774,7 +787,7 @@ public class Unit extends Entity{
 	// ==============================================================================
 
 	/**
-	 * Return the faction this unit is part of.
+	 * Returns the faction this unit is part of.
 	 */
 	@Basic @Raw
 	public Faction getFaction() {
@@ -784,8 +797,9 @@ public class Unit extends Entity{
 	/**
 	 * Checks whether this unit can have the given faction as its faction.
 	 * 
-	 * @param 	faction
-	 *			The faction to check.
+	 * @param	faction
+	 *				The faction to check.
+	 *
 	 * @return	If this unit is terminated, true if the given faction is not effective.
 	 *				| if (isTerminated())
 	 *				|	then result == (faction == null)
@@ -796,8 +810,9 @@ public class Unit extends Entity{
 	 */
 	@Raw
 	public boolean canHaveAsFaction(@Raw Faction faction) {
-		if (this.isTerminated)
+		if (this.isTerminated){
 			return faction == null;
+		}
 		else
 			return (faction != null) && ( ! faction.isTerminated());
 	}
@@ -811,7 +826,8 @@ public class Unit extends Entity{
 	 *				| (this.canHaveAsFaction(this.getFaction()) 
 	 *				|  && ( (this.getFaction() == null) || (this.getFaction().hasAsUnit(this))) )
 	 */
-	public boolean hasProperFaction() {
+	@SuppressWarnings("unused")
+	private boolean hasProperFaction() {
 		return ( this.canHaveAsFaction(this.getFaction()) 
 				&& ( ( this.getFaction() == null) || (this.getFaction().hasAsUnit(this)) ) );
 	}
@@ -820,17 +836,20 @@ public class Unit extends Entity{
 	 * Sets the faction to which this unit is attached to to the given faction.
 	 * 
 	 * @param	faction
-	 * 			The faction to attach this unit to.
+	 *				The faction to attach this unit to.
+	 * 
 	 * @post	This unit references the given faction as the faction to which it is attached.
-	 * 			| new.getFaction() == faction
+	 *				| new.getFaction() == faction
 	 * @throws	IllegalArgumentException
-	 * 			This unit cannot have the given faction as its faction,
-	 * 			or the faction is at its maximum capacity.
-	 * 			| ( ! canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION)
+	 *				This unit cannot have the given faction as its faction,
+	 *				or the faction is at its maximum capacity.
+	 *				| ( ! canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION)
 	 */
 	public void setFaction(@Raw Faction faction) throws IllegalArgumentException {
-		if ( ( ! this.canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION) )
-			throw new IllegalArgumentException(faction.toString());
+		if ( ! this.canHaveAsFaction(faction))
+			throw new IllegalArgumentException();
+		if ( ( ! this.isTerminated() && (faction.getNbUnits() >= Faction.MAX_UNITS_FACTION)) )
+			throw new IllegalArgumentException();
 		this.faction = faction;
 	}
 	
@@ -844,7 +863,7 @@ public class Unit extends Entity{
 	// ======================================================================================
 	
 	/**
-	 * Return the current health of this unit.
+	 * Returns the current health of this unit.
 	 */
 	@Basic	@Raw
 	public double getCurrentHealth() {
@@ -852,27 +871,29 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Check whether the given current health is a valid current health for any unit.
+	 * Checks whether the given current health is a valid current health for any unit.
 	 * 
 	 * @param	currentHealth
-	 * 					The current health to check.
+	 *				The current health to check.
+	 * 
 	 * @return	True only if the current stamina is greater than or equal to 0,
-	 *         			and lesser than or equal to its maximal value. 
-	 *         			| result == ((currentStamina >= 0) && (currentStamina <= getMaxPoints()))
+	 *				and lesser than or equal to its maximal value. 
+	 *				| result == ((currentStamina >= 0) && (currentStamina <= getMaxPoints()))
 	 */
 	public boolean canHaveAsCurrentHealth(double currentHealth) {
 		return (currentHealth >= 0) && (currentHealth <= this.getMaxPoints());
 	}
 	
 	/**
-	 * Set the current health of this unit to the given current health.
+	 * Sets the current health of this unit to the given current health.
 	 * 
 	 * @param	currentHealth
-	 *          		The new current health for this unit.
-	 * @pre 	The given current health must be a valid current health for any unit. 
-	 *      		| canHaveAsCurrentHealth(currentHealth)
+	 *				The new current health for this unit.
+	 *          
+	 * @pre	The given current health must be a valid current health for any unit. 
+	 *				| canHaveAsCurrentHealth(currentHealth)
 	 * @post	The current health of this unit is equal to the given currentHealth. 
-	 *       		| new.getCurrentHealth() == currentHealth
+	 *				| new.getCurrentHealth() == currentHealth
 	 */
 	private void setCurrentHealth(double currentHealth) {
 		assert canHaveAsCurrentHealth(currentHealth);
@@ -880,12 +901,12 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Variable that stores the current health of this unit.
+	 * A variable that stores the current health of this unit.
 	 */
 	private double currentHealth;
 	
 	/**
-	 * Return the current stamina of this unit.
+	 * Returns the current stamina of this unit.
 	 */
 	@Basic	@Raw
 	public double getCurrentStamina() {
@@ -893,27 +914,29 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Check whether the given current stamina is a valid current stamina for any unit.
+	 * Checks whether the given current stamina is a valid current stamina for any unit.
 	 * 
 	 * @param	currenStamina
-	 * 					The current stamina to check.
+	 *				The current stamina to check.
+	 * 
 	 * @return	True only if the current stamina is greater than or equal to 0,
-	 *         			and lesser than or equal to its maximal value. 
-	 *         			| result == ((currentStamina >= 0) && (currentStamina <= getMaxPoints()))
+	 *				and lesser than or equal to its maximal value. 
+	 *				| result == ((currentStamina >= 0) && (currentStamina <= getMaxPoints()))
 	 */
 	public boolean canHaveAsCurrentStamina(double currentStamina) {
 		return ((currentStamina >= 0) && (currentStamina <= this.getMaxPoints()));
 	}
 	
 	/**
-	 * Set the current stamina of this unit to the given current stamina.
+	 * Sets the current stamina of this unit to the given current stamina.
 	 * 
 	 * @param	newCurrentStamina
-	 *            		The new current stamina for this unit.
-	 * @pre 	The given current stamina must be a valid current stamina for any unit.
-	 *      	 	| canHaveAsCurrentStamina(currentStamina)
+	 *				The new current stamina for this unit.
+	 *            
+	 * @pre	The given current stamina must be a valid current stamina for any unit.
+	 *				| canHaveAsCurrentStamina(currentStamina)
 	 * @post	The current stamina of this unit is equal to the given current stamina. 
-	 *       		| new.getCurrentStamina() == currentStamina
+	 *				| new.getCurrentStamina() == currentStamina
 	 */
 	private void setCurrentStamina(double newCurrentStamina) {
 		assert canHaveAsCurrentStamina(newCurrentStamina);
@@ -921,7 +944,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Variable that stores the current stamina of this unit.
+	 * A variable that stores the current stamina of this unit.
 	 */
 	private double currentStamina;
 	
@@ -929,25 +952,26 @@ public class Unit extends Entity{
 	 * Returns the maximum points of health and stamina of this unit, based on this units weight and toughness.
 	 * 
 	 * @return The maximum points for health and stamina are both determined as
-	 *         			 200 * weight/100 * toughness/100, rounded up to the next integer. 
-	 *         			| result == getMaxPoints(this.weight, getToughness())
+	 *				 200 * weight/100 * toughness/100, rounded up to the next integer. 
+	 *				| result == getMaxPoints(this.weight, getToughness())
 	 */
 	public int getMaxPoints() {
-		return this.getMaxPoints(this.weight,this.getToughness());
+		return getMaxPoints(this.weight,this.getToughness());
 	}
 
 	/**
 	 * Returns the maximum points of health and stamina of this unit, based on the given weight and toughness.
 	 * 
 	 * @param	weight
-	 *         			The given weight is used for calculating the max value of this unit health and stamina.
+	 *				The given weight is used for calculating the max value of this unit health and stamina.
 	 * @param	toughness
-	 *          		The given thoughness is used for calculating the max value.
+	 *				The given thoughness is used for calculating the max value.
+	 *          
 	 * @return	The maximum points for health and stamina are both determined as
-	 *         			200 * weight/100 * toughness/100, rounded up to the next integer. 
-	 *         			| result == (int) Math.ceil(getWeight() * getToughness() / 50.0)
+	 *				200 * weight/100 * toughness/100, rounded up to the next integer. 
+	 *				| result == (int) Math.ceil(getWeight() * getToughness() / 50.0)
 	 */
-	public int getMaxPoints(int weight, int toughness) {
+	public static int getMaxPoints(int weight, int toughness) {
 		return (int) Math.ceil(weight * toughness / 50.0);
 	}
 	
@@ -957,7 +981,7 @@ public class Unit extends Entity{
 	// ======================================================================================
 
 	/**
-	 * Return the exact position of this unit.
+	 * Returns the exact position of this unit.
 	 */
 	@Override
 	@Basic @Raw
@@ -971,25 +995,34 @@ public class Unit extends Entity{
  	 * is the same as this unit's z-coordinate.
  	 * 
  	 * @return	The coordinates of the center of the cube this unit occupies.
- 	 * 				| result == Position.getSurfaceCenter(getPosition().getCoordinates)
+ 	 *				| result == Position.getSurfaceCenter(getPosition().getCoordinates)
  	 */
  	public double[] getSurfaceCenter() {
- 		return (Position.getSurfaceCenter(this.getPosition().getCoordinates()));
+ 		return (UnitPosition.getSurfaceCenter(this.getCoordinates()));
  	}
  
 	/**
-	 * Sets the coordinates of this unit to the given position.
+	 * Sets the coordinates of this unit to the given coordinates.
 	 *  
 	 * @param	coordinates
-	 * 					The new coordinates of this unit.
-	 * @throws 	IllegalArgumentException
-	 * 					The given position are not  valid coordinates for any unit..
-	 * 					|! canHaveAsCoordinates(getPosition().getCoordinates())
+	 *				The new coordinates of this unit.
+	 * 
+	 * @throws	IllegalArgumentException
+	 *				The given position are not  valid coordinates for any unit..
+	 *				|! canHaveAsCoordinates(getPosition().getCoordinates())
 	 */
 	public void setCoordinates(double[] coordinates) throws IllegalArgumentException{
 		this.position.setCoordinates(coordinates);
 	}
 	
+	/**
+	 * Returns the coordinates of this unit
+	 * @return this.position.getCoordinates()
+	 */
+	@Raw
+	public double[] getCoordinates(){
+		return this.position.getCoordinates();
+	}
 	
 	//===============================================================================
 	// Methods concerning the world. (bidirectional association)
@@ -1000,25 +1033,28 @@ public class Unit extends Entity{
 	/**
 	 * Checks whether this unit can have the given world as its world.
 	 * 
-	 * @param 	world
-	 *			The world to check.
+	 * @param	world
+	 *				The world to check.
+	 *
 	 * @return	If this unit is terminated, true if the given world
-	 * 			is not effective.
-	 * 			| if (isTerminated())
-	 * 			|	then result == (world == null)
-	 *			If the world has this unit as one of its units, return true.
-	 *			| else if (world.hasAsEntity(this))
-	 *			|	then result == true
-	 * 			Else, true if the given world is effective,
-	 * 			not yet terminated and has room for units.
-	 * 			| else
-	 * 			|	then result == (world != null) && (!world.isTerminated())
+	 *				is not effective.
+	 *				| if (isTerminated())
+	 *				|	then result == (world == null)
+	 *				If the world has this unit as one of its units, return true.
+	 *				| else if (world.hasAsEntity(this))
+	 *				|	then result == true
+	 *				Else, true if the given world is effective,
+	 *				not yet terminated and has room for units.
+	 *				| else
+	 *				|	then result == (world != null) && (!world.isTerminated())
 	 */
 	@Raw
 	@Override
 	public boolean canHaveAsWorld(@Raw World world) {
 		if (this.isTerminated)
 			return world == null;
+		else if (world == null)
+			return false;
 		else if (world.hasAsEntity(this))
 			return true;
 		else
@@ -1029,10 +1065,10 @@ public class Unit extends Entity{
 	 * Checks whether this unit has a proper world to which it is attached.
 	 * 
 	 * @return	True if and only if this unit can have the world to which it
-	 * 			is attached as its world, and if that world is either not
-	 * 			effective or has this unit as one of its units.
-	 * 			| (this.canHaveAsWorld(this.getWorld()) 
-	 *			|  && ( (this.getWorld() == null) || (this.getWorld().hasAsUnit(this))) )
+	 *				is attached as its world, and if that world is either not
+	 *				effective or has this unit as one of its units.
+	 *				| (this.canHaveAsWorld(this.getWorld()) 
+	 *				|  && ( (this.getWorld() == null) || (this.getWorld().hasAsUnit(this))) )
 	 */
 	public boolean hasProperWorld() {
 		return ( this.canHaveAsWorld(this.getWorld()) 
@@ -1043,18 +1079,20 @@ public class Unit extends Entity{
 	 * Sets the world to which this unit is attached to to the given world.
 	 * 
 	 * @param	world
-	 * 			The world to attach this unit to.
+	 *				The world to attach this unit to.
+	 * 
 	 * @post	This unit references the given world as the world to which it is attached.
-	 * 			| new.getWorld() == world
+	 *				| new.getWorld() == world
 	 * @throws	IllegalArgumentException
-	 * 			This unit cannot have the given world as its world,
-	 * 			Or the world is at its maximum capacity.
-	 * 			| (! canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD)
+	 *				This unit cannot have the given world as its world,
+	 *				Or the world is at its maximum capacity.
+	 *				| (! canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD)
 	 */
 	public void setWorld(@Raw World world) throws IllegalArgumentException {
-		if ( (! this.canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD) )
+		if ( ! this.canHaveAsWorld(world))
 			throw new IllegalArgumentException();
-		
+		if ( ( ! this.isTerminated()) && (world.getNbUnits() >= World.MAX_UNITS_WORLD))
+			throw new IllegalArgumentException();
 		this.world = world;
 	}
 	
@@ -1064,7 +1102,7 @@ public class Unit extends Entity{
 	// ===================================================================================
 	
 	/**
- 	 * Return the target coordinates of this unit.
+ 	 * Returns the target coordinates of this unit.
  	 */
  	@Basic @Raw
  	public double[] getTargetCoordinates() {
@@ -1072,10 +1110,11 @@ public class Unit extends Entity{
  	}
  	
  	/**
- 	 * Check whether the given target coordinates are valid target coordinates for this unit.
+ 	 * Checks whether the given target coordinates are valid target coordinates for this unit.
  	 *  
  	 * @param	targetCoordinates
- 	 *         			The target coordinates to check.
+ 	 *				The target coordinates to check.
+ 	 *         
  	 * @return	True if the target coordinates are null, or are valid coordinates for this unit in its world.
  	 *       			| result == (targetCoordinates == null || canHaveAsCoordinates(targetCoordinates))
  	*/
@@ -1084,18 +1123,19 @@ public class Unit extends Entity{
  	}
  	
  	/**
- 	 * Set the target coordinates of this unit to the given target coordinates.
+ 	 * Sets the target coordinates of this unit to the given target coordinates.
  	 * 
  	 * @param	targetCoordinates
- 	 *         			The new target coordinates for this unit.
+ 	 *				The new target coordinates for this unit.
+ 	 *         
  	 * @post	The target coordinates of this new unit are equal to the given target coordinates.
  	 *       		| new.getTargetCoordinates() == targetCoordinates
  	 * @throws 	IllegalArgumentException
- 	 *         			The given target coordinates are not valid target coordinates for any unit.
- 	 *       			| ! canHaveAsTargetCoordinates(getTargetCoordinates())
+ 	 *				The given target coordinates are not valid target coordinates for any unit.
+ 	 *				| ! canHaveAsTargetCoordinates(getTargetCoordinates())
  	 */
  	@Raw
- 	public void setTargetCoordinates(double[] targetCoordinates) throws IllegalArgumentException {
+ 	private void setTargetCoordinates(double[] targetCoordinates) throws IllegalArgumentException {
  		if (! canHaveAsTargetCoordinates(targetCoordinates))
  			throw new IllegalArgumentException("The given target coordinates are invalid.");
  		this.targetCoordinates = targetCoordinates;
@@ -1107,7 +1147,7 @@ public class Unit extends Entity{
    	private double[] targetCoordinates;
 
  	/**
- 	 * Return the initial coordinates of this unit.
+ 	 * Returns the initial coordinates of this unit.
  	 */
  	@Basic @Raw
  	public double[] getInitialCoordinates() {
@@ -1115,19 +1155,20 @@ public class Unit extends Entity{
  	}
  	
  	/**
- 	 * Check whether the given initial coordinates are valid initial coordinates for this unit.
+ 	 * Checks whether the given initial coordinates are valid initial coordinates for this unit.
  	 *  
  	 * @param	initialCoordinates
- 	 *         			The initial coordinates to check.
+ 	 *				The initial coordinates to check.
+ 	 *         
  	 * @return	True if the initial coordinates are null, or are valid coordinates for this unit in its world.
- 	 *       			| result == (initialCoordinates == null || canHaveAsCoordinates(initialCoordinates))
+ 	 *				| result == (initialCoordinates == null || canHaveAsCoordinates(initialCoordinates))
  	*/
  	public  boolean canHaveAsInitialCoordinates(double[] initialCoordinates) {
  		return ( (initialCoordinates == null) || (this.getPosition().canHaveAsCoordinates(initialCoordinates)) );
  	}
  	
  	/**
- 	 * Set the initial coordinates of this unit to the given initial coordinates.
+ 	 * Sets the initial coordinates of this unit to the given initial coordinates.
  	 * 
  	 * @param	initialCoordinates
  	 *         			The new initial coordinates for this unit.
@@ -1208,10 +1249,10 @@ public class Unit extends Entity{
 	 * @param	targetCoordinates
 	 * 					The coordinates to move to.
 	 * @return	The walking speed from this unit's current coordinates to the target coordinates.
-	 * 			| result == (getWalkSpeed(this.getPosition().getCoordinates(), targetCoordinates))
+	 * 			| result == (getWalkSpeed(this.getCoordinates(), targetCoordinates))
 	 */		
 	public double getWalkSpeed(double[] targetCoordinates){
-		return (this.getWalkSpeed(this.getPosition().getCoordinates(), targetCoordinates));
+		return (this.getWalkSpeed(this.getCoordinates(), targetCoordinates));
 	}
 	
 	/**
@@ -1231,7 +1272,7 @@ public class Unit extends Entity{
 	 * @param	targetCoordinates
 	 * 				The given destination coordinates.
 	 * @return	The velocity vector as calculated in Position.getVelocity()
-	 * 				| result == Position.getVelocity(this.getPosition().getCoordinates(), targetCoordinates, speed)
+	 * 				| result == Position.getVelocity(this.getCoordinates(), targetCoordinates, speed)
 	 */
 	public double[] getVelocity(double[] targetCoordinates) {
 		double speed = 0.0;
@@ -1239,7 +1280,7 @@ public class Unit extends Entity{
 			speed = this.getSprintSpeed(targetCoordinates);
 		else
 			speed = this.getWalkSpeed(targetCoordinates);
-		return (UnitPosition.getVelocity(this.getPosition().getCoordinates(), targetCoordinates, speed));
+		return (UnitPosition.getVelocity(this.getCoordinates(), targetCoordinates, speed));
 	}
 	
 	/**
@@ -1407,7 +1448,7 @@ public class Unit extends Entity{
 	 * 				| new.getTargetCoordinates() =={this.getPosition().getCubeCoordinates()[0] + dx,
 	 * 				|							this.getPosition().getCubeCoordinates()[1] + dy,this.getPosition().getCubeCoordinates()[2] + dz}
 	 * @post	The initial coordinates of the unit are set to the current coordinates.
-	 * 				| new.getInitialCoordinates() == this.getPosition().getCoordinates()
+	 * 				| new.getInitialCoordinates() == this.getCoordinates()
 	 * @note Throws no exception because Exception is caught.
 	 */
 	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
@@ -1420,12 +1461,10 @@ public class Unit extends Entity{
 			
 			if ( ! thisIsDefaultBehaviour){
 				this.stopDefaultBehavior();
-				this.moveTo(destinationCube.getPosition().getCubeCoordinates());
 			}
 			
 			if ((this.getCurrentActivity() == Activity.MOVE))
 				throw new IllegalStateException("Unit is already moving.");
-			
 			
 			
 			if ((dx==0) && (dy==0) && (dz==0)) {
@@ -1435,17 +1474,16 @@ public class Unit extends Entity{
 				throw new IllegalArgumentException(destinationCube.toString());
 			}
 
-			double[] dummyCoordinates = {this.getPosition().getCoordinates()[0] + dx,this.getPosition().getCoordinates()[1] + dy,this.getPosition().getCoordinates()[2] + dz};
+			double[] dummyCoordinates = {this.getPosition().getXCoordinate() + dx, this.getPosition().getYCoordinate() + dy, this.getPosition().getZCoordinate() + dz};
 
 	 		this.setCurrentActivity(Activity.MOVE);
 	 		this.setTargetCoordinates(dummyCoordinates);
-	 		this.setInitialCoordinates(this.getPosition().getCoordinates());
+	 		this.setInitialCoordinates(this.getCoordinates());
 		} 
 		catch (Exception e) {
 		}
 	}
 	
-	// TODO finished?
 	/**
 	 * Checks whether this unit can start moving to an adjacent cube.
 	 * A unit can only start moving if it is not falling.
@@ -1516,7 +1554,7 @@ public class Unit extends Entity{
 	 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
 	 		this.setPreviousActivity(this.getCurrentActivity());
 	 		this.setCurrentActivity(Activity.MOVE);
-	 		this.setInitialCoordinates(this.getPosition().getCoordinates());
+	 		this.setInitialCoordinates(this.getCoordinates());
 			moveToPath = searchPath(currentCoordinates, destinationCoordinates);
 			moveToPath.remove(0); 
 		}
@@ -1589,7 +1627,7 @@ public class Unit extends Entity{
 			return false;
 		else
 			return ( ! hasSolidNeighbours(this.getPosition().getCubeCoordinates())
-					 && (Position.fuzzyEquals(this.getPosition().getCoordinates(), this.getCubeCenter())));
+					 && (Position.fuzzyEquals(this.getCoordinates(), this.getCubeCenter())));
 	}
 	
 	/**
@@ -2229,7 +2267,7 @@ public class Unit extends Entity{
 	 * @post	If this unit managed to dodge, the variable defenderBlocked of the attacker is set to true and this unit jumped to a random adjacent position.
 	 * 				| if (this.managedToDodge())
 	 * 				|	then  (new attacker).defenderBlocked == true
-	 * 				|		 && (new this).getPosition().getCoordinates() != this.getPosition().getCoordinates() 
+	 * 				|		 && (new this).getPosition().getCoordinates() != this.getCoordinates() 
 	 * 
 	 * @post	If this unit manages to block, the variable defenderBlocked of the attacker is set to true.
 	 *  			| if (this.managedToBlock())
@@ -2249,9 +2287,9 @@ public class Unit extends Entity{
 			//	...the variable defenderDodged of the attacker is set to true...
 			attacker.setDefenderBlocked(true);
 			// ... and the unit jumps to an adjacent position.
-			double[] newCoordinates = this.getPosition().getCoordinates();
-			while (Position.equals(newCoordinates, this.getPosition().getCoordinates()))
-				newCoordinates = this.getRandomDodgeMove(this.getPosition().getCoordinates());
+			double[] newCoordinates = this.getCoordinates();
+			while (Position.equals(newCoordinates, this.getCoordinates()))
+				newCoordinates = this.getRandomDodgeMove(this.getCoordinates());
 			this.setCoordinates(newCoordinates);
 			// Stop all other movements
 			this.resetCoordinates();
@@ -2545,45 +2583,6 @@ public class Unit extends Entity{
 	public void startDefaultBehavior() throws IllegalArgumentException, NullPointerException {
 		this.setDefaultBehaviorEnabled(true);
 	}
-//		this.setDefaultBehaviorEnabled(true);
-//		// TODO default behaviour volgens part 3 implementeren.
-//		Scheduler scheduler = this.getFaction().getScheduler();
-//		List<Task> availableTasks = scheduler.getUnassignedTasks();
-//		if (availableTasks.size() != 0) {
-//			availableTasks.get(0).assignTo(this);
-//			this.getTask().getStatement().execute();
-//		}
-//		else {
-////		try {
-//			int choice =  new Random().nextInt(4);
-//			if (choice == 0){
-//				// The unit chose to work. 
-//				this.workAt(this.getWorld().getRandomValidCubeCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
-//			}
-//			else if (choice == 1){
-//				// The unit chose to rest.
-//				this.rest(true);
-//			}
-//			else if (choice == 2){
-//				// The unit chose to go to a random position. Once the unit is moving, it can decide to start sprinting until it runs out of stamina.
-//				int[] randomPosition = this.getWorld().getRandomUnitCoordinatesInRange(this.getPosition().getCoordinates(), MAX_RANGE_DEFAULTMOVE);
-//				this.moveTo(randomPosition, true);
-//			}
-//			else if (choice == 3){
-//				//	The unit chose to attack a random unit in its reach.
-//				// If there are no attackable units in its reach, then a new behaviour is chosen.
-//				Unit combattant = this.getUnitThatCanBeAtacked();
-//				if (combattant == null)
-//					this.startDefaultBehavior();
-//				else 
-//					this.fight(combattant, true); 
-//			}
-////		} catch (Exception e){
-////			// Do nothing
-////			System.out.println("I do nothing now because I failed at default behaviour.");
-////		}
-//		}
-//	}
 	
 	/**
 	 * End the default behavior of this unit.
@@ -2592,22 +2591,6 @@ public class Unit extends Entity{
 	//TODO doc
 	public void endDefaultBehavior() throws IllegalArgumentException, NullPointerException {
 		this.setDefaultBehaviorEnabled(false);
-	}
-	
-	/**
-	 * Returns a unit that can be attacked by this unit.
-	 * 
-	 * @return A unit that is on a position adjacent to this position and belongs to a different faction than this unit.
-	 */
-	private Unit getUnitThatCanBeAtacked() {
-		// Returns a unit that can be attacked.
-		// If no such unit exists in the world, then null is returned.
-		for (Unit unit: this.getWorld().getUnits()){
-			if ( (this.isAdjacentTo(unit.getPosition().getCubeCoordinates())) && (this.getFaction() != unit.getFaction()))
-				return unit;
-		}
-		
-		return null;
 	}
 
 	/**
@@ -2871,7 +2854,7 @@ public class Unit extends Entity{
 			// in this case, the unit starts from the center of the noSolidNeighbours-cube.
 			if (! this.getIsFalling()) {
 				this.setCoordinates(this.getPosition().getSurfaceCenter());
-				this.setInitialCoordinates(this.getPosition().getCoordinates());
+				this.setInitialCoordinates(this.getCoordinates());
 			}
 			this.setIsFalling(true);
 			this.setCurrentActivity(Activity.MOVE);
@@ -3089,7 +3072,7 @@ public class Unit extends Entity{
 			
 			// Calculate the new position.
 			for (int count = 0; count < 3; count++){
-				newPosition[count] = this.getPosition().getCoordinates()[count] + 
+				newPosition[count] = this.getCoordinates()[count] + 
 						this.getVelocity(this.getTargetCoordinates())[count] * deltaT;
 			}
 			
@@ -3153,7 +3136,7 @@ public class Unit extends Entity{
 		this.moveToPath.clear();
 		
 		// Calculate the new position.
-		newCoordinates = Position.calculateNextCoordinates(this.getPosition().getCoordinates(), Entity.FALL_VELOCITY, deltaT);
+		newCoordinates = Position.calculateNextCoordinates(this.getCoordinates(), Entity.FALL_VELOCITY, deltaT);
 		
 		// No updates needed for orientation (only for x and y).
 		
@@ -3247,13 +3230,5 @@ public class Unit extends Entity{
 			}
 		}	
 	}
-		
-	
-	private void advanceTimeTask(double deltaT) {
-//		Statement statement = this.getTask().getStatement();
-//		double time = STATEMENT_EXECUTION_TIME;
-//		while (Util.fuzzyLessThanOrEqualTo(time, deltaT)) {
-//			statement.execute();
-//		}
-	}
 }
+
