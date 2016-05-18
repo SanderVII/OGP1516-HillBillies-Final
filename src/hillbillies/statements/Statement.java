@@ -15,7 +15,7 @@ public abstract class Statement extends TextObject {
 
 	public abstract void execute();
 
-	private Status status;
+	private Status status = Status.NOTSTARTED;
 
 	public Status getStatus() {
 		return this.status;
