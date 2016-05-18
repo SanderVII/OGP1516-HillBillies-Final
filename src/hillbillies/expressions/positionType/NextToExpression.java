@@ -1,9 +1,11 @@
 package hillbillies.expressions.positionType;
 
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.positions.UnitPosition;
 
 public class NextToExpression<E extends PositionExpression> 
 		extends ExtendedPositionExpression<E> {
@@ -19,9 +21,14 @@ public class NextToExpression<E extends PositionExpression>
 		
 		Set<int[]> directlyAdjacentCoordinates = this.getUnit().getWorld().
 				getDirectlyAdjacentCoordinates(dummy[0], dummy[1], dummy[2]);
-		int random = new Random().nextInt(directlyAdjacentCoordinates.size());
+		Set<int[]> copy = new HashSet<>();
+		for (int[] coordinate: directlyAdjacentCoordinates)
+			if ( this.getUnit().canHaveAsCoordinates(coordinate))
+				copy.add(coordinate);
+		
+		int random = new Random().nextInt(copy.size());
 		int i = 0;
-		for (int[] cubeCoordinate: directlyAdjacentCoordinates) {
+		for (int[] cubeCoordinate: copy) {
 			if (random == i)
 				return cubeCoordinate;
 			i += 1;

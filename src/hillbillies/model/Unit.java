@@ -12,6 +12,8 @@ import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.exceptions.UnitMaxedOutException;
 import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
+import hillbillies.statements.Statement;
+import hillbillies.statements.Status;
 import util.RandomSetElement;
 	
 /** 
@@ -1543,7 +1545,7 @@ public class Unit extends Entity{
 	 *				This prevents the program from trying all possible cubes in the world (which takes very long, even for small worlds),
 	 *				while we know there is no path.
 	 */
-	private void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
+	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
 		if (thisIsDefaultBehaviour)
 			System.out.println("moveTo by defaultBehaviour");
 		if ( ! this.getPosition().canHaveAsCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
@@ -1838,6 +1840,31 @@ public class Unit extends Entity{
 	private void finishTask() {
 		if (this.hasTask()) 
 			this.getTask().terminate();
+	}
+	
+	/**
+	 * Return a failed task back to the scheduler with a lower priority.
+	 * @effect	If this unit has a task with a failed statement,
+	 * 			then the task is detached from this unit and
+	 * 			the priority is lowered by one. The statement status is reset.
+	 * 			| task.setPriority(task.getPriority()-1)
+	 *			| task.setUnit(null)
+	 *			| this.setTask(null)
+	 *			| task.getStatement().resetStatus()
+	 * @throws	IllegalStateException
+	 * 			This unit does not have a task or the statement has not failed.
+	 * 			| ! this.hasTask() || 
+	 * 			|	! (this.getTask().getStatement().getStatus() == Status.FAILED)	
+	 */
+	private void returnFailedTask() throws IllegalStateException {
+		if (! this.hasTask())
+			throw new IllegalStateException();
+		if (! (this.getTask().getStatement().getStatus() == Status.FAILED))
+			throw new IllegalStateException();
+		task.setPriority(task.getPriority()-1);
+		task.setUnit(null);
+		this.setTask(null);
+		task.getStatement().resetStatus();
 	}
 	
 	
@@ -3001,7 +3028,7 @@ public class Unit extends Entity{
 			
 			// If default behavior is enabled, keep it running.
 			if (this.getDefaultBehaviorEnabled())
-				this.startDefaultBehavior();
+				this.getTask().finishExplicitStatement();
 		}
 		
 		// If the work time is over...
@@ -3045,11 +3072,9 @@ public class Unit extends Entity{
 			// the current activity is set to nothing.
 			this.setCurrentActivity(Activity.NOTHING);
 			
-			
 			// If default behavior is enabled, keep it running.
-			if (this.getDefaultBehaviorEnabled()) {
-				this.finishTask();
-				this.startDefaultBehavior();
+			if (this.hasTask()) {
+				this.getTask().finishExplicitStatement();
 			}
 			
 		}
@@ -3107,10 +3132,13 @@ public class Unit extends Entity{
 				this.addExperience(1);
 				
 				// Last position to reach, no need to move anymore.
-				if (moveToPath.size() ==0) {
+				if (moveToPath.size() == 0) {
 					this.setCurrentActivity(Activity.NOTHING);
 					this.resetCoordinates();
+					if (this.hasTask())
+						this.getTask().finishExplicitStatement();
 				}
+				
 			} else {
 				// Set unit position to the calculated position.
 				this.setCoordinates(newPosition); 				
@@ -3184,8 +3212,26 @@ public class Unit extends Entity{
 		List<Task> availableTasks = scheduler.getUnassignedTasks();
 		if (availableTasks.size() != 0) {
 			availableTasks.get(0).assignTo(this);
-			this.getTask().getStatement().execute();
 		}
+		if (this.hasTask()) {
+			Statement statement  = this.getTask().getStatement();
+			Status status = statement.getStatus();
+			switch (status) {
+				case NOTSTARTED:
+					statement.execute();
+					break;
+				case DONE:
+					this.finishTask();
+					break;
+				case FAILED:
+					this.returnFailedTask();
+				case SEQUENCE:
+					statement.execute();
+				default:
+					break;
+			}
+		}
+				
 		else {
 			List<Activity> options = DefaultManager.getAvailableRandomActivities(this);
 			int choice = new Random().nextInt(options.size());
@@ -3215,33 +3261,6 @@ public class Unit extends Entity{
 				this.rest(true);
 			}
 		}	
-			
-//			int choice =  new Random().nextInt(4);
-//			if (choice == 0){
-//				// The unit chose to work. 
-//				this.workAt(this.getWorld().getRandomValidCubeCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
-//			}
-//			else if (choice == 1){
-//				// The unit chose to rest.
-//				this.rest(true);
-//			}
-//			else if (choice == 2){
-//				// The unit chose to go to a random position. Once the unit is moving, it can decide to start sprinting until it runs out of stamina.
-//				int[] randomPosition = this.getWorld().getRandomUnitCoordinatesInRange(this.getPosition().getCoordinates(), MAX_RANGE_DEFAULTMOVE);
-//				this.moveTo(randomPosition, true);
-//			}
-//			else if (choice == 3){
-//				//	The unit chose to attack a random unit in its reach.
-//				// If there are no attackable units in its reach, then a new behaviour is chosen.
-//				Unit combattant = this.getUnitThatCanBeAtacked();
-//				if (combattant == null)
-//					this.startDefaultBehavior();
-//				else 
-//					this.fight(combattant, true); 
-			}
-//		} catch (Exception e){
-//			// Do nothing
-//			System.out.println("I do nothing now because I failed at default behaviour.");
-//		}
-
+	}
 }
+

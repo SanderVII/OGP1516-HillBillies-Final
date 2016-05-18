@@ -18,7 +18,7 @@ public class RandomSetElement<E extends Object> {
 			else
 				count++;
 		}
-		// should not happen
+		// should only happen if the size of the set is 0.
 		return null;
 	}
 }

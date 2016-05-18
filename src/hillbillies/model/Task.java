@@ -4,7 +4,9 @@ import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.expressions.Expression;
+import hillbillies.statements.ISubStatement;
 import hillbillies.statements.Statement;
+import hillbillies.statements.Status;
 
 /**
  * A class of tasks, involving a name, a priority and 
@@ -21,7 +23,8 @@ import hillbillies.statements.Statement;
  * 		 | hasProperUnit()
  * @invar   Each task must have proper schedulers.
  *        | hasProperSchedulers()
- *     		
+ * @invar   Each task must have proper variables.
+ *        | hasProperVariables() 		
  * @author 	Sander Mergan, Thomas Vranken
  * @version	2.3
  * 
@@ -457,16 +460,21 @@ public class Task implements Comparable<Task> {
 	 */
 	private Statement statement;
 	
+	/**
+	 * Check if the statement of this task is correctly formed.
+	 * @return 	True if the statement of this task, and all of its sub-text objects
+	 *  		(if it has any) are well formed.
+	 *  		| result == this.getStatement().isWellFormed()
+	 */
+	public boolean isWellFormed() {
+		return this.getStatement().isWellFormed();
+	}
+	
 	// =================================================================================================
 	// Methods concerning the variables used in this task.
 	// =================================================================================================
 	
 	//TODO finish doc of this segment!!
-	
-	/** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each task must have proper variables.
-	 *        | hasProperVariables()
-	 */
 
 	/**
 	 * Check whether this task has the given variable as one of its
@@ -604,6 +612,52 @@ public class Task implements Comparable<Task> {
 	public Expression getValue(String variable) {
 		return variables.get(variable);
 	}
+	
+	// =================================================================================================
+	// Methods concerning the explicit statement being executed.
+	// This is a statement which directly influences the unit upon execution.
+	// SequenceStatements, whilestatements etc. should not be used for this.
+	// =================================================================================================
+	
+	//TODO doc of this segment.
+	private Statement explicitStatement;
+	
+	public Statement getExplicitStatement() {
+		return this.explicitStatement;
+	}
+	
+	public boolean hasExplicitStatement() {
+		return this.getExplicitStatement() != null;
+	}
+	
+	private void setExplicitStatement(Statement statement) {
+		this.explicitStatement = statement;
+	}
+	
+	/**
+	 * Starts the execution of this explicit statement.
+	 * @param 	statement
+	 * 			The explicit statement to execute.
+	 */
+	public void startExplicitStatement(Statement statement) {
+		Unit unit = this.getUnit();
+		if (unit.getCurrentActivity() == Activity.NOTHING) {
+			this.setExplicitStatement(statement);
+			statement.setStatus(Status.EXECUTING);
+		}
+		
+	}
+	
+	/**
+	 * Finish the execution of this task's current explicit statement.
+	 */
+	public void finishExplicitStatement() {
+		if (this.hasExplicitStatement()) {
+			this.getExplicitStatement().setStatus(Status.DONE);
+			this.setExplicitStatement(null);
+		}
+	}
+	
 	
 	// =================================================================================================
 	// Methods concerning the schedulers who have this task.

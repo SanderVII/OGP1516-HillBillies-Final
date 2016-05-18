@@ -21,8 +21,7 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 
 	@Override
 	public boolean isWellFormed(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return task.isWellFormed();
 	}
 
 	@Override
@@ -56,8 +55,7 @@ public class Facade  extends hillbillies.part2.facade.Facade implements hillbill
 
 	@Override
 	public Iterator<Task> getAllTasksIterator(Scheduler scheduler) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return scheduler.priorityIterator();
 	}
 
 	@Override

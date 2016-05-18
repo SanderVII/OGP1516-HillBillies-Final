@@ -2,6 +2,7 @@ package hillbillies.statements.expressionType.actions;
 
 import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.Status;
 
 public class WorkAtStatement<E extends PositionExpression> 
 		extends ActionPositionStatement<E> {
@@ -12,7 +13,11 @@ public class WorkAtStatement<E extends PositionExpression>
 	
 	@Override
 	public void execute() {
-		int[] dummy = (this.getExpression()).evaluate();
-		this.getSuperTask().getUnit().workAt(dummy,true);
+		if (this.getStatus() == Status.NOTSTARTED) {
+			int[] position = this.getExpression().evaluate();
+			this.getSuperTask().startExplicitStatement(this);
+			this.getSuperTask().getUnit().workAt(position,true);
+		}
+		
 	}
 }
