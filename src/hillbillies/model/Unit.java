@@ -24,37 +24,37 @@ import hillbillies.positions.UnitPosition;
  * 	an orientation.
  * 
  * @invar	The current health of each unit must be a valid current health for any unit. 
- *        			| canHaveAsCurrentHealth(getCurrentHealth())
+ *				| canHaveAsCurrentHealth(getCurrentHealth())
  * @invar	The current stamina of each unit must be a valid current stamina for any unit. 
- *        			| canHaveAsCurrentStamina(getCurrentStamina())
+ *				| canHaveAsCurrentStamina(getCurrentStamina())
  * @invar	The weight of each unit must be a valid weight for any unit.
- * 					| canHaveAsWeight(getWeight())
+ *				| canHaveAsWeight(getWeight())
  * @invar	The maximum base stat must be a valid maximal base stat for any unit.
- *					| canHaveAsMaxBaseStat(getMaxBaseStat())
+ *				| canHaveAsMaxBaseStat(getMaxBaseStat())
  * @invar	The minimal base stat must be a valid minimal base stat for any unit.
- *					| canHaveAsMinBaseStat(getMinBaseStat())
+ *				| canHaveAsMinBaseStat(getMinBaseStat())
  * @invar	The name of each unit must be a valid name for any unit.
- *					| isValidName(getName())
+ *				| isValidName(getName())
  * @invar	The coordinates of each unit must be valid coordiniates for any unit.
- * 					|getPosition().canHaveAsCoordinates(getPosition().getCoordinates())
+ *				|getPosition().canHaveAsCoordinates(getPosition().getCoordinates())
  * @invar	The orientation of each unit must be a valid orientation for any unit.
- * 					| isValidOrientation(getAngle())
+ *				| isValidOrientation(getAngle())
  * @invar	The initial coordiniates of each unit must be valid initial coordiniates for any unit.
- *       			| canHaveAsInitialCoordinates(getInitialCoordinates())
+ *				| canHaveAsInitialCoordinates(getInitialCoordinates())
  * @invar	The target coordiniates of each unit must be valid target coordiniates for any unit.
- *       			| canHaveAsTargetCoordinates(getTargetCoordinates())
+ *				| canHaveAsTargetCoordinates(getTargetCoordinates())
  * @invar	The is-sprinting value of each unit must be a valid is-sprinting value for any unit.
- *       			| isValidIsSprinting(getIsSprinting())
+ *				| isValidIsSprinting(getIsSprinting())
  * @invar	The experience of each unit must be a valid experience for any unit.
- *       			| isValidExperience(getExperience())
+ *				| isValidExperience(getExperience())
  * @invar	Each unit must have a proper world to which it is attached.
- * 					| hasProperWorld()
+ *				| hasProperWorld()
  * @invar	Each unit must have a proper faction to which it is attached.
- * 					| hasProperFaction()
+ *				| hasProperFaction()
  * @invar	Each unit must have a proper task.
- * 					| hasProperTask()
+ *				| hasProperTask()
  * @invar	The is-falling property of each unit must be a valid is-falling property for any unit.
- *					| isValidIsFalling(getIsFalling())
+ *				| isValidIsFalling(getIsFalling())
  * 
  * @author Sander Mergan, Thomas Vranken
  */
@@ -64,51 +64,44 @@ public class Unit extends Entity{
 	 * Initialize this new unit with the given world, faction, name, position, weight, strength, agility, toughness.
 	 * 
 	 * @param	world
-	 * 					The world of this new unit.
+	 *				The world of this new unit.
 	 * @param	faction
-	 * 					The faction of this new unit.
+	 * 				The faction of this new unit.
 	 * @param	name
-	 * 					The name of this new unit.
+	 * 				The name of this new unit.
 	 * @param	coordinates
-	 * 					The cube coordiniates of this new unit.
+	 * 				The cube coordiniates of this new unit.
 	 * @param	weight 
-	 * 					The weight of this new unit.
+	 * 				The weight of this new unit.
 	 * @param	strength
-	 * 					The strength of this new unit.
+	 * 				The strength of this new unit.
 	 * @param	agility
-	 * 					The agility of this new unit.
+	 * 				The agility of this new unit.
 	 * @param	toughness
-	 * 					The toughness of this new unit.
+	 *				The toughness of this new unit.
 	 * 
 	 * @effect	Sets the initial weight of this new unit to the given initial weight.
-	 *					| this.setInitialWeight(weight)
-	 *    
+	 *				| this.setInitialWeight(weight)
 	 * @effect	Sets the strength of this new unit to the given initial strength.
-	 *					| this.setInitialStrength(strength)
-	 * 
+	 *				| this.setInitialStrength(strength)
 	 * @effect	Sets the agility of this new unit to the given initial agility.
-	 *					| this.setInitialAgility(agility)
-	 *
+	 *				| this.setInitialAgility(agility)
 	 * @effect	Sets the toughness of this new unit to the given initial toughness.
-	 *					| this.setInitialToughness(toughness)
-	 *
-	 * @post	The world of this unit is set to the given world.
-	 * 				| new.getWorld() == world
-	 * 
-	 * @post	The faction of this unit is set to the given faction.
-	 * 				| new.getFaction() == faction
-	 * 
-	 * @post	The current health of the new unit is equal to the maximal health of this unit.
-	 * 				| new.getCurrentHealth() == new.getMaxPoints()
-	 * 
-	 * @post	The current stamina of the new unit is equal to the maximal stamina of this unit.
-	 * 				| new.getCurrentStamina() == new.getMaxPoints
-	 * 
-	 * @post	The name of this unit is equal to the given name.
-	 * 				| new.getName(name)
-	 * 
-	 * @post	The coordinates of this unit are equal to the given coordinates.
-	 * 				| (new.getPosition().getCubeCoordinates() == position)
+	 *				| this.setInitialToughness(toughness)
+	 * @effect	Sets the world of this unit to the given world.
+	 * 				| this.setWorld(world)
+	 * @effect	Sets the faction of this unit to the given faction.
+	 * 				| this.setFaction(faction)
+	 * @effect	Sets the current health of the new unitl to the maximal health of this unit.
+	 * 				| this.setCurrentHealth(getMaxPoints())
+	 * @effect	Sets the current stamina of the new unit to the maximal stamina of this unit.
+	 * 				| this.setCurrentStamina(getMaxPoints)
+	 * @effect	Sets the name of this unit to the given name.
+	 * 				| this.setName(name)
+	 * @effect	Sets the coordinates of this unit to the given coordinates.
+	 * 				| this.getPosition().setCoordinates(Position.getCubeCenter(coordinates))
+	 * @effect	Sets the orientation of this unit to Pi/2.0
+	 *				| this.setOrientation(Math.PI/2.0)
 	 */
 	public Unit(World world, Faction faction, String name, int[] coordinates, 
 			int weight, int strength, int agility, int toughness) throws IllegalArgumentException {
@@ -146,6 +139,7 @@ public class Unit extends Entity{
 	/**
 	 * Initialize this new unit with the given world, name, coordinates, weight, strength, agility, toughness.
 	 * The unit is added to a newly created faction of that world.
+	 * 
 	 * @param	world
 	 * 					The world of this new unit.
 	 * @param	name
@@ -160,6 +154,7 @@ public class Unit extends Entity{
 	 * 					The agility of this new unit.
 	 * @param	toughness
 	 * 					The toughness of this new unit.
+	 * 
 	 * @effect	A new faction in the given world is created.
 	 * 					|	new Faction(world)
 	 * @effect	This unit is initialized with the given attributes and the newly created faction as its faction.
@@ -174,10 +169,12 @@ public class Unit extends Entity{
 	 * Initialize this new unit with the given world and name. All of its stats are chosen randomly
 	 * between valid initial values. The unit is added to a newly created faction of that world.
 	 * Its position is randomly chosen and is valid for any unit in the given world.
+	 * 
 	 * @param	world
 	 * 					The world of this new unit.
 	 * @param	name
 	 * 					The name of this new unit.
+	 * 
 	 * @effect	This unit is initialized with random attributes, coordinates and a new faction.
 	 * 					| this(world, name, randomCoordinates, randomWeight, randomStrength, randomAgility, randomToughness)
 	 */
@@ -196,8 +193,8 @@ public class Unit extends Entity{
 	public String toString() {
 		return "Unit\n"+"name: " + getName() +"\n"
 				+ "position: " + this.getPosition().toString() +"\n"
-				+ "faction: " + getFaction() +"\n"
-				+ "world: " + getWorld() + "\n"
+				+ "faction: " + this.getFaction() +"\n"
+				+ "world: " + this.getWorld() + "\n"
 				+"=====";
 	}
 	
@@ -209,42 +206,42 @@ public class Unit extends Entity{
 	/**
 	 * Terminate this unit.
 	 *
-	 * @post   This unit  is terminated.
-	 *       | new.isTerminated()
-	 * @post   No world is connected with this unit.
-	 *       | ( ! new.hasWorld())
-	 * @post   The world this unit was part of no longer references this unit.
-	 * 		 | if (hasWorld())
-	 * 		 |	then (! getWorld().getAllUnits().contains(new))
-	 * @post   The faction this unit was part of no longer references this unit.
-	 * 		 | if (hasFaction())
-	 * 		 |	then (! getFaction().getAllUnits().contains(new))
-	 * @post   The log this unit was carrying is dropped.
-	 * 		 | if (isCarryingLog())
-	 * 		 |	then ( dropLog() )
-	 * @post   The boulder this unit was carrying is dropped on the ground.
-	 * 		 | if (isCarryingBoulder())
-	 * 		 |	then ( dropBoulder() )
-	 * @post   This unit's current activity is NOTHING.
-	 * 		 | new.getCurrentActivity() == Activity.NOTHING
+	 * @post	This unit  is terminated.
+	 *				| new.isTerminated()
+	 * @post	The world this unit was part of no longer references this unit.
+	 *				| if (hasWorld())
+	 *				|	then ( ! getWorld().getAllUnits().contains(new))
+	 * @post	No world is connected with this unit.
+	 *				| ( ! new.hasWorld())
+	 * @post	The faction this unit was part of no longer references this unit.
+	 *				| if (hasFaction())
+	 *				|	then (! getFaction().getAllUnits().contains(new))
+	 * @effect	The item this unit was carrying is dropped.
+	 *				| if (hasItem())
+	 *				|	then ( dropItem() )
+	 * @effect	Sets this unit's current activity to NOTHING.
+	 *				| new.getCurrentActivity() == Activity.NOTHING
+	 * @effect	This unit stops sprinting.
+	 *				| this.stopSprinting()
+	 * @effect	Resets the targetCoordinates and initialCoordinates of this unit.
+	 *				| this.stopSprinting()
 	 */
 	@Override
 	 public void terminate() {
 		 if (! this.isTerminated()) {
-			 this.getWorld().removeEntity(this);
 			 
-			 if (this.hasProperFaction())
-				 this.getFaction().removeUnit(this);
-	
-			this.setCurrentActivity(Activity.NOTHING);
+			 this.setCurrentActivity(Activity.NOTHING);
 			this.stopSprinting();
 			this.stopDefaultBehavior();
 			this.resetCoordinates();
 			
 			if (this.hasItem())
 				this.dropItem(this.getCubeCoordinates());
-	
+			
 			this.isTerminated = true;
+			
+			 this.getFaction().removeUnit(this);
+			 this.getWorld().removeEntity(this);
 		 }
 	 }
 	
@@ -793,8 +790,9 @@ public class Unit extends Entity{
 	 */
 	@Raw
 	public boolean canHaveAsFaction(@Raw Faction faction) {
-		if (this.isTerminated)
+		if (this.isTerminated){
 			return faction == null;
+		}
 		else
 			return (faction != null) && ( ! faction.isTerminated());
 	}
@@ -826,8 +824,10 @@ public class Unit extends Entity{
 	 * 			| ( ! canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION)
 	 */
 	public void setFaction(@Raw Faction faction) throws IllegalArgumentException {
-		if ( ( ! this.canHaveAsFaction(faction)) || (faction.getNbUnits() >= World.MAX_UNITS_FACTION) )
-			throw new IllegalArgumentException(faction.toString());
+		if ( ! this.canHaveAsFaction(faction))
+			throw new IllegalArgumentException();
+		if ( ( ! this.isTerminated() && (faction.getNbUnits() >= World.MAX_UNITS_FACTION)) )
+			throw new IllegalArgumentException();
 		this.faction = faction;
 	}
 	
@@ -1049,9 +1049,10 @@ public class Unit extends Entity{
 	 * 			| (! canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD)
 	 */
 	public void setWorld(@Raw World world) throws IllegalArgumentException {
-		if ( (! this.canHaveAsWorld(world)) || (world.getNbUnits() >= World.MAX_UNITS_WORLD) )
+		if ( ! this.canHaveAsWorld(world))
 			throw new IllegalArgumentException();
-		
+		if ( ( ! this.isTerminated()) && (world.getNbUnits() >= World.MAX_UNITS_WORLD))
+			throw new IllegalArgumentException();
 		this.world = world;
 	}
 	
@@ -1417,12 +1418,10 @@ public class Unit extends Entity{
 			
 			if ( ! thisIsDefaultBehaviour){
 				this.stopDefaultBehavior();
-				this.moveTo(destinationCube.getPosition().getCubeCoordinates());
 			}
 			
 			if ((this.getCurrentActivity() == Activity.MOVE))
 				throw new IllegalStateException("Unit is already moving.");
-			
 			
 			
 			if ((dx==0) && (dy==0) && (dz==0)) {
@@ -1442,7 +1441,6 @@ public class Unit extends Entity{
 		}
 	}
 	
-	// TODO finished?
 	/**
 	 * Checks whether this unit can start moving to an adjacent cube.
 	 * A unit can only start moving if it is not falling.

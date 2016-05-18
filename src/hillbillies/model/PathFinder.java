@@ -38,6 +38,7 @@ public class PathFinder {
 		fScore.put(start, heuristicCostEstimate(start, destination));
 		
 		while ( openSet.size() != 0){
+			
 			// current is the position in openSet having the lowest fScore[] value
 			int[] current = getCoordinatesWithLowestFScoreFrom(openSet, fScore);
 			

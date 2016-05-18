@@ -122,9 +122,9 @@ public class WorldTest {
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
-		Log log = new Log(world, new int[]{0,0,0});
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
-		Log log2 = new Log(world, new int[]{19,39,9});
+		new Log(world, new int[]{0,0,0});
+		new Boulder(world, new int[]{0,0,0});
+		new Log(world, new int[]{19,39,9});
 		
 		assertFalse(world.isTerminated());
 		assertTrue(world.hasLogAt(new int[]{0,0,0}));
@@ -397,9 +397,9 @@ public class WorldTest {
 		
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
-		Log log = new Log(world, new int[]{0,0,0});
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
-		Log log2 = new Log(world, new int[]{19,39,9});
+		new Log(world, new int[]{0,0,0});
+		new Boulder(world, new int[]{0,0,0});
+		new Log(world, new int[]{19,39,9});
 		
 		assertTrue(world.hasProperEntities());
 		world.terminate();
@@ -417,8 +417,8 @@ public class WorldTest {
 		
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
-		Log log = new Log(world, new int[]{0,0,0});
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
+		new Log(world, new int[]{0,0,0});
+		new Boulder(world, new int[]{0,0,0});
 		Log log2 = new Log(world, new int[]{19,39,9});
 		
 		assertTrue(world.getNbEntities() == 4);
@@ -493,9 +493,9 @@ public class WorldTest {
 		
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
-		Log log = new Log(world, new int[]{0,0,0});
-		Boulder boulder = new Boulder(world, new int[]{0,0,0});
-		Log log2 = new Log(world, new int[]{19,39,9});
+		new Log(world, new int[]{0,0,0});
+		new Boulder(world, new int[]{0,0,0});
+		new Log(world, new int[]{19,39,9});
 		Unit unit2 = new Unit(world,  "Test", new int[] { 5, 5, 1 }, 50, 50, 50, 50);
 		unit2.stopDefaultBehavior();
 		Unit unit3 = new Unit(world,  "Test", new int[] { 6, 5, 0 }, 50, 50, 50, 50);
@@ -520,7 +520,7 @@ public class WorldTest {
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
 		Log log = new Log(world, new int[]{5, 5, 0});
-		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
+		new Boulder(world, new int[]{5, 5, 0});
 		Log log2 = new Log(world, new int[]{5, 5, 1});
 		Log log3 = new Log(world, new int[]{6, 5, 0});
 		
@@ -542,7 +542,7 @@ public class WorldTest {
 		
 		Unit unit = new Unit(world,  "Test", new int[] { 5, 5, 0 }, 50, 50, 50, 50);
 		unit.stopDefaultBehavior();
-		Log log = new Log(world, new int[]{5, 5, 0});
+		new Log(world, new int[]{5, 5, 0});
 		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
 		Boulder boulder2 = new Boulder(world, new int[]{5, 5, 1});
 		Boulder boulder3 = new Boulder(world, new int[]{6, 5, 0});
@@ -641,10 +641,10 @@ public class WorldTest {
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world,  "Test", new int[] { 0, 0, 0 }, 100, 100, 100, 100);
 		unit.stopDefaultBehavior();
-		Log log = new Log(world, new int[]{5, 5, 0});
-		Boulder boulder = new Boulder(world, new int[]{5, 5, 0});
-		Log log2 = new Log(world, new int[]{5, 5, 1});
-		Log log3 = new Log(world, new int[]{6, 5, 0});
+		new Log(world, new int[]{5, 5, 0});
+		new Boulder(world, new int[]{5, 5, 0});
+		new Log(world, new int[]{5, 5, 1});
+		new Log(world, new int[]{6, 5, 0});
 		
 		assertTrue(world.isSolidConnectedToBorder(1, 1, 0));
 		assertTrue(world.isSolidConnectedToBorder(1, 1, 1));

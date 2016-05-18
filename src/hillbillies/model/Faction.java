@@ -256,6 +256,7 @@ public class Faction {
 	public void removeUnit(Unit unit) {
 		assert this.hasAsUnit(unit) && (unit.getFaction() == null);
 		units.remove(unit);
+		unit.setFaction(null);
 	}
 
 	/**

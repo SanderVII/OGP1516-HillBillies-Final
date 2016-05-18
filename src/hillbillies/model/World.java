@@ -943,6 +943,7 @@ public class World {
 	public void removeEntity(Entity entity) {
 		assert this.hasAsEntity(entity) && (entity.getWorld() == null);
 		entities.remove(entity);
+		entity.setWorld(null);
 	}
 
 	/**

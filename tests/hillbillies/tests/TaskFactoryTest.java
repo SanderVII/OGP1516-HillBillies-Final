@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import hillbillies.expressions.Expression;
 import hillbillies.expressions.positionType.PositionExpression;
 import hillbillies.expressions.positionType.SelectedPositionExpression;
 import hillbillies.model.Faction;
@@ -23,7 +22,6 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.facade.Facade;
 import hillbillies.part3.programs.TaskParser;
 import hillbillies.statements.expressionType.actions.WorkAtStatement;
-import ogp.framework.util.ModelException;
 
 /**
  * 
@@ -46,6 +44,7 @@ public class TaskFactoryTest {
 	private Unit unit;
 	private Scheduler scheduler;
 
+	@SuppressWarnings("unused")
 	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
 	private static final int TYPE_TREE = 2;
@@ -96,6 +95,7 @@ public class TaskFactoryTest {
 		
 		assertTrue(task.getUnit() == unit);
 		assertTrue(task.getStatement().getTask() == task);
+		@SuppressWarnings("unchecked")
 		WorkAtStatement<PositionExpression> statement = (WorkAtStatement<PositionExpression>) task.getStatement();
 		assertTrue(statement.getTask() == task);
 		SelectedPositionExpression expression = (SelectedPositionExpression) statement.getExpression();
