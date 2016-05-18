@@ -572,7 +572,7 @@ public class WorldTest {
 				assertTrue(unit.getStrength() >= Unit.getMinInitialBaseStat() && unit.getStrength() <= Unit.getMaxInitialBaseStat());
 				assertTrue(unit.getAgility() >= Unit.getMinInitialBaseStat() && unit.getAgility() <= Unit.getMaxInitialBaseStat());
 				assertTrue(unit.getToughness() >= Unit.getMinInitialBaseStat() && unit.getToughness() <= Unit.getMaxInitialBaseStat());
-				assertTrue(unit.hasProperFaction());
+				assertTrue(unit.getWorld() == world);
 				assertTrue(unit.hasProperWorld());
 				assertTrue(unit.getDefaultBehaviorEnabled() == false);
 			}

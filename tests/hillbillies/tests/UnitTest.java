@@ -543,7 +543,70 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void canHaveAsCurrentHealth() {
+	public void canHaveAsFactionTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
+		Faction faction = new Faction(world);
+		Faction faction2 = new Faction(world);
+		
+		assertTrue(unit.canHaveAsFaction(faction));
+		assertFalse(unit.canHaveAsFaction(null));
+		
+		faction.terminate();
+		
+		assertFalse(unit.canHaveAsFaction(faction));
+		assertFalse(unit.canHaveAsFaction(null));
+		
+		unit.terminate();
+		
+		assertFalse(unit.canHaveAsFaction(faction2));
+		assertFalse(unit.canHaveAsFaction(faction));
+		assertTrue(unit.canHaveAsFaction(null));
+	}
+	
+	@Test
+	public void setFactionTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
+		Unit unit2 = new Unit(world, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
+		Faction faction = new Faction(world);
+		Faction faction2 = new Faction(world);
+		
+		assertTrue(unit.canHaveAsFaction(faction));
+		assertTrue(unit.canHaveAsFaction(faction2));
+		assertFalse(unit.canHaveAsFaction(null));
+		unit.setFaction(faction2);
+		try{unit.setFaction(faction2); assertTrue(true);}catch(IllegalArgumentException e){assertTrue(false);}
+		try{unit.setFaction(null); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		
+		faction.terminate();
+		
+		assertFalse(unit.canHaveAsFaction(faction));
+		assertFalse(unit.canHaveAsFaction(null));
+		try{unit.setFaction(null); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		try{unit.setFaction(faction); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		
+		unit.terminate();
+		
+		assertFalse(unit.canHaveAsFaction(faction2));
+		assertFalse(unit.canHaveAsFaction(faction));
+		assertTrue(unit.canHaveAsFaction(null));
+		try{unit.setFaction(faction); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		try{unit.setFaction(faction2); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		try{unit.setFaction(null); assertTrue(true);}catch(IllegalArgumentException e){assertTrue(false);}
+		
+		for (int x=0; x< Faction.MAX_UNITS_FACTION; x++){
+			new Unit(world, faction2, "Filler", new int[]{0, 0, 1}, 25, 25, 25, 25);
+		}
+		
+		assertTrue(faction2.getNbUnits() == Faction.MAX_UNITS_FACTION);
+		try{unit2.setFaction(faction2); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
+		
+		
+	}
+	
+	@Test
+	public void canHaveAsCurrentHealthTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unitMax = new Unit(world, "UnitMax",new int[]{world.getMaximumXValue()-1, 
 																							world.getMaximumYValue()-1, 
@@ -568,7 +631,15 @@ public class UnitTest {
 		assertFalse(unitMax.canHaveAsCurrentStamina(250));
 	}
 
-
+	@Test
+	public void getMaxPointsTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
+		
+		assertEquals(unit.getMaxPoints(), 200);
+		assertEquals(Unit.getMaxPoints(100, 100), 200);
+		assertEquals(Unit.getMaxPoints(59, 149), 188);
+	}
 	
 	@Test
 	public void getCubePosition() {
