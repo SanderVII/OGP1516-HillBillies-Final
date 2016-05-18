@@ -1290,7 +1290,7 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Checks if the target cube with given coordinates is next to the cube the unit is standing in.
+	 * Checks whether the target cube with given coordinates is next to the cube the unit is standing in.
 	 * 
 	 * @param	targetCube
 	 *				The cube to check.
@@ -1368,6 +1368,7 @@ public class Unit extends Entity{
 	public void setIsSprinting(boolean isSprinting) throws IllegalStateException {
 		if (! isValidIsSprinting(isSprinting))
 			throw new IllegalStateException("This unit cannot sprint.");
+		
 		this.isSprinting = isSprinting;
 	}
 	
@@ -1386,7 +1387,7 @@ public class Unit extends Entity{
 	@Raw
 	public void startSprinting(){
 		try{
-			if ( ! this.isFalling())
+			if ((this.isTerminated()) || ( ! this.isFalling()))
 				this.setIsSprinting(true);
 		} catch (IllegalStateException e){}
 	}
@@ -1403,17 +1404,17 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Check if this unit can move to the given destination.
+	 * Checks if this unit can move to the given destination.
 	 * It does not check if there is a full path, bur rather does
 	 * some simple checks.
 	 * 
 	 * @param	destination
 	 *				The destination for the unit to move to.
 	 * 
-	 * @return	True if:
-	 *				- The destination cube is passable, and
-	 *				- The destination cube has at least one solid neighbour, and
-	 *				- The destination cube has at least one passable neighbour, and
+	 * @return	True if and only if:
+	 *				- The destination cube is passable and
+	 *				- The destination cube has at least one solid neighbour and
+	 *				- The destination cube has at least one passable neighbour and
 	 *				- The current position has at least one passable neighbour.
 	 *				| result == (destinationCube.isPassable()) && (this.hasSolidNeighbours(destination)) &&
 	 *				| (this.hasPassableNeighbours(destination)) && 
@@ -1425,7 +1426,6 @@ public class Unit extends Entity{
 		return ( (destinationCube.isPassable()) && (this.hasSolidNeighbours(destination)) &&
 				(this.hasPassableNeighbours(destination)) && 
 				(this.hasPassableNeighbours(this.getCubeCoordinates())) );
-		
 	}
 	
 	/**
@@ -1466,7 +1466,7 @@ public class Unit extends Entity{
 	 *				| new.getInitialCoordinates() == this.getCoordinates()
 	 * @note Throws no exception because Exception is caught.
 	 */
-	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
+	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) {
 		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling. Done?
 		try {
 			this.setProgress(0);
@@ -1518,8 +1518,6 @@ public class Unit extends Entity{
 	 * 
 	 * @effect Initializes movement for this unit to the given cube coordinates and disables default behaviour.
 	 *				| this.moveTo(destinationCoordinates, false)
-	 * @throws	IllegalArgumentException
-	 *				The given destination is invalid.
 	 */
 	public void moveTo(int[] destinationCoordinates) throws IllegalArgumentException{
 		this.moveTo(destinationCoordinates,false);
@@ -1535,9 +1533,11 @@ public class Unit extends Entity{
 	 *
 	 * @post	The progress of this unit is equal to zero.
 	 *				|new.getProgress() == 0
+	 *
 	 * @throws	IllegalArgumentException
 	 *				The given destination is invalid.
 	 *				| (! this.getPosition().canHaveAsUnitCoordinates(destinationCoordinates))
+	 *
 	 * @note Silent reject for:
 	 *				no adjacent solid cube (makes a unit go to mid air, which will make it fall), 
 	 *				target is unreachable because is is surrounded by solid cubes,
@@ -1589,8 +1589,7 @@ public class Unit extends Entity{
 	 * @return	A list a cube coordinates which represent the path from the start coordinates to the destination coordinates.
 	 */
 	private List<int[]> searchPath(int[] startCoordinates, int[] destinationCoordinates) {
-		return PathFinder.getPath(startCoordinates, destinationCoordinates, this.getWorld()); 
-		/* Pick true if you want to allow diagonal movement in moveTo.*/
+		return PathFinder.getPath(startCoordinates, destinationCoordinates, this.getWorld());
 	}
 
 	/**

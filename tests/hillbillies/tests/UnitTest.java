@@ -19,7 +19,7 @@ import ogp.framework.util.Util;
 
 /**
  * @author Sander Mergan, Thomas Vranken
- * @version 2.4
+ * @version 2.5
  */
 public class UnitTest {
 	
@@ -782,14 +782,103 @@ public class UnitTest {
 	}
 	
 	@Test
+	public void isValidIsSprintingTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "UnitMin", new int[]{0, 0, 1}, 25, 25, 25, 25);
+		
+		assertTrue(unit.isValidIsSprinting(false));
+		assertTrue(unit.isValidIsSprinting(true));
+		unit.terminate();
+		assertFalse(unit.isValidIsSprinting(true));
+	}
+	
+	@Test
+	public void setIsSprintingTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "UnitMin", new int[]{0, 0, 1}, 25, 25, 25, 25);
+		
+		try{unit.setIsSprinting(false); assertTrue( ! unit.getIsSprinting());}catch(IllegalStateException e){assertTrue(false);}
+		try{unit.setIsSprinting(true); assertTrue(unit.getIsSprinting());}catch(IllegalStateException e){assertTrue(false);}
+		unit.terminate();
+		try{unit.setIsSprinting(true); assertTrue(false);}catch(IllegalStateException e){assertTrue(true);}
+	}
+	
+	@Test
+	public void startSprinting_stopSprintingTest() {
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitMin", new int[]{19, 39, 9},25,25,25, 25);
+		
+		unit.startSprinting();
+		assertTrue(unit.getIsSprinting());
+		unit.stopSprinting();
+		assertFalse(unit.getIsSprinting());
+		unit.terminate();
+		unit.startSprinting();
+		assertFalse(unit.getIsSprinting());
+		
+		unit2.startSprinting();
+		assertFalse(unit2.getIsSprinting());
+	}
+	
+	@Test
+	public void canMoveToTest() {
+		World world = new World(terrain("20x40x10IsolatedAirPosition"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitTwo", new int[]{15, 3, 2},25,25,25, 25);
+		
+		assertTrue(unit.canMoveTo(new int[]{0, 0, 1}));
+		assertFalse(unit.canMoveTo(new int[]{0, 0, 0}));
+		assertFalse(unit.canMoveTo(new int[]{19, 39, 9}));
+		assertFalse(unit.canMoveTo(new int[]{15, 3, 2}));
+		assertFalse(unit2.canMoveTo(new int[]{0, 0, 1}));
+		assertFalse(unit2.canMoveTo(new int[]{0, 0, 0}));
+		assertFalse(unit2.canMoveTo(new int[]{19, 39, 9}));
+		assertFalse(unit2.canMoveTo(new int[]{15, 3, 2}));
+	}
+	
+	@Test
 	public void moveToAdjacentTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
 		
-		unitMin.moveToAdjacent(0, 0, 1);
-		assertTrue(unitMin.getCurrentActivity()== Activity.MOVE);
+		unit.moveToAdjacent(0, 0, 1);
+		unit.moveToAdjacent(0, 0, 1);
+		assertTrue(unit.getCurrentActivity()== Activity.MOVE);
+		assertFalse(unit.getDefaultBehaviorEnabled());
+		assertTrue(UnitPosition.equals(unit.getTargetCoordinates(), new double[]{0.5, 0.5, 2.5}));
+		assertTrue(UnitPosition.equals(unit.getInitialCoordinates(), new double[]{0.5, 0.5, 1.5}));
 		advanceTimeFor(world, 10, 0.2);
-		assertTrue(unitMin.getCurrentActivity() == Activity.NOTHING);
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+		assertEquals(unit.getTargetCoordinates(), null);
+		assertEquals(unit.getInitialCoordinates(), null);
+		
+		unit.moveToAdjacent(0, 0, 0);
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+		unit2.moveToAdjacent(0, 0, -1);
+		assertTrue(unit2.getCurrentActivity() == Activity.NOTHING);
+	}
+	
+	@Test
+	public void canDoMoveToAdjacentTest() {
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitTwo", new int[]{19, 39, 9},25,25,25, 25);
+		
+		assertTrue(unit.canDoMoveToAdjacent());
+		assertFalse(unit2.canDoMoveToAdjacent());
+	}
+	
+	@Test
+	public void moveToTest() {
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		@SuppressWarnings("unused")
+		Unit unit2 = new Unit(world, "UnitTwo", new int[]{19, 39, 9},25,25,25, 25);
+		
+		unit.moveTo(new int[]{0, 0, 1});
+		// TODO The whole test actually.
 	}
 	
 	@Test
@@ -805,7 +894,6 @@ public class UnitTest {
 		advanceTimeFor(unitMin, unitMin.getWorkDuration(), deltaT);
 		
 		assertFalse(unitMin.isWorking());
-		
 	}
 	
 	@Test
