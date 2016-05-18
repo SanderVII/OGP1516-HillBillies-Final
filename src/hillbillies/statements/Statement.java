@@ -1,10 +1,14 @@
 package hillbillies.statements;
 
+import java.util.List;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.expressions.Expression;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.expressionType.ExpressionStatement;
 import hillbillies.tasks.TextObject;
 
 public abstract class Statement extends TextObject {
@@ -21,8 +25,39 @@ public abstract class Statement extends TextObject {
 		return this.status;
 	}
 
-	protected void setStatus(Status status) {
+	public void setStatus(Status status) {
 		this.status = status;
+	}
+	
+	/**
+	 * Resets the status of this statement and all of its substatements to their default value.
+	 */
+	public void resetStatus() {
+		this.setStatus(Status.NOTSTARTED);
+		if (this instanceof ISubStatement) {
+			List<Statement> subStatements = ((ISubStatement) this).getSubStatements();
+			for (Statement sub: subStatements)
+				sub.resetStatus();
+		}	
+	}
+	
+	/**
+	 * Check if this statements and all of its sub-textobjects are correctly formed.
+	 */
+	public boolean isWellFormed() {
+		if (! this.isWellFormed())
+			return false;
+		if (this instanceof ISubStatement) {
+			List<Statement> subStatements = ((ISubStatement) this).getSubStatements();
+			for (Statement sub: subStatements)
+				if (! sub.isWellFormed())
+					return false;
+		}
+		if (this instanceof ExpressionStatement<?>) {
+			if (! ((ExpressionStatement<?>) this).getExpression().isWellFormed())
+				return false;
+		}
+		return true;
 	}
 	
 	/*

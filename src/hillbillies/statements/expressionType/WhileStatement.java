@@ -12,7 +12,6 @@ public class WhileStatement<E extends BooleanExpression>
 		super(condition, body, sourceLocation);
 	}
 	
-	
 	@Override
 	public void execute() {
 		this.setStatus(Status.EXECUTING);

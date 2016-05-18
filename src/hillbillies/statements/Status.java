@@ -7,5 +7,6 @@ public enum Status {
 	WHILE,
 	DONE,
 	INTERRUPTED,
-	FAILED
+	FAILED, 
+	SEQUENCE
 }

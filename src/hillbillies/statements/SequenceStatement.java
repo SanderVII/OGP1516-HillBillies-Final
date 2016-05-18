@@ -1,10 +1,11 @@
 package hillbillies.statements;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.part3.programs.SourceLocation;
 
-public class SequenceStatement extends Statement {
+public class SequenceStatement extends Statement implements ISubStatement {
 
 	private List<Statement> statements;
 
@@ -17,8 +18,7 @@ public class SequenceStatement extends Statement {
 	
 	@Override
 	public void execute() {
-		this.setStatus(Status.EXECUTING);
-		this.getStatementAt(getCursor()).execute();
+		this.setStatus(Status.SEQUENCE);
 		Status status = this.getStatementAt(getCursor()).getStatus();
 		if (status == Status.DONE) {
 			if (this.getCursor() == (getNbStatements() - 1))
@@ -28,6 +28,8 @@ public class SequenceStatement extends Statement {
 		}
 		else if (status == Status.FAILED)
 			this.setStatus(Status.FAILED);
+		else
+			this.getStatementAt(getCursor()).execute();
 	}
 	
 	public int getNbStatements() {
@@ -54,5 +56,10 @@ public class SequenceStatement extends Statement {
 	protected void setCursor(int cursor) {
 		assert cursor < this.getNbStatements();
 		this.cursor = cursor;
+	}
+
+	@Override
+	public List<Statement> getSubStatements() {
+		return new ArrayList<>(this.statements);
 	}
 }

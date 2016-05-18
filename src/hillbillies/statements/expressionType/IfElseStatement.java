@@ -1,5 +1,8 @@
 package hillbillies.statements.expressionType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hillbillies.expressions.booleanType.BooleanExpression;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.statements.Statement;
@@ -18,11 +21,32 @@ public class IfElseStatement<E extends BooleanExpression>
 
 	@Override
 	public void execute() {
-		if (this.getExpression().evaluate())
-			this.getStatement().execute();
-		else if (this.getElseBody() != null)
-			this.getElseBody().execute();
-		this.setStatus(Status.DONE);
+//		if (this.getStatus() == Status.NOTSTARTED) {
+			Status ifStatus = null;
+			Status elseStatus = null;
+			
+			if (this.getExpression().evaluate()) {
+				this.getStatement().execute();
+				ifStatus = this.getStatement().getStatus();
+				elseStatus = Status.DONE;
+			}
+			else if (this.getElseBody() != null) {
+				this.getElseBody().execute();
+				ifStatus = Status.DONE;
+				elseStatus = this.getElseBody().getStatus();
+			}
+			else {
+				ifStatus = Status.DONE;
+				elseStatus = Status.DONE;
+			}
+			
+			if ((ifStatus == Status.DONE) && (elseStatus == Status.DONE))
+				this.setStatus(Status.DONE);
+			else if((ifStatus == Status.FAILED) || (elseStatus == Status.FAILED))
+				this.setStatus(Status.FAILED);
+			else
+				this.setStatus(Status.EXECUTING);
+//		}
 	}
 	
 	private Statement elseBody;
@@ -33,6 +57,14 @@ public class IfElseStatement<E extends BooleanExpression>
 	
 	protected void setElseBody(Statement elseBody) {
 		this.elseBody = elseBody;
+	}
+	
+	@Override
+	public List<Statement> getSubStatements() {
+		List<Statement> result = new ArrayList<Statement>();
+		result.add(this.getStatement());
+		result.add(this.getElseBody());
+		return result;
 	}
 
 }

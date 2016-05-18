@@ -1,10 +1,15 @@
 package hillbillies.statements.expressionType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hillbillies.expressions.Expression;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.ISubStatement;
 import hillbillies.statements.Statement;
 
-public abstract class ExtendedExpressionStatement<E extends Expression> extends ExpressionStatement<E> {
+public abstract class ExtendedExpressionStatement<E extends Expression> extends ExpressionStatement<E>
+	implements ISubStatement {
 
 	private Statement statement;
 
@@ -20,6 +25,13 @@ public abstract class ExtendedExpressionStatement<E extends Expression> extends 
 	
 	protected void setStatement(Statement body) {
 		this.statement = body;
+	}
+	
+	@Override
+	public List<Statement> getSubStatements() {
+		List<Statement> result = new ArrayList<Statement>();
+		result.add(this.getStatement());
+		return result;
 	}
 
 }

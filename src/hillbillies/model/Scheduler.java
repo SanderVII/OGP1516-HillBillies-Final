@@ -390,7 +390,7 @@ public class Scheduler {
         return new Iterator<Task>() {
 
             public boolean hasNext() {
-                return pos < getNbTasks();
+                return pos <= getNbTasks();
             }
 
             public Task next() throws NoSuchElementException {
@@ -398,7 +398,7 @@ public class Scheduler {
                     throw new NoSuchElementException();
                 return getTaskAt(pos++);
             }
-            private int pos = 0;
+            private int pos = 1;
 
         };
     }
