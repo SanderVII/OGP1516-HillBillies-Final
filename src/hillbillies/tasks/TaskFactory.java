@@ -69,8 +69,12 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 		}
 		else
 			for (int[]cube: selectedCubes) {
-				
-				result.add(new Task(name, priority, activity, cube));
+				try {
+					Statement cloned = activity.clone();
+					result.add(new Task(name, priority, cloned, cube));
+				} catch (CloneNotSupportedException e) {
+					// no tasks are created if something goes wrong during clone()
+				}
 			}
 		return result;		
 	}

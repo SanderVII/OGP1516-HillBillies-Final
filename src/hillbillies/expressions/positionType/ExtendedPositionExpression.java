@@ -20,5 +20,13 @@ public abstract class ExtendedPositionExpression<E extends Expression> extends P
 	protected void setExpression(E expression) {
 		this.expression = expression;
 	}
+	
+	public ExtendedPositionExpression<E> clone() throws CloneNotSupportedException {
+		ExtendedPositionExpression<E> cloned = (ExtendedPositionExpression<E>) super.clone();
+		E clonedExpression = (E) this.getExpression().clone();
+		clonedExpression.setSuperText(cloned);
+		cloned.setExpression(clonedExpression);
+		return cloned;
+	}
 
 }

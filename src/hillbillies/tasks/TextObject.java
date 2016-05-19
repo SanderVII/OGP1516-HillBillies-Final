@@ -15,6 +15,12 @@ public abstract class TextObject implements Cloneable {
 	
 	private final SourceLocation sourceLocation;
 	
+	/**
+	 * Get the surrounding task of this text object.
+	 * For statements, this can be the directly linked tasks.
+	 * Most likely however, this will return the task of one of the super text objects.
+	 * @return
+	 */
 	public abstract Task getSuperTask();
 	
 	/**
@@ -29,7 +35,9 @@ public abstract class TextObject implements Cloneable {
 		return true;
 	}
 	
-//	@Override
-//	public abstract TextObject clone();
-
+	@Override
+	public TextObject clone() throws CloneNotSupportedException {
+		return (TextObject) super.clone();
+	}
+	
 }

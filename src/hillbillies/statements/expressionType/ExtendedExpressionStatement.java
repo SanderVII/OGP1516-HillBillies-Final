@@ -33,5 +33,14 @@ public abstract class ExtendedExpressionStatement<E extends Expression> extends 
 		result.add(this.getStatement());
 		return result;
 	}
+	
+	@Override
+	public ExtendedExpressionStatement<E> clone() throws CloneNotSupportedException {
+		ExtendedExpressionStatement<E> cloned = (ExtendedExpressionStatement<E>) super.clone();
+		Statement clonedBody = this.getStatement().clone();
+		cloned.setStatement(clonedBody);
+		clonedBody.setSuperText(cloned);
+		return cloned;
+	}
 
 }

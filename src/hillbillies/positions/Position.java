@@ -110,7 +110,7 @@ public class Position {
 		}
 		
 		if (! canHaveAsCoordinates(doubleCoordinates)){
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(Arrays.toString(doubleCoordinates));
 		}
 		this.coordinates = doubleCoordinates;
 	}

@@ -67,5 +67,16 @@ public class IfElseStatement<E extends BooleanExpression>
 			result.add(this.getElseBody());
 		return result;
 	}
+	
+	@Override
+	public IfElseStatement<E> clone() throws CloneNotSupportedException {
+		IfElseStatement<E> cloned = (IfElseStatement<E>) super.clone();
+		if (this.getElseBody() != null) {
+			Statement clonedElse = this.getElseBody().clone();
+			clonedElse.setSuperText(cloned);
+			cloned.setElseBody(clonedElse);
+		}
+		return cloned;
+	}
 
 }

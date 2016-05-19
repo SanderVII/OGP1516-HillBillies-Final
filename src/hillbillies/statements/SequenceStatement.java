@@ -62,4 +62,18 @@ public class SequenceStatement extends Statement implements ISubStatement {
 	public List<Statement> getSubStatements() {
 		return new ArrayList<>(this.statements);
 	}
+	
+	@Override
+	public SequenceStatement clone() throws CloneNotSupportedException {
+		SequenceStatement cloned = (SequenceStatement) super.clone();
+		List<Statement> clonedList = new ArrayList<>();
+		for (Statement statement: this.getSubStatements()) {
+			Statement clonedStatement = statement.clone();
+			clonedList.add(clonedStatement);
+			clonedStatement.setSuperText(cloned);
+			
+		}
+		cloned.setStatements(clonedList);
+		return cloned;
+	}
 }
