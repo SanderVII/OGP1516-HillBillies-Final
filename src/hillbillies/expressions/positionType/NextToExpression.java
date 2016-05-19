@@ -23,9 +23,10 @@ public class NextToExpression<E extends PositionExpression>
 				getDirectlyAdjacentCoordinates(dummy[0], dummy[1], dummy[2]);
 		Set<int[]> copy = new HashSet<>();
 		for (int[] coordinate: directlyAdjacentCoordinates)
-			if ( this.getUnit().canHaveAsCoordinates(coordinate))
+//			if ( this.getUnit().canHaveAsCoordinates(coordinate))
 				copy.add(coordinate);
 		
+		//TODO remove unit check? currently blocks an all solid cube.
 		int random = new Random().nextInt(copy.size());
 		int i = 0;
 		for (int[] cubeCoordinate: copy) {
@@ -33,8 +34,14 @@ public class NextToExpression<E extends PositionExpression>
 				return cubeCoordinate;
 			i += 1;
 		}
-		// Only happens in a 1x1x1 world.
-		return null;
+		
+		/*
+		 * special case: if no passable cubes can be found,
+		 * the position itself is returned. Other methods should
+		 * be able to deal with this.
+		 */
+		
+		return dummy;
 	}
 
 }

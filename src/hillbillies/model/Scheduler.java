@@ -292,17 +292,28 @@ public class Scheduler {
 		if (size == 0)
 			tasks.add(task);
 		else {
-			int count = 1;
-			while (count < size+1) {
-				int priority = this.getTaskAt(count).getPriority();
-				if (task.getPriority() >= priority) {
-					tasks.add(count, task);
-					count = size+1;
-				} else if (count == size) {
+			for (int count = 1; count <= size; count++) {
+				int compare = task.compareTo(this.getTaskAt(count));
+				if (compare >= 0) {
+					tasks.add(count-1, task);
+					count = size;
+				}
+				else if (count == size)
 					tasks.add(task);
-					count = size+1;
-				} else
+				else
 					count ++;
+//			int count = 1;
+//			while (count < size+1) {
+//				int priority = this.getTaskAt(count).getPriority();
+//				if (task.getPriority() >= priority) {
+//					tasks.add(count, task);
+//					count = size+1;
+//				} else if (count == size) {
+//					tasks.add(task);
+//					count = size+1;
+//				} else
+//					count ++;
+//			}
 			}
 		}	
 	}
@@ -361,7 +372,8 @@ public class Scheduler {
 	 *       	|   	tasks.getTaskAt(J).getPriority() >= 
 	 *       	|			tasks.getTaskAt(I).getPriority()
 	 */
-	private final LinkedList<Task> tasks = new LinkedList<Task>();
+	//TODO changed to arraylist
+	private final List<Task> tasks = new ArrayList<Task>();
 	
 	/**
 	 * Returns a list collecting all the tasks of this scheduler. 
@@ -377,8 +389,9 @@ public class Scheduler {
 	 *       	|   ( (I == J) ||
 	 *       	|     (getTaskAt(I) != getTaskAt(J))
 	 */
-	public LinkedList<Task> getTasks() {
-		return new LinkedList<Task>(this.tasks);
+	//TODO changed to array
+	public List<Task> getTasks() {
+		return new ArrayList<Task>(this.tasks);
 	}
 	
 	// =================================================================================================
@@ -390,15 +403,16 @@ public class Scheduler {
         return new Iterator<Task>() {
 
             public boolean hasNext() {
-                return pos <= getNbTasks();
+                return pos < getNbTasks();
             }
 
             public Task next() throws NoSuchElementException {
                 if (! hasNext())
                     throw new NoSuchElementException();
-                return getTaskAt(pos++);
+                pos = pos + 1;
+                return getTaskAt(pos);
             }
-            private int pos = 1;
+            private int pos = 0;
 
         };
     }
@@ -475,10 +489,10 @@ public class Scheduler {
 		if( (! this.hasAsTask(original)) || (! canHaveAsTask(replacement)) )
 			throw new IllegalArgumentException();
 		original.stopExecuting();
-		replacement.addScheduler(this);
-		this.addTask(replacement);
 		original.removeScheduler(this);
 		this.removeTask(original);
+		replacement.addScheduler(this);
+		this.addTask(replacement);
 	}
 	
 	/**

@@ -344,9 +344,9 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 		try{
 			unit.moveToAdjacent(dx, dy, dz);
 		}
-		catch (IllegalArgumentException e){
+		catch (Exception e){
 //			unit.cancelMoveTo();
-			throw e;
+//			throw e;
 		}
 	}
 
@@ -459,7 +459,7 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 		try{
 			unit.moveTo(cube);
 		}
-		catch(IllegalArgumentException e){
+		catch(Exception e){
 			unit.cancelMoveTo();
 		}
 	}

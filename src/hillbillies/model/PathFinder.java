@@ -43,7 +43,8 @@ public class PathFinder {
 	 * @return	A list of cube coordinates that represents the path from the given start to the given destination. 
 	 *				| result == getPath(start, destination, world, ALLOW_DIAGONAL)
 	 */
-	public static List<int[]> getPath (int[] start, int[] destination, World world) {
+	public static List<int[]> getPath (int[] start, int[] destination, World world) 
+			throws MaxIterationException {
 		return getPath(start, destination, world, ALLOW_DIAGONAL);
 	}
 	
@@ -63,7 +64,9 @@ public class PathFinder {
 	 *
 	 * @returnA list of cube coordinates that represents the path from the given start to the given destination. 
 	 */
-	public static List<int[]> getPath (int[] start, int[] destination, World world, boolean diagonalMovesAllowed){
+	public static List<int[]> getPath (int[] start, int[] destination, World world, boolean diagonalMovesAllowed)
+		throws MaxIterationException {
+		
 		// counter for amount of iterations
 		int iteration = 0;
 		// The set of nodes already evaluated.
