@@ -8,7 +8,7 @@ public enum Activity {
 		REST,	
 		MOVE,
 		ATTACK,
-		NOTHING, FREEREST;
+		NOTHING;
 		
 		
 //		public boolean canInterrupt(Activity oldActivity, Activity newActivity) {

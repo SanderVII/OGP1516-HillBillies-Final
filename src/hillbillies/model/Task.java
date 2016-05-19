@@ -4,7 +4,6 @@ import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.expressions.Expression;
-import hillbillies.statements.ISubStatement;
 import hillbillies.statements.Statement;
 import hillbillies.statements.Status;
 
