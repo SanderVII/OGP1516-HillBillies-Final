@@ -109,49 +109,4 @@ public class DefaultManager {
 		}
 		return result;
 	}
-	
-	/**
-	 * Starts the random default behavior of the given unit.
-	 */
-	//TODO
-	public void advanceTimeDefaultBehavior(Unit unit) throws IllegalArgumentException, NullPointerException {
-//		this.setDefaultBehaviorEnabled(true);
-//		// TODO default behaviour volgens part 3 implementeren.
-//		Scheduler scheduler = this.getFaction().getScheduler();
-//		List<Task> availableTasks = scheduler.getUnassignedTasks();
-//		if (availableTasks.size() != 0) {
-//			availableTasks.get(0).assignTo(this);
-//			this.getTask().getStatement().execute();
-//		}
-//		else {
-////		try {
-//			int choice =  new Random().nextInt(4);
-//			if (choice == 0){
-//				// The unit chose to work. 
-//				this.workAt(this.getWorld().getRandomValidCubeCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
-//			}
-//			else if (choice == 1){
-//				// The unit chose to rest.
-//				this.rest(true);
-//			}
-//			else if (choice == 2){
-//				// The unit chose to go to a random position. Once the unit is moving, it can decide to start sprinting until it runs out of stamina.
-//				int[] randomPosition = this.getWorld().getRandomUnitCoordinatesInRange(this.getPosition().getCoordinates(), MAX_RANGE_DEFAULTMOVE);
-//				this.moveTo(randomPosition, true);
-//			}
-//			else if (choice == 3){
-//				//	The unit chose to attack a random unit in its reach.
-//				// If there are no attackable units in its reach, then a new behaviour is chosen.
-//				Unit combattant = this.getUnitThatCanBeAtacked();
-//				if (combattant == null)
-//					this.startDefaultBehavior();
-//				else 
-//					this.fight(combattant, true); 
-//			}
-////		} catch (Exception e){
-////			// Do nothing
-////			System.out.println("I do nothing now because I failed at default behaviour.");
-////		}
-//		}
-	}
 }

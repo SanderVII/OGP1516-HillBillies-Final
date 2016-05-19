@@ -1024,8 +1024,7 @@ public class Unit extends Entity{
 	 *			| 			if (this.hasTask())
 	 *			| 				then this.returnFailedTask()
 	 */
- 	//TODO testen aanpassen
-	public void setCoordinates(double[] coordinates) {
+	private void setCoordinates(double[] coordinates) {
 		try {
 			this.position.setCoordinates(coordinates);
 		} catch (IllegalArgumentException e) {
@@ -1886,7 +1885,6 @@ public class Unit extends Entity{
 	 * 				This unit does not have a task.
 	 * 				| ! this.hasTask()
 	 */
-	//TODO added movepath clear at the end.
 	private void returnFailedTask() throws IllegalStateException {
 		if (! this.hasTask())
 			throw new IllegalStateException();
@@ -3075,7 +3073,10 @@ public class Unit extends Entity{
 			// If the defender fails in both...
 			if ( ! this.getDefenderBlocked())	{
 				//  it loses an amount of health based on the attackers stats.
-				defender.setCurrentHealth(defender.getCurrentHealth() - this.getStrength()/10.0);
+				if ((defender.getCurrentHealth() - this.getStrength()/10.0) <= 0)
+					defender.setCurrentHealth(0);
+				else
+					defender.setCurrentHealth(defender.getCurrentHealth() - this.getStrength()/10.0);
 				 this.addExperience(20);
 			}
 			
