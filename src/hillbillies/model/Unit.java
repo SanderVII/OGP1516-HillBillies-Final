@@ -1022,11 +1022,11 @@ public class Unit extends Entity{
 		return this.position.getCoordinates();
 	}
 	
-	//===============================================================================
+	// ==============================================================================
 	// Methods concerning the world. (bidirectional association)
 	// Terminated units must still satisfy their invariants.
 	// Their world is set to null.
-	//===============================================================================
+	// ==============================================================================
 	
 	/**
 	 * Checks whether this unit can have the given world as its world.
@@ -2421,6 +2421,7 @@ public class Unit extends Entity{
 	 * @return	Random coordinates which are at a distance of 0..1 in the x- and y-direction respectively from the given coordinates.
 	 *				| result == new double[]{coordinates[0] + new Random().nextDouble()*2-1, coordinates[1] + new Random().nextDouble()*2-1, this.getPosition().getCubeCoordinates()[2]}
 	 */
+	//TODO some tests show that the resulting coordinates are not always valid for a unit.
 	private double[] getRandomDodgeMove( double[] coordinates) {
 		double newRandomXCoordinate = -1;
 		while ( ! this.getPosition().canHaveAsXCoordinate(newRandomXCoordinate))
@@ -2603,7 +2604,7 @@ public class Unit extends Entity{
 	 * as these take a huge amount of time to calculate paths for and may even cause the game to crash. 
 	 * If the path finding  algorithm is better optimized, this value can be raised or even ignored.
 	 */
-	private final static int MAX_RANGE_DEFAULTMOVE = 3;
+	private final static int MAX_RANGE_DEFAULTMOVE = 2;
 	
 	/**
 	 * Starts the default behavior of this unit.
@@ -3210,7 +3211,7 @@ public class Unit extends Entity{
 		
 		Scheduler scheduler = this.getFaction().getScheduler();
 		List<Task> availableTasks = scheduler.getUnassignedTasks();
-		if (availableTasks.size() != 0) {
+		if ((availableTasks.size() != 0) && (!this.hasTask())) {
 			availableTasks.get(0).assignTo(this);
 		}
 		if (this.hasTask()) {

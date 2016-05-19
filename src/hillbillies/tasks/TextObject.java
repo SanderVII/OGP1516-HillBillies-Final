@@ -3,7 +3,7 @@ package hillbillies.tasks;
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
-public abstract class TextObject {
+public abstract class TextObject implements Cloneable {
 
 	public TextObject(SourceLocation sourceLocation) {
 		this.sourceLocation = sourceLocation;
@@ -15,6 +15,12 @@ public abstract class TextObject {
 	
 	private final SourceLocation sourceLocation;
 	
+	/**
+	 * Get the surrounding task of this text object.
+	 * For statements, this can be the directly linked tasks.
+	 * Most likely however, this will return the task of one of the super text objects.
+	 * @return
+	 */
 	public abstract Task getSuperTask();
 	
 	/**
@@ -28,5 +34,10 @@ public abstract class TextObject {
 	public boolean isWellFormed() {
 		return true;
 	}
-
+	
+	@Override
+	public TextObject clone() throws CloneNotSupportedException {
+		return (TextObject) super.clone();
+	}
+	
 }

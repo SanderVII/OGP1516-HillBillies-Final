@@ -114,13 +114,16 @@ public class Facade extends hillbillies.part1.facade.Facade implements hillbilli
 			world.advanceTime(dt);
 		}
 		catch(IllegalArgumentException e){
-			throw new ModelException();
+//			throw new ModelException();
+			throw e;
 		}
 		catch(NullPointerException e){
-			throw new ModelException();
+//			throw new ModelException();
+			throw e;
 		}
 		catch(IllegalStateException e){
-			throw new ModelException();
+//			throw new ModelException();
+			throw e;
 		}
 	}
 

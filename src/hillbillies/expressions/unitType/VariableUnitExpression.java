@@ -7,10 +7,10 @@ public class VariableUnitExpression extends UnitExpression {
 
 	public VariableUnitExpression(String variableName, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		this.variableName = variableName;
+		this.setVariableName(variableName);
 	}
 	
-	private final String variableName;
+	private String variableName;
 	
 	@Override
 	public Unit evaluate() {
@@ -24,12 +24,23 @@ public class VariableUnitExpression extends UnitExpression {
 		return this.variableName;
 	}
 	
+	private void setVariableName(String name) {
+		this.variableName = name;
+	}
+	
 	/**
 	 * Return true if the task has already registered a value for the variable.
 	 */
 	@Override
 	public boolean isWellFormed() {
 		return this.getSuperTask().hasAsVariable(this.getVariableName());
+	}
+	
+	@Override
+	public VariableUnitExpression clone() throws CloneNotSupportedException {
+		VariableUnitExpression cloned = (VariableUnitExpression) super.clone();
+		cloned.setVariableName(this.getVariableName());
+		return cloned;
 	}
 
 }

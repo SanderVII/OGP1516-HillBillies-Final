@@ -63,8 +63,20 @@ public class IfElseStatement<E extends BooleanExpression>
 	public List<Statement> getSubStatements() {
 		List<Statement> result = new ArrayList<Statement>();
 		result.add(this.getStatement());
-		result.add(this.getElseBody());
+		if (this.getElseBody() != null)
+			result.add(this.getElseBody());
 		return result;
+	}
+	
+	@Override
+	public IfElseStatement<E> clone() throws CloneNotSupportedException {
+		IfElseStatement<E> cloned = (IfElseStatement<E>) super.clone();
+		if (this.getElseBody() != null) {
+			Statement clonedElse = this.getElseBody().clone();
+			clonedElse.setSuperText(cloned);
+			cloned.setElseBody(clonedElse);
+		}
+		return cloned;
 	}
 
 }

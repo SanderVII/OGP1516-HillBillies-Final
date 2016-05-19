@@ -19,9 +19,9 @@ import hillbillies.positions.Position;
 public class PathFinder {
 	
 	/**
-	 * Maximal number of iterations. Prevents the path finding from searching for ever.
+	 * Maximal number of iterations. Prevents the path finding from searching forever.
 	 */
-	public static final int MAX_ITERATION = 500;
+	public static final int MAX_ITERATION = 200;
 	
 	/**
 	 * Whether diagonal movement is allowed.

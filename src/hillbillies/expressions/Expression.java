@@ -34,4 +34,12 @@ public abstract class Expression extends TextObject implements IExpression {
 	public Task getSuperTask() {
 		return this.getSuperText().getSuperTask();
 	}
+	
+	@Override
+	public Expression clone() throws CloneNotSupportedException {
+		Expression cloned = (Expression) super.clone();
+//		if (this.hasSuperText())
+//			cloned.setSuperText(this.getSuperText().clone());
+		return cloned;
+	}
 }

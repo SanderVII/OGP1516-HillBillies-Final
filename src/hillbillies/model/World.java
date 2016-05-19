@@ -1418,7 +1418,9 @@ public class World {
 		
 		for(Unit unit: this.getUnits()){
 			try{unit.advanceTime(deltaT);}
-			catch(Exception e){}
+			catch(Exception e){
+				throw e;
+			}
 		}
 		
 		for(Log log: this.getLogs()){

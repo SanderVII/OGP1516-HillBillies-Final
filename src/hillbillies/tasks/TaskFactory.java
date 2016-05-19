@@ -40,6 +40,7 @@ import hillbillies.expressions.unitType.VariableUnitExpression;
 import hillbillies.model.Task;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.part3.programs.TaskParser;
 import hillbillies.statements.BreakStatement;
 import hillbillies.statements.SequenceStatement;
 import hillbillies.statements.Statement;
@@ -57,7 +58,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	public TaskFactory() {
 		
 	}
-
+	
+	//TODO problem: different tasks reference the same statement and influence each other.
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
 		List<Task> result = new ArrayList<>();
@@ -66,8 +68,14 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 			result.add(new Task(name, priority, activity));
 		}
 		else
-			for (int[]cube: selectedCubes)
-				result.add(new Task(name, priority, activity, cube));
+			for (int[]cube: selectedCubes) {
+				try {
+					Statement cloned = activity.clone();
+					result.add(new Task(name, priority, cloned, cube));
+				} catch (CloneNotSupportedException e) {
+					// no tasks are created if something goes wrong during clone()
+				}
+			}
 		return result;		
 	}
 

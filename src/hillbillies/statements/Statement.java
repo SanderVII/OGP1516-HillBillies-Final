@@ -94,6 +94,17 @@ public abstract class Statement extends TextObject {
 	public Unit getUnit() {
 		return this.getSuperTask().getUnit();
 	}
+	
+	/**
+	 * Creates a copy of this statement. However, no task is copied.
+	 * All status types are reset.
+	 */
+	@Override
+	public Statement clone() throws CloneNotSupportedException {
+		Statement cloned = (Statement) super.clone();
+		cloned.resetStatus();
+		return cloned;
+	}
 
 	// =================================================================================================
 	// Methods concerning the task which holds this statement.

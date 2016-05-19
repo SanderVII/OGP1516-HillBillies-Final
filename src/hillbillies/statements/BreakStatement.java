@@ -13,7 +13,17 @@ public class BreakStatement extends Statement {
 
 	@Override
 	public void execute() {
-		this.getSuperText().setStatus(Status.DONE);
+		if (this.isWellFormed()) {
+			Statement superText = this.getSuperText();
+			while ( !superText.hasTask()) {
+				if (superText instanceof WhileStatement)
+					this.getSuperText().setStatus(Status.DONE);
+				else
+					// to prevent statements in between break and while to continue executing.
+					superText.setStatus(Status.DONE);
+					superText = superText.getSuperText();
+			}
+		}
 	}
 	
 	/**

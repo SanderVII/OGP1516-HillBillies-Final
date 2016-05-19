@@ -23,5 +23,12 @@ public abstract class ExpressionStatement<E extends Expression>
 	}
 	
 	private E expression;
-
+	
+	public ExpressionStatement<E> clone() throws CloneNotSupportedException {
+		ExpressionStatement<E> cloned = (ExpressionStatement<E>) super.clone();
+		E clonedExpression = (E) this.getExpression().clone();
+		clonedExpression.setSuperText(cloned);
+		cloned.setExpression(clonedExpression);
+		return cloned;
+	}
 }
