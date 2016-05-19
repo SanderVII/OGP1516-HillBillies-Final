@@ -112,12 +112,15 @@ public class ItemTest {
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "TestUnit",new int[]{0,0,0}, 100, 100, 100, 100);
 		Log log = new Log(world, new int[]{0,0,0}, Item.MINIMAL_WEIGHT);
+		assertFalse(unit.getDefaultBehaviorEnabled());
 		assertTrue(world.hasAsEntity(unit));
 		assertTrue(world.hasAsEntity(log));
 		
 		// pick up log.
 		unit.workAt(new int[]{0,0,0});
 		advanceTimeFor(world, 100, 0.15);
+		assertFalse(unit.getDefaultBehaviorEnabled());
+		assertTrue(unit.hasItem());
 		assertTrue(unit.getItem() == log);
 		assertTrue(log.getUnit() == unit);
 		assertTrue(log.getWorld() == null);

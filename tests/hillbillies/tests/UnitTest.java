@@ -895,13 +895,17 @@ public class UnitTest {
 		assertTrue(unit.moveToPath.size() == 0);
 		assertFalse(unit.isMoving());
 		
-		try{unit.moveTo(new int[]{-1, 0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
-		try{unit.moveTo(new int[]{0, 0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		unit.moveTo(new int[]{-1, 0, 0});
+		assertFalse(unit.isMoving());
+		unit.moveTo(new int[]{0, 0, 0});
+		assertFalse(unit.isMoving());
 		
 		unit2.moveTo(new int[]{0, 0, 1});
 		assertFalse(unit2.isMoving());
-		try{unit2.moveTo(new int[]{-1, 0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
-		try{unit2.moveTo(new int[]{0, 0, 0}); assertTrue(false);} catch(IllegalArgumentException e){ assertTrue(true);}
+		unit2.moveTo(new int[]{-1, 0, 0});
+		assertFalse(unit2.isMoving());
+		unit2.moveTo(new int[]{0, 0, 0});
+		assertFalse(unit2.isMoving());
 		unit2.moveTo(new int[]{19, 39, 9});
 		assertFalse(unit2.isMoving());
 	}
