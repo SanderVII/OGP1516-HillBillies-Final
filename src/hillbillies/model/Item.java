@@ -148,7 +148,7 @@ public abstract class Item extends Entity {
 	@Override
 	public boolean canHaveAsCoordinates(int[] coordinates) {
 		if ((this.getWorld() == null) && (this.getUnit() != null))
-			return ( (this.getUnit().getWorld().canHaveAsCoordinates(coordinates)) && (this.getUnit().getWorld().getCube(coordinates).isPassable()) );
+			return (this.getUnit().canHaveAsCoordinates(coordinates));
 		else
 			return super.canHaveAsCoordinates(coordinates);
 	}

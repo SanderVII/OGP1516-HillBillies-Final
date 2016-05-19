@@ -6,17 +6,24 @@ import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import hillbillies.expressions.unitType.AnyExpression;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.model.Activity;
 import hillbillies.model.Faction;
 import hillbillies.model.Log;
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.internal.map.CubeType;
 import hillbillies.part2.internal.map.GameMap;
 import hillbillies.part2.internal.map.GameMapReader;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import hillbillies.part3.programs.SourceLocation;
 import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
+import hillbillies.statements.SequenceStatement;
+import hillbillies.statements.expressionType.actions.FollowStatement;
 import ogp.framework.util.Util;
 
 /**
@@ -972,42 +979,155 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void hasTask(){
+	public void hasTaskTest(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertFalse(unit.hasTask());
+		
+		Task task = new Task("digTunnel", -100, new FollowStatement<UnitExpression>(new AnyExpression(new SourceLocation(0, 0)), new SourceLocation(0, 0)));
+		task.setUnit(unit);
+		unit.setTask(task);
+		
+		assertTrue(unit.hasTask());
+	}
+	
+	@Test
+	public void hasProperTaskTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertTrue(unit.hasProperTask());
+		
+		Task task = new Task("digTunnel", -100, new FollowStatement<UnitExpression>(new AnyExpression(new SourceLocation(0, 0)), new SourceLocation(0, 0)));
+		task.setUnit(unit);
+		unit.setTask(task);
+		
+		assertTrue(unit.hasProperTask());
+		
+		task.terminate();
+		
+		assertTrue(unit.hasProperTask());
+		assertTrue(task.getUnit() == null);
+		assertTrue(task.hasProperUnit());
+	}
+	
+	@Test
+	public void setTaskTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertFalse(unit.hasTask());
+		
+		Task task = new Task("digTunnel", -100, new FollowStatement<UnitExpression>(new AnyExpression(new SourceLocation(0, 0)), new SourceLocation(0, 0)));
+		try{unit.setTask(task); assertTrue(false);} catch(IllegalArgumentException e){assertTrue(true);}
+		task.setUnit(unit);
+		unit.setTask(task);
+		
+		assertTrue(unit.hasTask());
+		
+		try{unit.setTask(null); assertTrue(false);} catch(IllegalArgumentException e){assertTrue(true);}
+		
+		task.terminate();
 		
 		assertFalse(unit.hasTask());
 	}
 	
 	@Test
-	public void advanceTimeWorkAtTest_CurrentPosition(){
+	public void SetCurrentActivityTest(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
 		
-		unitMin.workAt(unitMin.getCubeCoordinates());
-		double deltaT = 0.1;
-		assertTrue(unitMin.isWorking());
-		assertTrue(unitMin.getProgress() == 0);
+		try{unit.setCurrentActivity(null); assertTrue(false);} catch(NullPointerException e){assertTrue(true);}
+		unit.setCurrentActivity(Activity.MOVE);
+		assertTrue(unit.getCurrentActivity() == Activity.MOVE);
 		
-		advanceTimeFor(unitMin, unitMin.getWorkDuration(), deltaT);
+		unit.terminate();
 		
-		assertFalse(unitMin.isWorking());
+		try{unit.setCurrentActivity(Activity.MOVE); assertTrue(false);} catch(IllegalStateException e){assertTrue(true);}
+		try{unit.setCurrentActivity(null); assertTrue(false);} catch(NullPointerException e){assertTrue(true);}
 	}
 	
 	@Test
-	public void advanceTimeWorkAtTest_Origin(){
+	public void isValidProgressTest(){
+		assertFalse(Unit.isValidProgress(-1));
+		assertTrue(Unit.isValidProgress(0));
+		assertTrue(Unit.isValidProgress(1));
+		assertFalse(Unit.isValidProgress(Double.NaN));
+	}
+	
+	@Test
+	public void getWorkDurationTest(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertEquals(500.0/25, unit.getWorkDuration(), 0.00005);
+	}
+	
+	@Test
+	public void isWorkingTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertFalse(unit.isWorking());
+		
+		unit.workAt(new int[]{0, 0, 0});
+		
+		assertTrue(unit.isWorking());
+		
+		advanceTimeFor(world, unit.getWorkDuration()+0.5, 0.015625);
+		
+		assertFalse(unit.isWorking());
+		
+		unit.workAt(new int[]{0, 0, 0});
+		
+		assertTrue(unit.isWorking());
+		
+		unit.terminate();
+		
+		assertFalse(unit.isWorking());
+	}
+	
+	@Test
+	public void advanceTimeWorkAtTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		new Log(world, new int[]{0, 0, 1});
+		
+		unit.startDefaultBehavior();
+		unit.workAt(unit.getCubeCoordinates());
+		
+		assertTrue(unit.isWorking());
+		assertTrue(unit.getProgress() == 0);
+		assertFalse(unit.getDefaultBehaviorEnabled());
+		assertTrue(unit.getCurrentActivity() == Activity.WORK);
+		assertTrue(unit.getOrientation() == 0);
+		assertTrue(unit.getPreviousActivity() == Activity.NOTHING);
+		
+		advanceTimeFor(unit, unit.getWorkDuration(), 0.015625);
+		
+		assertFalse(unit.isWorking());
+		assertTrue(unit.hasItem());
+		
+		unit.workAt(new int[]{0, 0, 0});
+		
+		assertFalse(unit.isWorking());
+		
+		unit.moveToAdjacent(0, 0, 1);
+		
+		
+		assertTrue(unit.isMoving());
+		unit.workAt(new int[]{0, 0, 2});
+		assertTrue(unit.getCurrentActivity() == Activity.MOVE);
+		
+		
+		World world2 = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unitMin = new Unit(world2, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
 		
 		unitMin.workAt(new int[] {0,0,0});
-		double deltaT = 0.2;
 		assertTrue(unitMin.isWorking());
 		assertTrue(unitMin.getProgress() == 0);
-		while  (unitMin.getProgress() <  unitMin.getWorkDuration() - deltaT){
-			unitMin.advanceTime(deltaT);
-			assertTrue(unitMin.isWorking());
-		}
-		unitMin.advanceTime(deltaT);
+		advanceTimeFor(world2, unitMin.getWorkDuration(), 0.015625);
 		assertFalse(unitMin.isWorking());
 		
 	}

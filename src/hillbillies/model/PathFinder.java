@@ -21,7 +21,7 @@ public class PathFinder {
 	/**
 	 * Maximal number of iterations. Prevents the path finding from searching forever.
 	 */
-	public static final int MAX_ITERATION = 200;
+	public static final int MAX_ITERATION = 400;
 	
 	/**
 	 * Whether diagonal movement is allowed.

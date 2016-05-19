@@ -369,7 +369,7 @@ public class Unit extends Entity{
 	}
 
 	/**
-	* Set the name of this unit to the given name.
+	* Sets the name of this unit to the given name.
 	* 
 	* @param	name
 	*				The new name for this unit.
@@ -437,6 +437,7 @@ public class Unit extends Entity{
 	 *				The strength of this unit.
 	 * @param	agility
 	 *				The agility of this unit.
+	 *
 	 * @return The minimal value for the weight of this unit.
 	*				| result == (strength + agility)/2
 	 */
@@ -460,6 +461,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	weight
 	 *				The weight to be checked.
+	 *
 	 * @return	True if and only if the given weight is in the range this.getMinBaseStat()..this.getMaxBaseStat() and 
 	 *				weight exceeds (or is equal to) the minimal weight for this unit. 
 	 *				|result == (weight >= this.getMinBaseStat()) && (weight <= this.getMaxBaseStat() && 
@@ -839,6 +841,7 @@ public class Unit extends Entity{
 	 * 
 	 * @post	This unit references the given faction as the faction to which it is attached.
 	 *				| new.getFaction() == faction
+	 *
 	 * @throws	IllegalArgumentException
 	 *				This unit cannot have the given faction as its faction,
 	 *				or the faction is at its maximum capacity.
@@ -891,6 +894,7 @@ public class Unit extends Entity{
 	 *          
 	 * @pre	The given current health must be a valid current health for any unit. 
 	 *				| canHaveAsCurrentHealth(currentHealth)
+	 *
 	 * @post	The current health of this unit is equal to the given currentHealth. 
 	 *				| new.getCurrentHealth() == currentHealth
 	 */
@@ -934,6 +938,7 @@ public class Unit extends Entity{
 	 *            
 	 * @pre	The given current stamina must be a valid current stamina for any unit.
 	 *				| canHaveAsCurrentStamina(currentStamina)
+	 *
 	 * @post	The current stamina of this unit is equal to the given current stamina. 
 	 *				| new.getCurrentStamina() == currentStamina
 	 */
@@ -1032,7 +1037,8 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Returns the coordinates of this unit
+	 * Returns the coordinates of this unit.
+	 * 
 	 * @return this.position.getCoordinates()
 	 */
 	@Raw
@@ -1099,6 +1105,7 @@ public class Unit extends Entity{
 	 * 
 	 * @post	This unit references the given world as the world to which it is attached.
 	 *				| new.getWorld() == world
+	 *
 	 * @throws	IllegalArgumentException
 	 *				This unit cannot have the given world as its world,
 	 *				Or the world is at its maximum capacity.
@@ -1146,6 +1153,7 @@ public class Unit extends Entity{
  	 *         
  	 * @post	The target coordinates of this new unit are equal to the given target coordinates.
  	 *       		| new.getTargetCoordinates() == targetCoordinates
+ 	 *       
  	 * @throws 	IllegalArgumentException
  	 *				The given target coordinates are not valid target coordinates for any unit.
  	 *				| ! canHaveAsTargetCoordinates(getTargetCoordinates())
@@ -1191,6 +1199,7 @@ public class Unit extends Entity{
  	 *
  	 * @post	The initial coordinates of this new unit are equal to the given initial coordinates.
  	 *				| new.getInitialCoordinates() == initialCoordinates
+ 	 *
  	 * @throws 	IllegalArgumentException
  	 *				The given initial coordinates are not valid initial coordinates for any unit.
  	 *				| ! canHaveAsInitialCoordinates(getInitialCoordinates())
@@ -1317,6 +1326,7 @@ public class Unit extends Entity{
 	 *
 	 * @return	True if and only if the coordinates are the same or next to each other.
 	 *				| result == Position.isAdjacentTo(this.getCubePosition().getCubeCoordinates, targetCube)
+	 *
 	 * @throws	IllegalArgumentException
 	 *				The target cube is invalid for this unit's world.
 	 */
@@ -1380,6 +1390,7 @@ public class Unit extends Entity{
 	 *
 	 * @post	The is-sprinting value of this new unit is equal to the given is-sprinting value.
 	 *				| new.getIsSprinting() == isSprinting
+	 *
 	 * @throws 	IllegalStateException
 	 *				The given is-sprinting value is not a valid is-sprinting for any unit.
 	 *				| ! isValidIsSprinting(getIsSprinting())
@@ -1484,6 +1495,7 @@ public class Unit extends Entity{
 	 *				|							this.getPosition().getCubeCoordinates()[1] + dy,this.getPosition().getCubeCoordinates()[2] + dz}
 	 * @post	The initial coordinates of the unit are set to the current coordinates.
 	 *				| new.getInitialCoordinates() == this.getCoordinates()
+	 *
 	 * @note Throws no exception because Exception is caught.
 	 */
 	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) {
@@ -1509,8 +1521,10 @@ public class Unit extends Entity{
 				throw new IllegalArgumentException(destinationCube.toString());
 			}
 
+			if ( (1<dx) || (dx<-1) || (1<dy) || (dy<-1) || (1<dz) || (dz<-1) )
+				throw new IllegalArgumentException();
+			
 			double[] dummyCoordinates = {this.getPosition().getXCoordinate() + dx, this.getPosition().getYCoordinate() + dy, this.getPosition().getZCoordinate() + dz};
-
 	 		this.setCurrentActivity(Activity.MOVE);
 	 		this.setTargetCoordinates(dummyCoordinates);
 	 		this.setInitialCoordinates(this.getCoordinates());
@@ -1661,6 +1675,7 @@ public class Unit extends Entity{
 	 *				|	then result == false
 	 *				| else
 	 *				| 	result == !hasSolidNeighbours(this.getXCoordinate(), this.getYCoordinate(), this.getZCoordinate())
+	 *
 	 * @throws	IllegalArgumentException
 	 * 			The unit does not occupy a valid cube.
 	 */
@@ -1776,6 +1791,7 @@ public class Unit extends Entity{
  	 *				The velocity in the x-direction.
  	 * @param	velocityY
  	 *				The velocity in the y-direction.
+ 	 *
  	 * @effect	The orientation is set to the value of arctangent of velocityY and velocityX.
  	 *				| setOrientation(Math.atan2(velocityY,velocityX))
  	 */
@@ -1828,6 +1844,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	task
 	 *				The task to attach to this unit.
+	 *
 	 * @post	This unit references the given task as its task.
 	 *				| new.getTask() == task
 	 *
@@ -1853,37 +1870,30 @@ public class Unit extends Entity{
 	private Task task;
 	
 	/**
-	 * Finish the task of this unit, if necessary.
+	 * Finish the task of this unit, if it has one.
+	 * 
 	 * @effect If this unit has a task, then the task gets terminated.
 	 *				| if (this.hasTask())
 	 *				|	then this.getTask().terminate()
-	 * @effect	The task of this unit is finished.
-	 *				| if this.hasTask()
-	 *				|	then this.getTask().setFinished(true)
-	 * @post	The task of his unit references no scheduler and
-	 *				its old schedulers no longer reference this task.
-	 *				| new.getTask().getScheduler().size() == 0 &&
-	 *				| for each scheduler in this.getTask().getSchedulers()
-	 *				|	! scheduler.hasAsTask(new.getTask())
 	 */
-	//TODO fix doc, check code
 	private void finishTask() {
 		if (this.hasTask()) 
 			this.getTask().terminate();
 	}
 	
 	/**
-	 * Return a task back to the scheduler with a lower priority.
-	 * @effect	If this unit has a task with a statement,
-	 * 			then the task is detached from this unit and
-	 * 			the priority is lowered by one. The statement status is reset.
-	 * 			| task.setPriority(task.getPriority()-1)
-	 *			| task.setUnit(null)
-	 *			| this.setTask(null)
-	 *			| task.getStatement().resetStatus()
+	 * Returns a failed task back to the scheduler with a lower priority.
+	 * 
+	 * @effect	If this unit has a task with a failed statement,
+	 *				then the task is detached from this unit and
+	 *				the priority is lowered by one. The statement status is reset.
+	 *				| task.setPriority(task.getPriority()-1)
+	 *				| task.setUnit(null)
+	 *				| this.setTask(null)
+	 *				| task.getStatement().resetStatus()
 	 * @throws	IllegalStateException
-	 * 			This unit does not have a task.
-	 * 			| ! this.hasTask()
+	 * 				This unit does not have a task.
+	 * 				| ! this.hasTask()
 	 */
 	private void returnFailedTask() throws IllegalStateException {
 		if (! this.hasTask())
@@ -1918,12 +1928,18 @@ public class Unit extends Entity{
 	 * 
 	 * @post	The given activity is equal to the current activity.
 	 *				| new.getCurrentActivity() == activity
+	 *
 	 * @throws	IllegalStateException
 	 *				The unit is terminated.
 	 *				| isTerminated()
+	 *@throws	NullPointerException
+	 *				The given activity is null.
+	 *				| activity == null
 	 */
 	@Raw
 	public void setCurrentActivity(Activity activity)  throws IllegalStateException{
+		if (activity == null)
+			throw new NullPointerException();
 		if (this.isTerminated())
 			throw new IllegalStateException("unit terminated.");
 		
@@ -1939,10 +1955,10 @@ public class Unit extends Entity{
 	 * Checks whether the given progress is a valid progress for any unit.
 	 * 
 	 * @param	progress
-	 *				The progress of the current activity of this unit.
+	 *				The progress to check.
 	 * 
 	 * @return	True if and only the given progres, is greater than or equal to zero.
-	 *				| result == timeToEndOfActivity >= 0
+	 *				| result == progress >= 0
 	 */
 	@Raw
 	public static boolean isValidProgress(double progress){
@@ -1967,8 +1983,8 @@ public class Unit extends Entity{
 	 *				| new.getProgress() == progress
 	 */
 	private void setProgress(double progress) throws IllegalArgumentException{
-		if (progress < 0)
-			throw new IllegalArgumentException("The progress for an activity of a unit cannot be negative.");
+		if ( ! isValidProgress(progress))
+			throw new IllegalArgumentException("The given progress is invalid.");
 		
 		this.progress = progress;
 	}
@@ -2004,6 +2020,7 @@ public class Unit extends Entity{
 	 * 
 	 * @param	workTarget
 	 *				The position to perform work at.
+	 *
 	 * @effect	Makes this unit work at the given target coordinates and disables default behaviour.
 	 *				| this.workAt(workTarget, false)
 	 */
@@ -2037,17 +2054,18 @@ public class Unit extends Entity{
 			if ( ! thisIsDefaultBehaviour)
 				this.stopDefaultBehavior();
 			
-			if(this.hasItem())
-				if ( ! this.getItem().canHaveAsCoordinates(workTarget))
-					throw new IllegalArgumentException("cannot drop item here.");
+			if(this.hasItem() && ( ! this.getItem().canHaveAsCoordinates(workTarget)))
+				throw new IllegalArgumentException("cannot drop item here.");
 			
 			
 			// MoveToAdjacent may not be interupted except by being attacked.
 			if ((this.getCurrentActivity() != Activity.MOVE) && (moveToPath.size() == 0)) {
 				this.setProgress(0.0);
 				
-				// If the workTarget is not in range, then an exception is thrown.
+				// If the workTarget is not in range, then there is a silent reject.
 				if (this.isAdjacentTo(workTarget)) {
+					double[] cubeCoordinates = Position.getCubeCenter(workTarget);
+					this.setOrientation(cubeCoordinates[0] - this.getPosition().getXCoordinate(), cubeCoordinates[1] - this.getPosition().getYCoordinate());
 					this.setWorkTarget(workTarget);
 					this.setPreviousActivity(this.getCurrentActivity());
 					this.setCurrentActivity(Activity.WORK);
@@ -2659,8 +2677,6 @@ public class Unit extends Entity{
 	/**
 	 * Stops the default behavior of this unit.
 	 * 
-	 * @post	The current activity of this unit equals NOTHING.
-	 * 				| this.getCurrentActivity() == Activity.NOTHING
 	 * @effect	This unit stops executing its task.
 	 * 				| getTask().stopExecuting()
 	 * 			
@@ -2668,7 +2684,7 @@ public class Unit extends Entity{
 	public void stopDefaultBehavior() {
 		try {
 			this.setDefaultBehaviorEnabled(false);
-			this.setCurrentActivity(Activity.NOTHING);
+//			this.setCurrentActivity(Activity.NOTHING);
 			if (this.hasTask())
 				this.getTask().stopExecuting();
 		} catch (IllegalStateException e) {}
@@ -3110,11 +3126,8 @@ public class Unit extends Entity{
 	}
 	
 	public void advanceTimeWorkAt(double deltaT, int[] workTarget) {
+		// Count down to the end of the work command.
 		this.setProgress(this.getProgress() + deltaT);
-		
-		double[] cube = Position.getCubeCenter(workTarget);
-		this.setOrientation(cube[0] - this.getPosition().getXCoordinate(),
-				cube[1] - this.getPosition().getYCoordinate());
 		
 		// Dropping boulders and logs has to be instantaneous so it has to happen before the progress check.
 		// If this unit is carrying a log or a boulder:
