@@ -283,7 +283,6 @@ public class Facade extends hillbillies.part1.facade.Facade implements hillbilli
 	 */
 	@Override
 	public boolean isCarryingLog(Unit unit) throws ModelException {
-		// TODO aanpassen naargelang at we doen met item
 		return unit.getItem() instanceof Log;
 	}
 
@@ -298,7 +297,6 @@ public class Facade extends hillbillies.part1.facade.Facade implements hillbilli
 	 */
 	@Override
 	public boolean isCarryingBoulder(Unit unit) throws ModelException {
-		// TODO aanpassen naargelang at we doen met item
 		return unit.getItem() instanceof Boulder;
 	}
 

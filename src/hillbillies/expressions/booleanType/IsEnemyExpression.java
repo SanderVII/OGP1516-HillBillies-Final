@@ -10,11 +10,7 @@ public class IsEnemyExpression<E extends UnitExpression>
 	public IsEnemyExpression(E unit, SourceLocation sourceLocation) {
 		super(unit, sourceLocation);
 	}
-
-	/*
-	 * TODO Liskov: method throws can only be narrowed => should all super evaluates
-	 * also throw an exception?
-	 */
+	
 	@Override
 	public Boolean evaluate() {
 			return this.getUnit().getFaction() != (this.getExpression().evaluate()).getFaction();

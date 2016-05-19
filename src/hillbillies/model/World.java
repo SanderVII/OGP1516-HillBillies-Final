@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -553,7 +554,7 @@ public class World {
 	 * @return	A set of cube coordinates which are neighbours of the given cube
 	 * 				and have valid coordinates for this world.
 	 */
-	public Set<int[]> getNeighbours(int[] coordinates) {
+	public Set<int[]> getNeighbours(int[] coordinates) throws IllegalArgumentException {
 		return (this.getValidCubeCoordinatesInRange(coordinates, 1));
 	}
 	
@@ -736,14 +737,22 @@ public class World {
 	 * Returns a set of all integer coordinates which are at most r cubes away from
 	 * the given coordinates. Only valid coordinates in this world are included.
 	 * The given coordinates are also included if it is valid.
-	 * @param 	coordinates
-	 * 				The given start coordinates.
-	 * @param 	range
-	 * 				The given range.
+	 * 
+	 * @param	coordinates
+	 *				The given start coordinates.
+	 * @param	range
+	 *				The given range.
+	 * 
 	 * @return	A set of coordinates which are valid. Their integer coordinates 
-	 * 				are at most r away from the given coordinates.
+	 *				are at most r away from the given coordinates.
+	 * 
+	 * @throws IllegalArgumentException
+	 *				The given coordinates are not valid coordinates for this world.
 	 */
-	public Set<int[]> getValidCubeCoordinatesInRange(int[] coordinates, int range) {
+	public Set<int[]> getValidCubeCoordinatesInRange(int[] coordinates, int range) throws IllegalArgumentException{
+		if ( ! this.canHaveAsCoordinates(coordinates))
+			throw new IllegalArgumentException();
+		
 		Set<int[]> result = new HashSet<>();
 		Set<int[]> allCubes = Position.getCubeCoordinatesInRange(coordinates, range);
 		for (int[] cubeCoordinates: allCubes)
@@ -1208,7 +1217,6 @@ public class World {
 			if (enableDefaultBehavior)
 				newRandomUnit.startDefaultBehavior();
 			
-	//		System.out.println(newRandomUnit.toString());
 			return newRandomUnit;
 		}
 		else{

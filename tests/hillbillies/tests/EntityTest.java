@@ -105,7 +105,7 @@ public class EntityTest {
 	}
 	
 	@Test
-	public void isFalling_initiateFalling_endFalling_canEndFallingTest() {
+	public void initiateFalling_endFalling_canEndFallingTest() {
 		int[][][] terrain = new int[20][40][10];
 		terrain[1][1][0] = TYPE_ROCK;
 		terrain[1][1][1] = TYPE_TREE;
@@ -116,39 +116,27 @@ public class EntityTest {
 		Log log2 = new Log(world, new int[]{0,0,1}, Item.MINIMAL_WEIGHT);
 		Log log3 = new Log(world, new int[]{1,1,2}, Item.MINIMAL_WEIGHT);
 		Log log4 = new Log(world, new int[]{1,1,3}, Item.MINIMAL_WEIGHT);
-		assertFalse(log.isFalling());
 		assertFalse(log.getIsFalling());
-		assertTrue(log2.isFalling());
 		assertFalse(log2.getIsFalling());
-		assertFalse(log3.isFalling());
 		assertFalse(log3.getIsFalling());
-		assertTrue(log4.isFalling());
 		assertFalse(log4.getIsFalling());
 		
 		advanceTimeFor(world, 0.1, 0.02);
-		assertFalse(log.isFalling());
 		assertFalse(log.getIsFalling());
-		assertTrue(log2.isFalling());
 		assertTrue(log2.getIsFalling());
-		assertFalse(log3.isFalling());
 		assertFalse(log3.getIsFalling());
-		assertTrue(log4.isFalling());
 		assertTrue(log4.getIsFalling());
 		
 		advanceTimeFor(world, 10, 0.2);
-		assertFalse(log.isFalling());
 		assertFalse(log.getIsFalling());
 		assertTrue(log.canEndFalling());
 		assertTrue(Position.equals(log.getPosition().getCubeCoordinates(), new int []{0,0,0}));
-		assertFalse(log2.isFalling());
 		assertFalse(log2.getIsFalling());
 		assertTrue(log2.canEndFalling());
 		assertTrue(Position.equals(log2.getPosition().getCubeCoordinates(), new int []{0,0,0}));
-		assertFalse(log3.isFalling());
 		assertFalse(log3.getIsFalling());
 		assertTrue(log3.canEndFalling());
 		assertTrue(Position.equals(log3.getPosition().getCubeCoordinates(), new int []{1,1,2}));
-		assertFalse(log4.isFalling());
 		assertFalse(log4.getIsFalling());
 		assertTrue(log4.canEndFalling());
 		assertTrue(Position.equals(log4.getPosition().getCubeCoordinates(), new int []{1,1,2}));

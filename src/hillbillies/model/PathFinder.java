@@ -10,15 +10,59 @@ import java.util.Set;
 import hillbillies.exceptions.MaxIterationException;
 import hillbillies.positions.Position;
 
+/**
+ * A helper class for pathfinding.
+ * This class is used for the moveTo method in Unit but it is easily generalisble.
+ * 
+ * @author Sander Mergan, Thomas Vrancken
+ */
 public class PathFinder {
 	
-	public static final int MAX_ITERATION = 100;
+	/**
+	 * Maximal number of iterations. Prevents the path finding from searching forever.
+	 */
+	public static final int MAX_ITERATION = 200;
+	
+	/**
+	 * Whether diagonal movement is allowed.
+	 */
 	public static final boolean ALLOW_DIAGONAL = true;
 	
+	/**
+	 * Searches a path in the given world from the given start to the given destination.
+	 * If diagonal moves are allowed then the path will have diagonal moves.
+	 * If diagonal moves are not allowed then the path will only have straight corners in it.
+	 * 
+	 * @param start
+	 *				The start of the path.
+	 * @param destination
+	 *				The destination of the path.
+	 * @param world
+	 *				The world to find the path in.
+	 *
+	 * @return	A list of cube coordinates that represents the path from the given start to the given destination. 
+	 *				| result == getPath(start, destination, world, ALLOW_DIAGONAL)
+	 */
 	public static List<int[]> getPath (int[] start, int[] destination, World world) {
 		return getPath(start, destination, world, ALLOW_DIAGONAL);
 	}
 	
+	/**
+	 * Searches a path in the given world from the given start to the given destination.
+	 * If diagonal moves are allowed then the path will have diagonal moves.
+	 * If diagonal moves are not allowed then the path will only have straight corners in it.
+	 * 
+	 * @param start
+	 *				The start of the path.
+	 * @param destination
+	 *				The destination of the path.
+	 * @param world
+	 *				The world to find the path in.
+	 * @param diagonalMovesAllowed
+	 *				Whether diagonal moves are allowed.
+	 *
+	 * @returnA list of cube coordinates that represents the path from the given start to the given destination. 
+	 */
 	public static List<int[]> getPath (int[] start, int[] destination, World world, boolean diagonalMovesAllowed){
 		// counter for amount of iterations
 		int iteration = 0;
@@ -91,18 +135,19 @@ public class PathFinder {
 	}
 	
 	/**
-	 * Checks if the cube position with the given coordinates is adjacent
+	 * Checks if the cube with the given coordinates is adjacent
 	 * to at least one cube which is solid.
 	 * 
 	 * @param	coordinates
-	 * 			The coordinates to check neighbours for.
+	 *				The coordinates to check neighbours for.
 	 * @param	world
-	 * 			The world in which to check.
+	 *				The world in which to check.
+	 *
 	 * @return	False if none of the neighbouring cubes is solid.
-	 * 			| for (int[] position: neighbours)
-	 *			|	if ( ! world.getCube(position).isPassable())
-	 * 			|		then result == true
-	 * 			| result == false
+	 *				| for (int[] position: neighbours)
+	 *				|	if ( ! world.getCube(position).isPassable())
+	 *				|		then result == true
+	 *				| result == false
 	 */
 	private static boolean hasSolidNeighbours(int[] coordinates, World world) {
 		Set<int[]> neighbours = world.getNeighbours(coordinates);
@@ -114,8 +159,10 @@ public class PathFinder {
 
 	/**
 	 * Reconstructs the path hidden in cameFrom.
+	 * 
 	 * @param cameFrom
 	 *				The map to reconstruct the path from
+	 *
 	 * @param current
 	 *				The last part of the path.
 	 */
@@ -131,11 +178,14 @@ public class PathFinder {
 	}
 
 	/**
-	 * Returns the position with the lowest fScore in openSet
-	 * TODO Maak hier een lamba functie van.
+	 * Returns the coordinates with the lowest fScore in openSet.
+	 * 
 	 * @param openSet
+	 *				The set of coordinates of wich we want the one with the lowest fScore.
 	 * @param fScore
-	 * @return
+	 *				A HashMap of coordinates and their fScores.
+	 *
+	 * @return	The coordinates with the lowest fScore in openSet.
 	 */
 	private static int[] getCoordinatesWithLowestFScoreFrom(Set<int[]> openSet, HashMap<int[], Double> fScore) {
 		int[] LowestFScoreCoordinates = null;
@@ -153,24 +203,30 @@ public class PathFinder {
 	}
 	
 	/**
-	 * Returns a heuristic cost estimate for the path from start to destination
+	 * Returns a heuristic cost estimate for the path from start to destination.
+	 * 
 	 * @param start
 	 *				The start position.
 	 * @param destination
 	 *				The destination position.
+	 *
 	 * @return The distance between the start position and the destination position.
+	 *				| Position.getDistance(Position.getCubeCenter(start), Position.getCubeCenter(destination))
 	 */
 	private static Double heuristicCostEstimate(int[] start, int[] destination) {
 		return Position.getDistance(Position.getCubeCenter(start), Position.getCubeCenter(destination));
 	}
 	
 	/**
-	 * Return a set of positions which are directly adjacent to the given cube.
-	 * @param 	coordinates
-	 *				The coordinates to find directly adjacent coordinates for
+	 * Returns a set of coordinates which are directly adjacent to the given coordinates.
+	 * 
+	 * @param	coordinates
+	 *				The coordinates to find directly adjacent coordinates for.
+	 *
 	 * @return	A set of cubes which are directly adjacent and not passable.
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			The given coordinates are illegal for this world.
+	 *				The given coordinates are illegal for this world.
 	 */
 	private static Set<int[]> getPassableDirectlyAdjacentCoordinates(int[] coordinates, World world) throws IllegalArgumentException{
 		int x = coordinates[0];
@@ -200,12 +256,15 @@ public class PathFinder {
 	}
 	
 	/**
-	 * Return a set of positions which are directly adjacent to the given cube.
-	 * @param 	coordinates
-	 *				The coordinates to find directly adjacent coordinates for
+	 * Returns a set of coordinates which are directly adjacent to the given coordinates.
+	 * 
+	 * @param	coordinates
+	 *				The coordinates to find directly adjacent coordinates for.
+	 *
 	 * @return	A set of cubes which are directly adjacent and not passable.
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			The given coordinates are illegal for this world.
+	 *				The given coordinates are illegal for this world.
 	 */
 	private static Set<int[]> getPassableNeighbourCoordinates(int[] coordinates, World world) throws IllegalArgumentException{
 		int x = coordinates[0];

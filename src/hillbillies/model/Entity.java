@@ -189,7 +189,7 @@ public abstract class Entity {
 	public boolean canHaveAsPosition(Position position) {
 		if (position == null)
 			return false;
-		return (this.getWorld() == position.getWorld());
+		return ( (this.getWorld() == position.getWorld()) );
 	}
 	
 	/**
@@ -294,7 +294,7 @@ public abstract class Entity {
 	 * 			| else
 	 * 			| 	result == (this.getWorld().getCubeBelow(this.getPosition()).isPassable())
 	 */
-	public boolean isFalling() throws IllegalArgumentException {
+	protected boolean isFalling() throws IllegalArgumentException {
 		if (this.getIsFalling())
 			return true;
 		else if (this.getPosition().getCubeCoordinates()[2] == 0)
