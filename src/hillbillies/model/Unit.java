@@ -2674,29 +2674,49 @@ public class Unit extends Entity{
 	// Methods for following another unit.
 	//============================================================================
 	
-	//TODO doc
+	/**
+	 * A variable that holds the unit this unit has to follow.
+	 */
 	private Unit unitToFollow;
 	
+	/**
+	 * Returns the unit this unit has to follow.
+	 */
 	public Unit getUnitToFollow() {
 		return this.unitToFollow;
 	}
 	
+	/**
+	 * Checks whether this unit has to follow another unit.
+	 * 
+	 * @return	True if the unit to follow is effective.
+	 * 				| result == getUnitToFollow() != null
+	 */
 	public boolean hasUnitToFollow() {
 		return this.getUnitToFollow() != null;
 	}
 	
+	/**
+	 * Sets the unit this unit has to follow to the given unit.
+	 * 
+	 * @param 	unitToFollow
+	 *				The new unit to follow.
+	 * @post	This unit is following the given unit.
+	 * 				| new.getUnitToFollow() == unitToFollow
+	 */
 	private void setUnitToFollow(Unit unitToFollow) {
 		this.unitToFollow = unitToFollow;
 	}
 	
 	/**
-	 * Check if this unit is next to the given unit.
+	 * Checks if this unit is next to the given unit.
+	 * 
 	 * @param 	other
-	 * 			The other unit.
+	 * 				The other unit.
 	 * @return	True if the cube coordinates of this unit are next to
-	 * 			the cube coordinates of the other unit.
-	 * 			| result == Position.isAdjacentTo(
-	 * 			|	this.getCubeCoordinates(), other.getCubeCoordinates())
+	 * 				the cube coordinates of the other unit.
+	 * 				| result == Position.isAdjacentTo(
+	 * 				|	this.getCubeCoordinates(), other.getCubeCoordinates())
 	 */
 	public boolean isNextTo(Unit other) {
 		return Position.isAdjacentTo(this.getCubeCoordinates(), other.getCubeCoordinates());
@@ -2706,20 +2726,19 @@ public class Unit extends Entity{
 	 * Starts the follow behavior of this unit, causing it to follow the given unit.
 	 * 
 	 * @param 	other
-	 * 			The unit to follow.
+	 * 				The unit to follow.
 	 * @param	Whether default behavior should be turned off.
 	 * @post	This unit is following the other unit.
-	 * 			| new.getUnitToFollow() == other
+	 * 				| new.getUnitToFollow() == other
 	 * @post	This unit is executing default behavior.
-	 * 			| this.startDefaultBehavior()
+	 * 				| this.startDefaultBehavior()
 	 * @effect	This unit is moving towards the cube of the other unit.
-	 * 			| this.moveTo(other.getCubeCoordinates())	
-	 * @throws	IllegalArgumentException
-	 * 			The other unit is terminated.
-	 * 			| other.isTerminated()
-	 * @throws	IllegalStateException
-	 * 			This unit is already next to the other unit.
-	 * 			| this.isNextTo(other)		
+	 * 				| this.moveTo(other.getCubeCoordinates())	
+	 *				If the other unit is terminated or this unit is next to it,
+	 *				and this unit has a task, that task is finished.
+	 *				| if (other.isTerminated()) || (this.isNextTo(other))
+	 *				| 	then if (this.hasTask())
+	 *				|		then this.finishTask()
 	 */
 	public void follow(Unit other, boolean defaultbehavior) {
 		try {
