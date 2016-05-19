@@ -1568,10 +1568,6 @@ public class Unit extends Entity{
 	 * @post	The progress of this unit is equal to zero.
 	 *				|new.getProgress() == 0
 	 *
-	 * @throws	IllegalArgumentException
-	 *				The given destination is invalid.
-	 *				| (! this.getPosition().canHaveAsUnitCoordinates(destinationCoordinates))
-	 *
 	 * @note Silent reject for:
 	 *				no adjacent solid cube (makes a unit go to mid air, which will make it fall), 
 	 *				target is unreachable because is is surrounded by solid cubes,
@@ -1579,7 +1575,6 @@ public class Unit extends Entity{
 	 *				This prevents the program from trying all possible cubes in the world (which takes very long, even for small worlds),
 	 *				while we know there is no path.
 	 */
-	//TODO change doc with try-catch
 	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) 
 			throws IllegalArgumentException {
 		try {
@@ -1600,13 +1595,6 @@ public class Unit extends Entity{
 				// Readability
 				int[] currentCoordinates =  this.getPosition().getCubeCoordinates();	
 				
-	//	 		if (moveToPath.size() != 0){
-	//	 			// Clear the moveToPath to interrupt an earlier moveTo. 
-	//	 			// A moveToAdjacent should never be interrupted so keep the one next move in line (and only that one). 
-	//	 			int[] dummy = moveToPath.get(0);
-	//	 			moveToPath.clear();
-	//	 			moveToPath.add(dummy);
-	//			}
 		 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
 				moveToPath = searchPath(currentCoordinates, destinationCoordinates);
 				moveToPath.remove(0); 
