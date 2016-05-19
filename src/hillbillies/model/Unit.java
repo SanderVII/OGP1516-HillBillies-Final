@@ -1583,13 +1583,14 @@ public class Unit extends Entity{
 	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) 
 			throws IllegalArgumentException {
 		try {
-			if (thisIsDefaultBehaviour)
-	//			System.out.println("moveTo by defaultBehaviour");
 			if ( ! this.getPosition().canHaveAsCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
 				throw new IllegalArgumentException();
 			}
 			if ( ! this.canMoveTo(destinationCoordinates))
 				throw new IllegalArgumentException();
+			if ( Position.equals(this.getCubeCoordinates(), destinationCoordinates))
+				throw new IllegalStateException("already at destination");
+			
 			else {
 				if ( ! thisIsDefaultBehaviour)
 					this.stopDefaultBehavior();
@@ -1614,9 +1615,12 @@ public class Unit extends Entity{
 				this.setInitialCoordinates(this.getCoordinates());
 		 		
 			}
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
 			if (this.hasTask())
  				this.returnFailedTask();
+		} catch (IllegalStateException e) {
+			if (this.hasTask())
+ 				this.finishTask();
 		}
 	}
 	
@@ -1894,6 +1898,7 @@ public class Unit extends Entity{
 	 * 				This unit does not have a task.
 	 * 				| ! this.hasTask()
 	 */
+	//TODO added movepath clear at the end.
 	private void returnFailedTask() throws IllegalStateException {
 		if (! this.hasTask())
 			throw new IllegalStateException();
@@ -1904,6 +1909,7 @@ public class Unit extends Entity{
 		task.getStatement().resetStatus();
 		for (Scheduler scheduler : task.getSchedulers())
 			scheduler.replaceTask(task, task);
+		this.moveToPath.clear();
 	}
 	
 	
@@ -2046,10 +2052,7 @@ public class Unit extends Entity{
 	 *				|new.getProgress() == 0
 	 */
 	public void workAt(int[] workTarget, boolean thisIsDefaultBehaviour){
-		if (thisIsDefaultBehaviour)
-//			System.out.println("workAt by defaultBehaviour");
 		try {
-			
 			if (( ! thisIsDefaultBehaviour) && (this.getDefaultBehaviorEnabled()))
 				this.stopDefaultBehavior();
 			
@@ -2131,8 +2134,6 @@ public class Unit extends Entity{
 	private void rest(boolean thisIsDefaultBehaviour){
 		// moveToAdjacent() may not be interrupted by resting. 
 		// moveTo() can however be interrupted.
-		if (thisIsDefaultBehaviour)
-//			System.out.println("rest by defaultBehaviour");
 		try {
 			
 			if((moveToPath.size() == 0) && (this.getCurrentActivity() == Activity.MOVE) )
@@ -2732,7 +2733,9 @@ public class Unit extends Entity{
 			this.setUnitToFollow(other);
 			this.moveTo(other.getCubeCoordinates(),defaultbehavior);
 		} catch (Exception e) {
-			
+			if (this.hasTask())
+				this.finishTask();
+				
 		}
 	}
 	
