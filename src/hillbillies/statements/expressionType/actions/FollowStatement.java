@@ -1,6 +1,7 @@
 package hillbillies.statements.expressionType.actions;
 
 import hillbillies.expressions.unitType.UnitExpression;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class FollowStatement<E extends UnitExpression> 
@@ -12,8 +13,9 @@ public class FollowStatement<E extends UnitExpression>
 
 	@Override
 	public void execute() {
-		// TODO IMPLEMENT UNIT FOLLOW METHOD
-		
+		Unit unit = this.getExpression().evaluate();
+		this.getSuperTask().startExplicitStatement(this);
+		this.getSuperTask().getUnit().follow(unit, true);
 	}
 
 }

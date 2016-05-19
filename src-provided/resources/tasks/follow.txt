@@ -1,0 +1,6 @@
+name: "follow"
+priority : 8
+activities:
+	target := enemy;
+	follow(target);
+	attack(target);

@@ -1,6 +1,7 @@
 package hillbillies.statements.expressionType.actions;
 
 import hillbillies.expressions.unitType.UnitExpression;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class AttackStatement<E extends UnitExpression> 
@@ -12,7 +13,9 @@ public class AttackStatement<E extends UnitExpression>
 
 	@Override
 	public void execute() {
-		this.getUnit().attack(this.getExpression().evaluate());
+		Unit unit = this.getExpression().evaluate();
+		this.getSuperTask().startExplicitStatement(this);
+		this.getSuperTask().getUnit().attack(unit);
 	}
 
 }

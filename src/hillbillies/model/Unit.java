@@ -9,6 +9,7 @@ import java.util.Set;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.exceptions.MaxIterationException;
 import hillbillies.exceptions.UnitMaxedOutException;
 import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
@@ -1001,16 +1002,33 @@ public class Unit extends Entity{
  
 	/**
 	 * Sets the coordinates of this unit to the given coordinates.
+	 * If the new coordinates are invalid, stop the current activity.
+	 * If the unit is executing a task, it is considered failed and will be
+	 * unassigned from the unit.
 	 *  
 	 * @param	coordinates
 	 *				The new coordinates of this unit.
-	 * 
-	 * @throws	IllegalArgumentException
-	 *				The given position are not  valid coordinates for any unit..
-	 *				|! canHaveAsCoordinates(getPosition().getCoordinates())
+	 * @effect	The coordinates of this unit are set to the given coordinates.
+	 * 			| this.position.setCoordinates(coordinates)
+	 * @post	If the coordinates are invalid, the activity is set to nothing,
+	 * 			the intial and target coordinates are reset,
+	 * 			and the task is returned, if possible.
+	 * 			| if ( position.canHaveAsCoordinates(coordinates))
+	 * 			| 	then (this.resetCoordinates()
+	 *			| 			this.setCurrentActivity(Activity.NOTHING)
+	 *			| 			if (this.hasTask())
+	 *			| 				then this.returnFailedTask()
 	 */
-	public void setCoordinates(double[] coordinates) throws IllegalArgumentException{
-		this.position.setCoordinates(coordinates);
+ 	//TODO testen aanpassen
+	public void setCoordinates(double[] coordinates) {
+		try {
+			this.position.setCoordinates(coordinates);
+		} catch (IllegalArgumentException e) {
+			this.resetCoordinates();
+			this.setCurrentActivity(Activity.NOTHING);
+			if (this.hasTask())
+				this.returnFailedTask();
+		}
 	}
 	
 	/**
@@ -1235,7 +1253,9 @@ public class Unit extends Entity{
 	 *				| else
 	 *				|	result ==  getBaseSpeed()
 	 */		
-	private double getWalkSpeed(double[] start, double[] targetCoordinates){
+	private double getWalkSpeed(double[] start, double[] targetCoordinates) {
+		if ((start == null) || (targetCoordinates == null))
+			return 0.0;
 		double sign = Math.signum(start[2]-targetCoordinates[2]);
 		if (sign < 0 && sign != Double.NaN)
 			return 0.5 * this.getBaseSpeed();
@@ -1545,38 +1565,46 @@ public class Unit extends Entity{
 	 *				This prevents the program from trying all possible cubes in the world (which takes very long, even for small worlds),
 	 *				while we know there is no path.
 	 */
-	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) throws IllegalArgumentException{
-		if (thisIsDefaultBehaviour)
-			System.out.println("moveTo by defaultBehaviour");
-		if ( ! this.getPosition().canHaveAsCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
-			throw new IllegalArgumentException();
+	//TODO change doc with try-catch
+	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) 
+			throws IllegalArgumentException {
+		try {
+			if (thisIsDefaultBehaviour)
+	//			System.out.println("moveTo by defaultBehaviour");
+			if ( ! this.getPosition().canHaveAsCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
+				throw new IllegalArgumentException();
+			}
+			if ( ! this.canMoveTo(destinationCoordinates))
+				throw new IllegalArgumentException();
+			else {
+				if ( ! thisIsDefaultBehaviour)
+					this.stopDefaultBehavior();
+				
+				this.setProgress(0);
+				
+				// Readability
+				int[] currentCoordinates =  this.getPosition().getCubeCoordinates();	
+				
+	//	 		if (moveToPath.size() != 0){
+	//	 			// Clear the moveToPath to interrupt an earlier moveTo. 
+	//	 			// A moveToAdjacent should never be interrupted so keep the one next move in line (and only that one). 
+	//	 			int[] dummy = moveToPath.get(0);
+	//	 			moveToPath.clear();
+	//	 			moveToPath.add(dummy);
+	//			}
+		 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
+				moveToPath = searchPath(currentCoordinates, destinationCoordinates);
+				moveToPath.remove(0); 
+				this.setPreviousActivity(this.getCurrentActivity());
+				this.setCurrentActivity(Activity.MOVE);
+				this.setInitialCoordinates(this.getCoordinates());
+		 		
+			}
+		} catch (Exception e) {
+			if (this.hasTask())
+ 				this.returnFailedTask();
 		}
 		
-		if (this.canMoveTo(destinationCoordinates)) {
-		
-			if ( ! thisIsDefaultBehaviour)
-				this.stopDefaultBehavior();
-			
-			this.setProgress(0);
-			
-			// Readability
-			int[] currentCoordinates =  this.getPosition().getCubeCoordinates();	
-			
-//	 		if (moveToPath.size() != 0){
-//	 			// Clear the moveToPath to interrupt an earlier moveTo. 
-//	 			// A moveToAdjacent should never be interrupted so keep the one next move in line (and only that one). 
-//	 			int[] dummy = moveToPath.get(0);
-//	 			moveToPath.clear();
-//	 			moveToPath.add(dummy);
-//			}
-	 		
-	 		// Pass the current activity trough to previousActivity and Set the current activity op MOVE.
-	 		this.setPreviousActivity(this.getCurrentActivity());
-	 		this.setCurrentActivity(Activity.MOVE);
-	 		this.setInitialCoordinates(this.getCoordinates());
-			moveToPath = searchPath(currentCoordinates, destinationCoordinates);
-			moveToPath.remove(0); 
-		}
 	}
 	
 	/**
@@ -1589,7 +1617,8 @@ public class Unit extends Entity{
 	 *
 	 * @return	A list a cube coordinates which represent the path from the start coordinates to the destination coordinates.
 	 */
-	private List<int[]> searchPath(int[] startCoordinates, int[] destinationCoordinates) {
+	private List<int[]> searchPath(int[] startCoordinates, int[] destinationCoordinates)
+			throws MaxIterationException {
 		return PathFinder.getPath(startCoordinates, destinationCoordinates, this.getWorld());
 	}
 
@@ -1844,8 +1873,8 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Return a failed task back to the scheduler with a lower priority.
-	 * @effect	If this unit has a task with a failed statement,
+	 * Return a task back to the scheduler with a lower priority.
+	 * @effect	If this unit has a task with a statement,
 	 * 			then the task is detached from this unit and
 	 * 			the priority is lowered by one. The statement status is reset.
 	 * 			| task.setPriority(task.getPriority()-1)
@@ -1853,19 +1882,19 @@ public class Unit extends Entity{
 	 *			| this.setTask(null)
 	 *			| task.getStatement().resetStatus()
 	 * @throws	IllegalStateException
-	 * 			This unit does not have a task or the statement has not failed.
-	 * 			| ! this.hasTask() || 
-	 * 			|	! (this.getTask().getStatement().getStatus() == Status.FAILED)	
+	 * 			This unit does not have a task.
+	 * 			| ! this.hasTask()
 	 */
 	private void returnFailedTask() throws IllegalStateException {
 		if (! this.hasTask())
 			throw new IllegalStateException();
-		if (! (this.getTask().getStatement().getStatus() == Status.FAILED))
-			throw new IllegalStateException();
+		Task task = this.getTask();
 		task.setPriority(task.getPriority()-1);
 		task.setUnit(null);
 		this.setTask(null);
 		task.getStatement().resetStatus();
+		for (Scheduler scheduler : task.getSchedulers())
+			scheduler.replaceTask(task, task);
 	}
 	
 	
@@ -2002,7 +2031,7 @@ public class Unit extends Entity{
 	 */
 	public void workAt(int[] workTarget, boolean thisIsDefaultBehaviour){
 		if (thisIsDefaultBehaviour)
-			System.out.println("workAt by defaultBehaviour");
+//			System.out.println("workAt by defaultBehaviour");
 		try {
 			
 			if ( ! thisIsDefaultBehaviour)
@@ -2061,7 +2090,7 @@ public class Unit extends Entity{
 		// moveToAdjacent() may not be interrupted by resting. 
 		// moveTo() can however be interrupted.
 		if (thisIsDefaultBehaviour)
-			System.out.println("rest by defaultBehaviour");
+//			System.out.println("rest by defaultBehaviour");
 		try {
 			
 			if((moveToPath.size() == 0) && (this.getCurrentActivity() == Activity.MOVE) )
@@ -2645,6 +2674,72 @@ public class Unit extends Entity{
 		} catch (IllegalStateException e) {}
 	}
 	
+	//============================================================================
+	// Methods for following another unit.
+	//============================================================================
+	
+	//TODO doc
+	private Unit unitToFollow;
+	
+	public Unit getUnitToFollow() {
+		return this.unitToFollow;
+	}
+	
+	public boolean hasUnitToFollow() {
+		return this.getUnitToFollow() != null;
+	}
+	
+	private void setUnitToFollow(Unit unitToFollow) {
+		this.unitToFollow = unitToFollow;
+	}
+	
+	/**
+	 * Check if this unit is next to the given unit.
+	 * @param 	other
+	 * 			The other unit.
+	 * @return	True if the cube coordinates of this unit are next to
+	 * 			the cube coordinates of the other unit.
+	 * 			| result == Position.isAdjacentTo(
+	 * 			|	this.getCubeCoordinates(), other.getCubeCoordinates())
+	 */
+	public boolean isNextTo(Unit other) {
+		return Position.isAdjacentTo(this.getCubeCoordinates(), other.getCubeCoordinates());
+	}
+	
+	/**
+	 * Starts the follow behavior of this unit, causing it to follow the given unit.
+	 * 
+	 * @param 	other
+	 * 			The unit to follow.
+	 * @param	Whether default behavior should be turned off.
+	 * @post	This unit is following the other unit.
+	 * 			| new.getUnitToFollow() == other
+	 * @post	This unit is executing default behavior.
+	 * 			| this.startDefaultBehavior()
+	 * @effect	This unit is moving towards the cube of the other unit.
+	 * 			| this.moveTo(other.getCubeCoordinates())	
+	 * @throws	IllegalArgumentException
+	 * 			The other unit is terminated.
+	 * 			| other.isTerminated()
+	 * @throws	IllegalStateException
+	 * 			This unit is already next to the other unit.
+	 * 			| this.isNextTo(other)		
+	 */
+	public void follow(Unit other, boolean defaultbehavior) {
+		try {
+			if (other.isTerminated())
+				throw new IllegalArgumentException("other unit is dead.");
+			if (this.isNextTo(other))
+				throw new IllegalStateException("already next to other unit.");
+			
+			if ( ! defaultbehavior)
+				this.stopDefaultBehavior();
+			this.setUnitToFollow(other);
+			this.moveTo(other.getCubeCoordinates(),defaultbehavior);
+		} catch (Exception e) {
+			
+		}
+	}
 	
 	//============================================================================
 	// Methods concerning experience.
@@ -3004,12 +3099,13 @@ public class Unit extends Entity{
 			// Reset the unit that this unit is attacking.
 			this.setUnitUnderAttack(null);
 			
-			// The attackers activity is set back to the default when its attack is finished.
+			// the current activity is set to nothing.
 			this.setCurrentActivity(Activity.NOTHING);
-			
-			// Continue default behavior if it was enabled.
-			if (this.getDefaultBehaviorEnabled())
-				this.startDefaultBehavior();
+						
+			// If default behavior is enabled, keep it running.
+			if (this.hasTask()) {
+				this.getTask().finishExplicitStatement();
+			}
 		}
 	}
 	
@@ -3120,8 +3216,18 @@ public class Unit extends Entity{
 					<= Position.getDistance(newPosition, this.getInitialCoordinates())) {
 				this.setCoordinates(this.getTargetCoordinates());
 				
+				// update/stop follow behavior.
+				if (this.hasUnitToFollow()) {
+					if (this.isNextTo(this.getUnitToFollow()))
+						this.moveToPath.clear();
+					else if (moveToPath.size() >= 1)
+						this.moveTo(this.moveToPath.get(this.moveToPath.size()-1), this.getDefaultBehaviorEnabled());
+					// recalculate path upon arrival.
+					else
+						this.follow(this.getUnitToFollow(), this.getDefaultBehaviorEnabled());
+				}
 				// Remove the cube from the path since you've just reached it.
-				if (moveToPath.size() !=0) {
+				else if (moveToPath.size() !=0) {
 					moveToPath.remove(0);
 					// Recalculate the path since it may have changed by the time this unit moved one cube.
 					if (moveToPath.size() >= 1){
@@ -3132,10 +3238,11 @@ public class Unit extends Entity{
 				// Add experience (1 per cube traversed)
 				this.addExperience(1);
 				
+				
 				// Last position to reach, no need to move anymore.
 				if (moveToPath.size() == 0) {
-					this.setCurrentActivity(Activity.NOTHING);
 					this.resetCoordinates();
+					this.setCurrentActivity(Activity.NOTHING);
 					if (this.hasTask())
 						this.getTask().finishExplicitStatement();
 				}
@@ -3208,7 +3315,6 @@ public class Unit extends Entity{
 	 * @param deltaT
 	 */
 	private void advanceTimeDefault(double deltaT) {
-		
 		Scheduler scheduler = this.getFaction().getScheduler();
 		List<Task> availableTasks = scheduler.getUnassignedTasks();
 		if ((availableTasks.size() != 0) && (!this.hasTask())) {
