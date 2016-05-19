@@ -387,6 +387,8 @@ public class Task implements Comparable<Task> {
 	 * 			| ! new.hasUnit()
 	 * @post	The unit of this task no longer references this task.
 	 * 			| ! this.getUnit().hasTask()
+	 * @effect	The status of this task's statement and its substatements are reset.
+	 * 			| this.getStatement().resetStatus()
 	 */
 	//NOTE: total programming is allowed.
 	public void stopExecuting() throws IllegalArgumentException {
@@ -394,6 +396,7 @@ public class Task implements Comparable<Task> {
 			Unit unit = this.getUnit();
 			this.setUnit(null);
 			unit.setTask(null);
+			this.getStatement().resetStatus();
 		}
 	}
 	

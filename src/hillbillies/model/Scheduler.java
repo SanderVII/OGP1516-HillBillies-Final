@@ -443,7 +443,7 @@ public class Scheduler {
      * 			|	! task.hasUnit()
      */
     public List<Task> getUnassignedTasks() {
-    	return getTasksWithPredicate(x -> ! x.hasUnit());
+    	return getTasksWithPredicate(x -> (! x.hasUnit()));
     }
 
 	// =================================================================================================

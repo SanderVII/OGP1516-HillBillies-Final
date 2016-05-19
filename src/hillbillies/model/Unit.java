@@ -2572,7 +2572,7 @@ public class Unit extends Entity{
 	 * as these take a huge amount of time to calculate paths for and may even cause the game to crash. 
 	 * If the path finding  algorithm is better optimized, this value can be raised or even ignored.
 	 */
-	private final static int MAX_RANGE_DEFAULTMOVE = 3;
+	private final static int MAX_RANGE_DEFAULTMOVE = 2;
 	
 	/**
 	 * Starts the default behavior of this unit.
@@ -3178,7 +3178,7 @@ public class Unit extends Entity{
 		
 		Scheduler scheduler = this.getFaction().getScheduler();
 		List<Task> availableTasks = scheduler.getUnassignedTasks();
-		if (availableTasks.size() != 0) {
+		if ((availableTasks.size() != 0) && (!this.hasTask())) {
 			availableTasks.get(0).assignTo(this);
 		}
 		if (this.hasTask()) {

@@ -63,7 +63,8 @@ public class IfElseStatement<E extends BooleanExpression>
 	public List<Statement> getSubStatements() {
 		List<Statement> result = new ArrayList<Statement>();
 		result.add(this.getStatement());
-		result.add(this.getElseBody());
+		if (this.getElseBody() != null)
+			result.add(this.getElseBody());
 		return result;
 	}
 

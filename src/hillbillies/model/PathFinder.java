@@ -12,7 +12,7 @@ import hillbillies.positions.Position;
 
 public class PathFinder {
 	
-	public static final int MAX_ITERATION = 500;
+	public static final int MAX_ITERATION = 100;
 	public static final boolean ALLOW_DIAGONAL = true;
 	
 	public static List<int[]> getPath (int[] start, int[] destination, World world) {

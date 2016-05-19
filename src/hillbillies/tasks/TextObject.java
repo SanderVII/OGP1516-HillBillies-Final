@@ -3,7 +3,7 @@ package hillbillies.tasks;
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
-public abstract class TextObject {
+public abstract class TextObject implements Cloneable {
 
 	public TextObject(SourceLocation sourceLocation) {
 		this.sourceLocation = sourceLocation;
@@ -28,5 +28,8 @@ public abstract class TextObject {
 	public boolean isWellFormed() {
 		return true;
 	}
+	
+//	@Override
+//	public abstract TextObject clone();
 
 }
