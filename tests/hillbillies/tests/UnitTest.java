@@ -6,17 +6,24 @@ import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import hillbillies.expressions.unitType.AnyExpression;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.model.Activity;
 import hillbillies.model.Faction;
 import hillbillies.model.Log;
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.internal.map.CubeType;
 import hillbillies.part2.internal.map.GameMap;
 import hillbillies.part2.internal.map.GameMapReader;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import hillbillies.part3.programs.SourceLocation;
 import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
+import hillbillies.statements.SequenceStatement;
+import hillbillies.statements.expressionType.actions.FollowStatement;
 import ogp.framework.util.Util;
 
 /**
@@ -977,6 +984,10 @@ public class UnitTest {
 		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
 		
 		assertFalse(unit.hasTask());
+		
+		unit.setTask(new Task("digTunnel", -100, new FollowStatement<UnitExpression>(new AnyExpression(new SourceLocation(0, 0)), new SourceLocation(0, 0))));
+		
+		assertTrue(unit.hasTask());
 	}
 	
 	@Test
