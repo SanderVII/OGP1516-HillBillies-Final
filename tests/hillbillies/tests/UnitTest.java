@@ -2,11 +2,8 @@ package hillbillies.tests;
 
 import static org.junit.Assert.*;
 import java.io.IOException;
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import hillbillies.expressions.unitType.AnyExpression;
 import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.model.Activity;
@@ -22,13 +19,14 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
-import hillbillies.statements.SequenceStatement;
 import hillbillies.statements.expressionType.actions.FollowStatement;
 import ogp.framework.util.Util;
 
 /**
+ * A class of tests for the public methods in the class Unit.
+ * 
  * @author Sander Mergan, Thomas Vranken
- * @version 2.5
+ * @version 2.6
  */
 public class UnitTest {
 	
@@ -1089,20 +1087,20 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void advanceTimeWorkAtTest(){
+	public void WorkAtTest(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
 		new Log(world, new int[]{0, 0, 1});
 		
 		unit.startDefaultBehavior();
 		unit.workAt(unit.getCubeCoordinates());
+		unit.workAt(unit.getCubeCoordinates());
 		
 		assertTrue(unit.isWorking());
 		assertTrue(unit.getProgress() == 0);
 		assertFalse(unit.getDefaultBehaviorEnabled());
-		assertTrue(unit.getCurrentActivity() == Activity.WORK);
 		assertTrue(unit.getOrientation() == 0);
-		assertTrue(unit.getPreviousActivity() == Activity.NOTHING);
+		assertTrue(unit.getPreviousActivity() == Activity.WORK);
 		
 		advanceTimeFor(unit, unit.getWorkDuration(), 0.015625);
 		
@@ -1118,7 +1116,7 @@ public class UnitTest {
 		
 		assertTrue(unit.isMoving());
 		unit.workAt(new int[]{0, 0, 2});
-		assertTrue(unit.getCurrentActivity() == Activity.MOVE);
+		assertTrue(unit.isMoving());
 		
 		
 		World world2 = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
@@ -1129,13 +1127,153 @@ public class UnitTest {
 		assertTrue(unitMin.getProgress() == 0);
 		advanceTimeFor(world2, unitMin.getWorkDuration(), 0.015625);
 		assertFalse(unitMin.isWorking());
+	}
+	
+	@Test
+	public void RestTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
 		
+		unit.startDefaultBehavior();
+		unit.rest();
+		unit.rest();
+		
+		assertTrue(unit.isResting());
+		assertTrue(unit.getProgress() == 0);
+		assertFalse(unit.getDefaultBehaviorEnabled());
+		assertTrue(unit.getPreviousActivity() == Activity.NOTHING);
+		
+		advanceTimeFor(unit, 10, 0.015625);
+		
+		assertFalse(unit.isResting());
+		
+		unit.moveToAdjacent(0, 0, 1);
+		
+		assertTrue(unit.isMoving());
+		
+		unit.rest();
+		
+		assertTrue(unit.isMoving());
+
+		unit.terminate();
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+	}
+	
+	@Test
+	public void isRestingTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		
+		assertFalse(unit.isResting());
+		
+		unit.rest();
+		
+		assertTrue(unit.isResting());
+	}
+	
+	@Test
+	public void isAttackingTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitTwo", new int[]{0, 1, 2},25,25,25, 25);
+		
+		assertFalse(unit.isAttacking());
+		
+		unit.attack(unit2);
+		
+		assertTrue(unit.isAttacking());
+	}
+	
+	@Test
+	public void AttackTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitTwo", new int[]{0, 1, 2},25,25,25, 25);
+		
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+		assertTrue(unit.getUnitUnderAttack() ==null);
+		
+		unit.attack(unit2);
+		
+		assertTrue(unit.isAttacking());
+		assertTrue(unit.getUnitUnderAttack() == unit2);
+		assertTrue(unit.getProgress() == 0);
+	}
+	
+	@Test
+	public void FightTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitTwo", new int[]{0, 1, 2},25,25,25, 25);
+		Unit unit3 = new Unit(world, "UnitThree", new int[]{10, 35, 6},25,25,25, 25);
+		
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+		assertTrue(unit.getUnitUnderAttack() ==null);
+		
+		unit.fight(null);
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+		unit.fight(unit3);
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+
+		unit.fight(unit2);
+		
+		assertFalse(unit.getDefaultBehaviorEnabled());
+		assertTrue(unit.isAttacking());
+		assertTrue(unit.getUnitUnderAttack() == unit2);
+		assertTrue(unit.getProgress() == 0);
+		
+		Faction faction = new Faction(world);
+		Unit unit4 = new Unit(world, faction,  "UnitThree", new int[]{10, 35, 6},25,25,25, 25);
+		Unit unit5 = new Unit(world, faction, "UnitThree", new int[]{10, 35, 6},25,25,25, 25);
+		unit4.fight(unit5);
+		assertTrue(unit4.getCurrentActivity() == Activity.NOTHING);
+	}
+	
+	@Test
+	public void hasItem_hasProperItemTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2}, 25, 25, 25, 25);
+		new Log(world, new int[]{0, 0, 1});
+		
+		assertFalse(unit.hasItem());
+		assertTrue(unit.hasProperItem());
+		
+		unit.workAt(new int[]{0, 0, 1});
+		
+		advanceTimeFor(world, unit.getWorkDuration()+0.5, 0.015625);
+		assertTrue(unit.hasItem());
+		assertTrue(unit.hasProperItem());
+		
+		unit.terminate();
+		
+		assertFalse(unit.hasItem());
+		assertTrue(unit.hasProperItem());
+	}
+	
+	@Test
+	public void startDefaultBehavior_stopDefaultBehaviorTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2}, 25, 25, 25, 25);
+		
+		assertFalse(unit.getDefaultBehaviorEnabled());
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+		assertFalse(unit.hasTask());
+		
+		unit.startDefaultBehavior();
+		
+		assertTrue(unit.getDefaultBehaviorEnabled());
+		
+		unit.stopDefaultBehavior();
+		
+		assertFalse(unit.getDefaultBehaviorEnabled());
+		assertTrue(unit.getCurrentActivity() == Activity.NOTHING);
+		assertFalse(unit.hasTask());
 	}
 	
 	@Test
 	public void AdvanceTimeTest_DeltaT() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1}, 25, 25, 25, 25);
 		
 		assertTrue(unitMin.getGametime() == 0);
 		
