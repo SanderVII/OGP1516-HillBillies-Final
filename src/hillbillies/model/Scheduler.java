@@ -302,18 +302,6 @@ public class Scheduler {
 					tasks.add(task);
 				else
 					count ++;
-//			int count = 1;
-//			while (count < size+1) {
-//				int priority = this.getTaskAt(count).getPriority();
-//				if (task.getPriority() >= priority) {
-//					tasks.add(count, task);
-//					count = size+1;
-//				} else if (count == size) {
-//					tasks.add(task);
-//					count = size+1;
-//				} else
-//					count ++;
-//			}
 			}
 		}	
 	}
