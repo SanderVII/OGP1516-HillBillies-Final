@@ -525,7 +525,7 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 	 */
 	@Override
 	public boolean isAttacking(Unit unit) throws ModelException {
-		return unit.isAttaking();
+		return unit.isAttacking();
 	}
 
 	/**
