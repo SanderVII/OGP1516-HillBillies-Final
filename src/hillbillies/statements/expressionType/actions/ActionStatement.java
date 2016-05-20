@@ -4,7 +4,13 @@ import hillbillies.expressions.Expression;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.statements.expressionType.ExpressionStatement;
 
-// TODO this class can probably be removed
+/**
+ * A specific type of expression statement which directly influences
+ * their unit upon execution.
+ * @author Thomas
+ *
+ * @param <E>
+ */
 public abstract class ActionStatement<E extends Expression> 
 		extends ExpressionStatement<E> {
 

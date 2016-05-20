@@ -1888,13 +1888,7 @@ public class Unit extends Entity{
 	private void returnFailedTask() throws IllegalStateException {
 		if (! this.hasTask())
 			throw new IllegalStateException();
-		Task task = this.getTask();
-		task.setPriority(task.getPriority()-1);
-		task.setUnit(null);
-		this.setTask(null);
-		task.getStatement().resetStatus();
-		for (Scheduler scheduler : task.getSchedulers())
-			scheduler.replaceTask(task, task);
+		this.getTask().returnFailedTask();
 		this.moveToPath.clear();
 	}
 	
@@ -3313,20 +3307,22 @@ public class Unit extends Entity{
 		}
 		if (this.hasTask()) {
 			Statement statement  = this.getTask().getStatement();
-			Status status = statement.getStatus();
-			switch (status) {
-				case NOTSTARTED:
-					statement.execute();
-					break;
-				case DONE:
-					this.finishTask();
-					break;
-				case FAILED:
-					this.returnFailedTask();
-				case SEQUENCE:
-					statement.execute();
-				default:
-					break;
+			double i = 0.0;
+			while (i < deltaT && !(this.getTask().hasExplicitStatement())) {
+				Status status = statement.getStatus();
+				switch (status) {
+					case NOTSTARTED:
+						statement.execute();
+						break;
+					case DONE:
+						this.finishTask();
+						break;
+					case FAILED:
+						this.returnFailedTask();
+					default:
+						break;
+				}
+				i += STATEMENT_EXECUTION_TIME;
 			}
 		}
 				

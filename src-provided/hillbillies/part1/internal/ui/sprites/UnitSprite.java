@@ -174,6 +174,7 @@ public class UnitSprite extends AbstractSprite<Unit, UnitInfoProvider> {
 		if (provider.isAttacking(getUnit())) {
 			return ATTACK_ANIMATION;
 		} else if (provider.isWorking(getUnit())) {
+			// TODO: working animation
 			return ATTACK_ANIMATION;
 		} else if (provider.isWalking(getUnit())) {
 			if (provider.isSprinting(getUnit())) {

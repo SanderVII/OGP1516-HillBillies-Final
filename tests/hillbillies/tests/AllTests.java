@@ -11,7 +11,7 @@ import org.junit.runners.Suite;
     LogTest.class, 
     PathFinderTest.class,
     PositionTest.class, 
-//    TaskFactoryTest.class,
+    TaskFactoryTest.class,
 //    SchedulerTest.class,
     UnitTest.class, 
     WorldTest.class})

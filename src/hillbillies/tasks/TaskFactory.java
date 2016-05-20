@@ -40,7 +40,6 @@ import hillbillies.expressions.unitType.VariableUnitExpression;
 import hillbillies.model.Task;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.part3.programs.TaskParser;
 import hillbillies.statements.BreakStatement;
 import hillbillies.statements.SequenceStatement;
 import hillbillies.statements.Statement;
@@ -59,7 +58,6 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 		
 	}
 	
-	//TODO problem: different tasks reference the same statement and influence each other.
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
 		List<Task> result = new ArrayList<>();
@@ -87,7 +85,6 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
-		// TODO finish!!
 		return new WhileStatement<BooleanExpression>(
 				(BooleanExpression) condition,  body, sourceLocation);
 	}
@@ -101,7 +98,6 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
-		//TODO finish
 		return new BreakStatement(sourceLocation);
 	}
 
@@ -112,7 +108,6 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
-		// TODO finish!!
 		return new SequenceStatement(statements, sourceLocation);
 	}
 
@@ -128,7 +123,6 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createFollow(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new FollowStatement<UnitExpression>((UnitExpression) unit, sourceLocation);
 	}
 
@@ -144,8 +138,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 			return new VariableBooleanExpression(variableName, sourceLocation);
 		else if (value instanceof UnitExpression)
 			return new VariableUnitExpression(variableName, sourceLocation);
-		else
+		else if (value instanceof PositionExpression)
 			return new VariablePositionExpression(variableName, sourceLocation);
+		else
+			return null;
 	}
 
 	@Override

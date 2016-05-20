@@ -18,20 +18,25 @@ public class SequenceStatement extends Statement implements ISubStatement {
 	
 	@Override
 	public void execute() {
-		this.setStatus(Status.SEQUENCE);
+		this.setStatus(Status.EXECUTING);
 		Status status = this.getStatementAt(getCursor()).getStatus();
-		if (status == Status.DONE) {
-			if (this.getCursor() == (getNbStatements() - 1))
-				this.setStatus(Status.DONE);
-			else
-				this.setCursor(getCursor()+1);
+		switch (status) {
+			case NOTSTARTED:
+				this.getStatementAt(getCursor()).execute();
+				break;
+			case DONE:
+				if (this.getCursor() == (getNbStatements() - 1))
+					this.setStatus(Status.DONE);
+				else
+					this.setCursor(getCursor()+1);
+				break;
+			case FAILED:
+				this.setStatus(Status.FAILED);
+				break;
+			default:
+				break;
 		}
-		else if (status == Status.FAILED)
-			this.setStatus(Status.FAILED);
-		else
-			this.getStatementAt(getCursor()).execute();
 	}
-	
 	public int getNbStatements() {
 		return this.statements.size();
 	}
