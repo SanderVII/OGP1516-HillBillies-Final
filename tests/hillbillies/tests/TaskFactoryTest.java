@@ -235,6 +235,7 @@ public class TaskFactoryTest {
 		@SuppressWarnings("unchecked")
 		MoveToStatement<PositionExpression> statement = (MoveToStatement<PositionExpression>) task.getStatement();
 		assertTrue(statement.getTask() == task);
+		@SuppressWarnings("unchecked")
 		PositionOfExpression<UnitExpression> expression = (PositionOfExpression<UnitExpression>) statement.getExpression();
 		assertTrue(expression.getSuperText() == statement);
 		assertTrue(expression.getSuperTask() == task);
@@ -277,7 +278,7 @@ public class TaskFactoryTest {
 		advanceTimeFor(world, 0.001, 0.001);
 		
 		assertTrue(unit.hasTask());
-		Task task = unit.getTask();
+		unit.getTask();
 		advanceTimeFor(world, 1, 0.001);
 		assertEquals(Boolean.FALSE.toString(), outContent.toString().trim());
 	}

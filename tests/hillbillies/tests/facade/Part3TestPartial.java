@@ -42,7 +42,8 @@ public class Part3TestPartial {
 		types[2][2][2] = TYPE_WORKSHOP;
 
 		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
-		Unit unit = facade.createUnit("Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50, true);
+		Unit unit = new Unit(world, "Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50);
+		unit.startDefaultBehavior();
 		facade.addUnit(unit, world);
 		Faction faction = facade.getFaction(unit);
 

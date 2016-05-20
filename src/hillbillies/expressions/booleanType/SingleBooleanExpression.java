@@ -22,7 +22,9 @@ public abstract class SingleBooleanExpression<E extends Expression> extends Bool
 	}
 	
 	public SingleBooleanExpression<E> clone() throws CloneNotSupportedException {
+		@SuppressWarnings("unchecked")
 		SingleBooleanExpression<E> cloned = (SingleBooleanExpression<E>) super.clone();
+		@SuppressWarnings("unchecked")
 		E clonedExpression = (E) this.getExpression().clone();
 		clonedExpression.setSuperText(cloned);
 		cloned.setExpression(clonedExpression);

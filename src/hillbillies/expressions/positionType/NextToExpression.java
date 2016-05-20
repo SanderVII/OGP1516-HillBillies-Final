@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.Set;
 
 import hillbillies.part3.programs.SourceLocation;
-import hillbillies.positions.UnitPosition;
 
 public class NextToExpression<E extends PositionExpression> 
 		extends ExtendedPositionExpression<E> {

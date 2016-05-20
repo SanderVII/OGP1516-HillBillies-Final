@@ -22,7 +22,9 @@ public abstract class ExtendedPositionExpression<E extends Expression> extends P
 	}
 	
 	public ExtendedPositionExpression<E> clone() throws CloneNotSupportedException {
+		@SuppressWarnings("unchecked")
 		ExtendedPositionExpression<E> cloned = (ExtendedPositionExpression<E>) super.clone();
+		@SuppressWarnings("unchecked")
 		E clonedExpression = (E) this.getExpression().clone();
 		clonedExpression.setSuperText(cloned);
 		cloned.setExpression(clonedExpression);

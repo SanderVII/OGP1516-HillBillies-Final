@@ -25,7 +25,9 @@ public abstract class ExpressionStatement<E extends Expression>
 	private E expression;
 	
 	public ExpressionStatement<E> clone() throws CloneNotSupportedException {
+		@SuppressWarnings("unchecked")
 		ExpressionStatement<E> cloned = (ExpressionStatement<E>) super.clone();
+		@SuppressWarnings("unchecked")
 		E clonedExpression = (E) this.getExpression().clone();
 		clonedExpression.setSuperText(cloned);
 		cloned.setExpression(clonedExpression);

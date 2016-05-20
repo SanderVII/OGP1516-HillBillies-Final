@@ -37,8 +37,11 @@ public abstract class CombinedBooleanExpression<E extends BooleanExpression>
 	}
 	
 	public CombinedBooleanExpression<E> clone() throws CloneNotSupportedException {
+		@SuppressWarnings("unchecked")
 		CombinedBooleanExpression<E> cloned = (CombinedBooleanExpression<E>) super.clone();
+		@SuppressWarnings("unchecked")
 		E leftCloned = (E) this.getLeft().clone();
+		@SuppressWarnings("unchecked")
 		E rightCloned = (E) this.getRight().clone();
 		leftCloned.setSuperText(cloned);
 		cloned.setLeft(leftCloned);

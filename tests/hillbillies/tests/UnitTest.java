@@ -21,14 +21,12 @@ import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
 import hillbillies.statements.expressionType.actions.FollowStatement;
 import ogp.framework.util.Util;
-// TODO tests for follow methods
-
 
 /**
  * A class of tests for the public methods in the class Unit.
  * 
  * @author Sander Mergan, Thomas Vranken
- * @version 2.6
+ * @version 3.0
  */
 public class UnitTest {
 	
@@ -1257,6 +1255,46 @@ public class UnitTest {
 	}
 	
 	@Test
+	public void hasUnitToFollowTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2},25,25,25, 25);
+		Unit unit2 = new Unit(world, "UnitTwo", new int[]{0, 0, 4},25,25,25, 25);
+		
+		assertFalse(unit.hasUnitToFollow());
+		unit.follow(unit2, true);
+		assertTrue(unit.hasUnitToFollow());
+	}
+	
+	@Test
+	public void followTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 1},25,25,25, 25);
+		Unit unit2 = new Unit(world, "Unit two", new int[]{0, 0, 3},25,25,25, 25);
+		Unit unit3 = new Unit(world, "Unit three", new int[]{0, 0, 2},25,25,25, 25);
+		
+		assertFalse(unit.hasUnitToFollow());
+		unit.follow(unit3, true);
+		assertFalse(unit.hasUnitToFollow());
+		unit3.terminate();
+		unit.follow(unit3, true);
+		assertFalse(unit.hasUnitToFollow());
+		unit.follow(unit2, false);
+		assertFalse(unit.hasUnitToFollow());
+		unit.follow(unit2, true);
+		assertTrue(unit.hasUnitToFollow());
+		assertTrue(unit.isMoving());
+		
+		Task task = new Task("digTunnel", -100, new FollowStatement<UnitExpression>(new AnyExpression(new SourceLocation(0, 0)), new SourceLocation(0, 0)));
+		task.setUnit(unit);
+		unit.setTask(task);
+		
+		assertTrue(unit.hasTask());
+		unit.follow(unit3, true);
+		assertFalse(unit.hasTask());
+		assertTrue(task.isTerminated());
+	}
+	
+	@Test
 	public void startDefaultBehavior_stopDefaultBehaviorTest(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
 		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2}, 25, 25, 25, 25);
@@ -1291,9 +1329,11 @@ public class UnitTest {
 			if (unit2.getCurrentHealth() < previousHealth){
 				nbSuccesfulAttacks++;
 			}
+			if (unit2.isTerminated())
+				assertTrue(true);
 		}
 		assertTrue(nbSuccesfulAttacks > 0);
-		assertTrue(unit2.isTerminated());
+		
 			
 		nbSuccesfulAttacks = 0;
 		previousHealth = (int)unit.getCurrentHealth();
