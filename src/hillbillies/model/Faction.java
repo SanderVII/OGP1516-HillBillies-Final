@@ -144,8 +144,8 @@ public class Faction {
 			 this.isTerminated = true;
 			 this.setWorld(null);
 			 world.removeFaction(this);
-			 this.setScheduler(null);
 			 scheduler.setFaction(null);
+			 this.setScheduler(null);
 		 }
 	 }
 	 

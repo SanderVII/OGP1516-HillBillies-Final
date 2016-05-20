@@ -395,8 +395,8 @@ public class TaskFactoryTest {
 	public void positionExpressions() throws ModelException {
 		int[] logCoordinates = new int[] {2,2,0};
 		int[] boulderCoordinates = new int[] {2,1,0};
-		Log log = new Log(world, logCoordinates);
-		Boulder boulder = new Boulder(world, boulderCoordinates);
+		new Log(world, logCoordinates);
+		new Boulder(world, boulderCoordinates);
 		
 		Unit any = new Unit(world, "Any", new int[] { 2, 2, 0 }, 50, 50, 50, 50);
 		facade.addUnit(any, world);

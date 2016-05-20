@@ -1329,8 +1329,10 @@ public class UnitTest {
 			if (unit2.getCurrentHealth() < previousHealth){
 				nbSuccesfulAttacks++;
 			}
-			if (unit2.isTerminated())
+			if (unit2.isTerminated()){
 				assertTrue(true);
+				break;
+			}
 		}
 		assertTrue(nbSuccesfulAttacks > 0);
 		

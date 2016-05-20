@@ -108,8 +108,10 @@ public class Scheduler {
 	public boolean canHaveAsFaction(@Raw Faction faction) {
 		if (this.isTerminated)
 			return faction == null;
+		else if (faction != null)
+			return (! faction.isTerminated());
 		else
-			return (faction != null) && (! faction.isTerminated());
+			return true;
 	}
 	
 	/**

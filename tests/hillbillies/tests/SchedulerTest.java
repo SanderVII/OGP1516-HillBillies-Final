@@ -94,12 +94,6 @@ public class SchedulerTest {
 	}
 	
 	@Test
-	public void Scheduler_NullFaction() throws Exception {
-		exception.expect(IllegalArgumentException.class);
-		Scheduler testScheduler = new Scheduler(null);
-	}
-	
-	@Test
 	public void Scheduler_FactionWithScheduler() throws Exception {	
 		exception.expect(IllegalArgumentException.class);
 		Scheduler scheduler4 = new Scheduler(faction);
