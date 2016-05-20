@@ -148,20 +148,16 @@ public class PositionTest {
 	
 	@Test
 	public void getSurfaceCenterTest() {
-		assertTrue(Position.fuzzyEquals(
-				Position.getSurfaceCenter(new double[] {10.96,10.24,10.1}),new double[]{10.5,10.5,10.1}));
-		assertTrue(Position.fuzzyEquals(
-				Position.getSurfaceCenter(new double[]{5.2,-3.6,-4.9}),new double[]{5.5,-3.5,-4.9}));
+		assertTrue(Position.equals(Position.getSurfaceCenter(new double[] {10.96,10.24,10.1}),new double[]{10.5,10.5,10.1}));
+		assertTrue(Position.equals(Position.getSurfaceCenter(new double[]{5.2,-3.6,-4.9}),new double[]{5.5,-3.5,-4.9}));
 		try{ Position.getCubeCenter(new double[]{0, 0, 0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 		try{ Position.getCubeCenter(new double[]{0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 	}
 	
 	@Test
 	public void getCubeCenterTest() {
-		assertTrue(Position.fuzzyEquals(
-				Position.getCubeCenter(new int[] {10,10,10}), new double[]{10.5,10.5,10.5}));
-		assertTrue(Position.fuzzyEquals(
-				Position.getCubeCenter(new int[]{5,-4,-5}), new double[]{5.5,-3.5,-4.5}));
+		assertTrue(Position.equals(Position.getCubeCenter(new int[] {10,10,10}), new double[]{10.5,10.5,10.5}));
+		assertTrue(Position.equals(Position.getCubeCenter(new int[]{5,-4,-5}), new double[]{5.5,-3.5,-4.5}));
 		
 		try{ Position.getCubeCenter(new double[]{0, 0, 0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 		try{ Position.getCubeCenter(new double[]{0, 0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
@@ -169,9 +165,9 @@ public class PositionTest {
 	
 	@Test
 	public void calculateNextCoordinatesTest() {
-		assertTrue(Position.fuzzyEquals(
+		assertTrue(Position.equals(
 				Position.calculateNextCoordinates(new double[] {1.0,1.0,1.0}, new double[]{10,-10,20}, deltaT),new double[]{2.0,0.0,3.0}));
-		assertTrue(Position.fuzzyEquals(
+		assertTrue(Position.equals(
 				Position.calculateNextCoordinates(new double[] {-1.0,-1.0,-1.0}, new double[]{10,-10,20}, deltaT),new double[]{0.0,-2.0,1.0}));
 		
 		try{ Position.calculateNextCoordinates(new double[] {1.0,1.0,1.0,0.0}, new double[]{10,-10,20}, deltaT); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
@@ -236,15 +232,15 @@ public class PositionTest {
 	
 	@Test
 	public void fuzzyEqualsTest() {
-		assertTrue(Position.fuzzyEquals(new double[] {1.0,1.0,1.0}, new double[] {1.0000006,0.9999994,1.0}));
-		try{ Position.fuzzyEquals(new double[] {1.0,1.0,1.0,0.0}, new double[]{10,-10,20}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-		try{ Position.fuzzyEquals(new double[] {1.0,1.0,1.0}, new double[]{10,-10,20,0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-		try{ Position.fuzzyEquals(new double[] {1.0,1.0,1.0,0.0}, new double[]{10,-10,20,0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-		try{ Position.fuzzyEquals(new double[] {1.0,1.0}, new double[]{10,-10,20}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-		try{ Position.fuzzyEquals(new double[] {1.0,1.0,1.0}, new double[]{10,-10}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-		try{ Position.fuzzyEquals(new double[] {1.0,1.0}, new double[]{10,-10}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-		try{ Position.fuzzyEquals(new double[] {1.0,1.0,1.0,0.0}, new double[]{10,-10}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
-		try{ Position.fuzzyEquals(new double[] {1.0,1.0}, new double[]{10,-10,20,0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		assertTrue(Position.equals(new double[] {1.0,1.0,1.0}, new double[] {1.0000006,0.9999994,1.0}));
+		try{ Position.equals(new double[] {1.0,1.0,1.0,0.0}, new double[]{10,-10,20}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ Position.equals(new double[] {1.0,1.0,1.0}, new double[]{10,-10,20,0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ Position.equals(new double[] {1.0,1.0,1.0,0.0}, new double[]{10,-10,20,0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ Position.equals(new double[] {1.0,1.0}, new double[]{10,-10,20}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ Position.equals(new double[] {1.0,1.0,1.0}, new double[]{10,-10}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ Position.equals(new double[] {1.0,1.0}, new double[]{10,-10}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ Position.equals(new double[] {1.0,1.0,1.0,0.0}, new double[]{10,-10}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
+		try{ Position.equals(new double[] {1.0,1.0}, new double[]{10,-10,20,0}); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 		
 	}
 	
@@ -266,10 +262,8 @@ public class PositionTest {
 	
 	@Test
 	public void getVelocityTest() {
-		assertTrue(Position.fuzzyEquals(
-				Position.getVelocity(new double[] {1.0,1.0,1.0}, new double[] {-1.0,-1.0,-1.0}, 2.0), new double[]{-1.1547,-1.1547,-1.1547}));
-		assertTrue(Position.fuzzyEquals(
-				Position.getVelocity(new double[]{5.2,-3.6,-4.9}, new double[]{5.2,-3.6,-4.9}, 2.0),new double[]{0,0,0}));
+		assertTrue(Position.equals(Position.getVelocity(new double[] {1.0,1.0,1.0}, new double[] {-1.0,-1.0,-1.0}, 2.0), new double[]{-1.1547,-1.1547,-1.1547}));
+		assertTrue(Position.equals(Position.getVelocity(new double[]{5.2,-3.6,-4.9}, new double[]{5.2,-3.6,-4.9}, 2.0),new double[]{0,0,0}));
 		
 		try{ Position.getVelocity(new double[] {1.0,1.0,1.0,0.0}, new double[]{10,-10,20}, 2.0); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }
 		try{ Position.getVelocity(new double[] {1.0,1.0,1.0}, new double[]{10,-10,20,0}, 2.0); assertTrue(false); } catch(IllegalArgumentException e){ assertTrue(true); }

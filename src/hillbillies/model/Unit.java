@@ -1668,7 +1668,7 @@ public class Unit extends Entity{
 			return false;
 		else
 			return ( ! hasSolidNeighbours(this.getPosition().getCubeCoordinates())
-					 && (Position.fuzzyEquals(this.getCoordinates(), this.getCubeCenter())));
+					 && (Position.equals(this.getCoordinates(), this.getCubeCenter())));
 	}
 	
 	/**
@@ -3186,7 +3186,7 @@ public class Unit extends Entity{
 			}
 			
 			// Set the orientation towards the target position.
-			if (! Position.fuzzyEquals(this.getTargetCoordinates(), newPosition)) {
+			if (! Position.equals(this.getTargetCoordinates(), newPosition)) {
 				this.setOrientation(this.getVelocity(this.getTargetCoordinates())[0], this.getVelocity(this.getTargetCoordinates())[1]);
 			}
 			

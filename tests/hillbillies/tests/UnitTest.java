@@ -774,15 +774,13 @@ public class UnitTest {
 					unitRandom.getWorld().getRandomUnitCoordinatesInRange(unitRandom.getCoordinates(), 2));
 			double speed = unitRandom.getWalkSpeed(target);
 			
-			assertTrue(Position.fuzzyEquals(unitRandom.getVelocity(target), 
-					Position.getVelocity(unitRandom.getCoordinates(), target, speed)));
+			assertTrue(Position.equals(unitRandom.getVelocity(target), Position.getVelocity(unitRandom.getCoordinates(), target, speed)));
 		}
 		
 		// No distance case
 		double[] target = unitRandom.getCoordinates() ;
 		double speed = unitRandom.getWalkSpeed(target);
-		assertTrue(Position.fuzzyEquals(unitRandom.getVelocity(target), 
-				Position.getVelocity(unitRandom.getCoordinates(), target, speed)));
+		assertTrue(Position.equals(unitRandom.getVelocity(target), Position.getVelocity(unitRandom.getCoordinates(), target, speed)));
 	}
 	
 	@Test

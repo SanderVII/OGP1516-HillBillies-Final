@@ -271,16 +271,18 @@ public class Position {
  	
  	/**
  	 * Returns the coordinates of the center of the cube which holds the given coordinates in the XY-plane.
- 	 * The z-coordinate is the same as that of the given position.
+ 	 * The z-coordinate is the same as that of the given coordinates.
  	 * 
  	 * @param	coordinates
  	 *				The given coordinates
+ 	 *
  	 * @return	Coordinates at the same z-level as the given coordinates,
- 	 *					and the x and y-coordinate equal to the center of the occupied cube.
- 	 *					| result == {this.getCubeCenter(coordinates)[0],this.getCubeCenter(coordinates)[1],coordinates[2]});	
+ 	 *				and the x and y-coordinate equal to the center of the occupied cube.
+ 	 *				| result == {this.getCubeCenter(coordinates)[0],this.getCubeCenter(coordinates)[1],coordinates[2]});	
+ 	 *
  	 * @throws	IllegalArgumentException
- 	 *				The given coordinates are invalid.
- 	 *					| ! (isValidArray(coordinates))		
+ 	 *				The given coordinates are not three-dimensional.
+ 	 *				| ! (isValidArray(coordinates))		
  	 */
  	public static double[] getSurfaceCenter(double[] coordinates) throws IllegalArgumentException {
  		if (! isValidArray(coordinates))
@@ -290,9 +292,8 @@ public class Position {
  	}
  	
  	/**
- 	 * Returns the coordinates of the 2D-center of the cube corresponding to the position.
- 	 * The 2D-center is defined as the center in the XY-plane. The z-coordinate
- 	 * is the same as this unit's z-coordinate.
+ 	 * Returns the coordinates of the center of the cube which holds the exact coordinates of this position in the XY-plane.
+ 	 * The z-coordinate is the same as that of the given coordinates.
  	 * 
  	 * @return	The coordinates of the center of the cube corresponding to the coordinates.
  	 *					| result == getSurfaceCenter(getCoordinates())
@@ -305,20 +306,22 @@ public class Position {
  	 * Returns the next coordinates for a given velocity and time interval.
  	 * 
  	 * @param	coordinates
- 	 *					The original coordinates.
+ 	 *				The original coordinates.
  	 * @param	velocity
- 	 *					The given velocity.
+ 	 *				The velocity to move with.
  	 * @param	deltaT
- 	 *					The given time interval.
+ 	 *				The time interval to advance time for..
+ 	 *
  	 * @return	The next coordinates, calculated as the velocity times deltaT, added to the original coordinates.
- 	 *					| for element in nextCoordinates
- 	 *					|	nextCoordinates[element] = coordinates[element] + velocity[element] * deltaT;
+ 	 *				| for element in nextCoordinates
+ 	 *				|	nextCoordinates[element] = coordinates[element] + velocity[element] * deltaT;
+ 	 *
  	 * @throws	IllegalArgumentException
- 	 *				The given coordinates are invalid.
- 	 *					| ! (isValidArray(coordinates))
+ 	 *				The given coordinates are not three-dimensional.
+ 	 *				| ! (isValidArray(coordinates))
  	 * @throws	IllegalArgumentException
- 	 *				The given velocity is invalid.
- 	 *					| ! (isValidArray(velocity))		
+ 	 *				The given velocity is not three-dimensional.
+ 	 *				| ! (isValidArray(velocity))		
  	 */
  	public static double[] calculateNextCoordinates(double[] coordinates, double[] velocity, double deltaT) throws IllegalArgumentException {
  		if (! isValidArray(coordinates))
@@ -334,20 +337,23 @@ public class Position {
  	
  	/**
  	 * Returns the distance between the two given coordinates.
+ 	 * 
  	 * @param	coordinates1
- 	 *					The first coordinates.
+ 	 *				The first coordinates.
  	 * @param	coordinates2
- 	 *					The second coordinates.
- 	 * @return The distance based on the mathematical formula of distance in 3 dimensions.
- 	 *					| result == Math.sqrt(Math.pow(coordinates1[0] - coordinates2[0], 2)
+ 	 *				The second coordinates.
+ 	 *
+ 	 * @return	The distance based on the mathematical formula of distance in 3 dimensions.
+ 	 *				| result == Math.sqrt(Math.pow(coordinates1[0] - coordinates2[0], 2)
  	 *				| +Math.pow(coordinates1[1] - coordinates2[1], 2)
  	 *				| +Math.pow(coordinates1[2] - coordinates2[2], 2));
+ 	 *
  	 * @throws	IllegalArgumentException
- 	 *				The given coordinates 1 is invalid.
- 	 *					| ! (isValidArray(coordinates1))
+ 	 *				The given coordinates 1 are not three-dimensional.
+ 	 *				| ! (isValidArray(coordinates1))
  	 * @throws	IllegalArgumentException
- 	 *				The given coordinates 2 is invalid.
- 	 *					| ! (isValidArray(coordinates2))
+ 	 *				The given coordinates 2 are not three-dimensional.
+ 	 *				| ! (isValidArray(coordinates2))
  	 */
  	public static double getDistance(double[] coordinates1, double[] coordinates2) throws IllegalArgumentException{
 		if (! isValidArray(coordinates1))
@@ -363,19 +369,21 @@ public class Position {
 	 * Checks whether two cube coordinates are next to each other, or the same.
 	 * 
 	 * @param	coordinates1
-	 *					The coordinates of the first cube.
+	 *				The coordinates of the first cube.
 	 * @param	coordinates2
-	 *					The coordinates of the second cube.
+	 *				The coordinates of the second cube.
+	 *
 	 * @return	True if and only if the difference between coordinates 
-	 *					is less than or equal to 1 for each coordinate.
-	 *					| result == (Math.abs(coordinates1[0] - coordinates2[0]) <= 1) &&
+	 *				is less than or equal to 1 for each coordinate.
+	 *				| result == (Math.abs(coordinates1[0] - coordinates2[0]) <= 1) &&
 	 *				| (Math.abs(coordinates1[1] - coordinates2[1]) <= 1) &&
 	 *				| (Math.abs(coordinates1[2] - coordinates2[2]) <= 1)
+	 *
 	 * @throws	IllegalArgumentException
- 	 *					The given coordinates 1 is invalid.
+ 	 *					The given coordinates 1 are not three-dimensional.
  	 *					| ! (isValidArray(coordinates1))
  	 * @throws	IllegalArgumentException
- 	 *					The given coordinates 2 is invalid.
+ 	 *					The given coordinates 2 are not three-dimensional.
  	 *					| ! (isValidArray(coordinates2))
 	 */
 	public static boolean isAdjacentTo(int[] coordinates1, int[] coordinates2) throws IllegalArgumentException {
@@ -392,24 +400,26 @@ public class Position {
 	 * Returns the velocity vector, based on the given coordinates and speed.
 	 * 
 	 * @param	coordinates1
-	 *					The first coordinates.
+	 *				The first coordinates.
 	 * @param	coordinates2
-	 *					The second coordinates.
+	 *				The second coordinates.
 	 * @param	speed
-	 *					The given speed.
+	 *				The magnitude of the velocity.
+	 *
 	 * @return	If the two coordinates are almost the same, return an array of zeros.
 	 *				| if ( Unit.fuzzyEquals(this.getTargetCoordinates(), this.getCoordinates()) ) 
 	 *				|	then return {0,0,0}
-	 *					Else, the velocity based on the mathematical formula using the given speed.
-	 *					| result == {(coordinates2[0]-coordinates1[0])/(getDistance(coordinates1, coordinates2)) * speed,
+	 *				Else, the velocity based on the mathematical formula using the given speed.
+	 *				| result == {(coordinates2[0]-coordinates1[0])/(getDistance(coordinates1, coordinates2)) * speed,
 	 *				| 	(coordinates2[1]-coordinates1[1])/(getDistance(coordinates1, coordinates2)) * speed,
 	 *				| 	(coordinates2[2]-coordinates1[2])/(getDistance(coordinates1, coordinates2)) * speed}
+	 *
 	 * @throws	IllegalArgumentException
- 	 *					The given coordinates 1 is invalid.
- 	 *					| ! (isValidArray(coordinates1))
+ 	 *				The given coordinates 1 are not three-dimensional.
+ 	 *				| ! (isValidArray(coordinates1))
  	 * @throws	IllegalArgumentException
- 	 *					The given coordinates 2 is invalid.
- 	 *					| ! (isValidArray(coordinates2))
+ 	 *				The given coordinates 2 are not three-dimensional.
+ 	 *				| ! (isValidArray(coordinates2))
 	 */
 	public static double[] getVelocity(double[] coordinates1, double[] coordinates2, double speed) throws IllegalArgumentException {
 		if (! isValidArray(coordinates1))
@@ -418,7 +428,7 @@ public class Position {
  			throw new IllegalArgumentException(Arrays.toString(coordinates2));
 		
 		// If target and current are the same, in the velocity formula you get a division by zero.
-		if (fuzzyEquals(coordinates1, coordinates2))
+		if (equals(coordinates1, coordinates2))
 				return new double[] {0,0,0};
 		else {
 			double distance = getDistance(coordinates1, coordinates2);
@@ -430,20 +440,22 @@ public class Position {
 	}
 	
 	/**
-	 * Returns a set of all integer coordinates which are at most r cubes away from
+	 * Returns a set of all cube coordinates which are at most r cubes away from
 	 * the given coordinates. The given coordinates are also included.
+	 * 
 	 * @param	coordinates
-	 *					The given coordinates.
+	 *				The given coordinates.
 	 * @param	r
-	 *					The given range.
-	 * @return	A set of coordinatess which integer coordinates are at most r away from the coordinates
-	 *					of the given coordinates, inclusively.
+	 *				The given range.
+	 *
+	 * @return	A set of coordinatess that are at most r away from the given coordinates (inclusif).
 	 *				| for all newCoordinates in result:
-	 *					|		newCoordinates[0] = coordinates[0] +/- (0..r) &&
-	 *					|		newCoordinates[1] = coordinates[1] +/- (0..r) &&
-	 *					|		newCoordinates[2] = coordinates[2] +/- (0..r)
+	 *				|		newCoordinates[0] = coordinates[0] +/- (0..r) &&
+	 *				|		newCoordinates[1] = coordinates[1] +/- (0..r) &&
+	 *				|		newCoordinates[2] = coordinates[2] +/- (0..r)
+	 *
 	 * @throws	IllegalArgumentException
-	 *					The given coordinates is invalid.
+	 *					The given coordinates are not three-dimensional.
 	 *					| ! (isValidArray(coordinates))
 	 * @throws	IllegalArgumentException	
 	 *					The given range is negative.
@@ -464,7 +476,7 @@ public class Position {
 	}
 	
 	/**
-	 * Returns the x-coordinate of this unit.
+	 * Returns the x-coordinate of this position.
 	 */
 	@Basic @Raw
 	public double getXCoordinate() {
@@ -472,13 +484,14 @@ public class Position {
 	}
 	
 	/**
-	 * Checks whether the given x-coordinate is a valid x-coordinate for any unit.
+	 * Checks whether the given x-coordinate is a valid x-coordinate for this position.
 	 *  
 	 * @param	x-coordinate
-	 *         			The x-coordinate to check.
+	 *				The x-coordinate to check.
+	 *
 	 * @return	True if and only if the given value is higher than or equal to the minimal coordinate value
-	 *						and less than the maximal value.
-	 *       			| result == ((xCoordinate >= World.CUBE_COORDINATE_MIN) && (xCoordinate < this.getWorld().getMaximumXValue()))
+	 *				and less than the maximal value.
+	 *				| result == ((xCoordinate >= World.CUBE_COORDINATE_MIN) && (xCoordinate < this.getWorld().getMaximumXValue()))
 	*/
 	@Raw
 	public boolean canHaveAsXCoordinate(double xCoordinate) {
@@ -486,25 +499,28 @@ public class Position {
 	}
 	
 	/**
-	 * Sets the x-coordinate of this unit to the given x-coordinate.
+	 * Sets the x-coordinate of this position to the given x-coordinate.
 	 * 
 	 * @param	xCoordinate
-	 *         			The new x-coordinate for this unit.
-	 * @post	The x-coordinate of this new unit is equal to the given x-coordinate.
-	 *       		| new.getXCoordinate() == xCoordinate
+	 *				The new x-coordinate for this unit.
+	 *
+	 * @post	The x-coordinate of this position is equal to the given x-coordinate.
+	 *				| new.getXCoordinate() == xCoordinate
+	 *
 	 * @throws	IllegalArgumentException
-	 *         			The given x-coordinate is not a valid x-coordinate for any unit.
-	 *       			| ! isValidXCoordinate(getXCoordinate())
+	 *				The given x-coordinate is not a valid x-coordinate for any unit.
+	 *				| ! isValidXCoordinate(getXCoordinate())
 	 */
 	@Raw
 	public void setXCoordinate(double xCoordinate)  throws IllegalArgumentException {
 		if (! canHaveAsXCoordinate(xCoordinate))
 			throw new IllegalArgumentException("X Coordinate is outside the allowed range!");
+		
 		this.coordinates[0] = xCoordinate;
 	}
 	
 	/**
-	 * Return the y-coordinate of this unit.
+	 * Returns the y-coordinate of this position.
 	 */
 	@Basic @Raw
 	public double getYCoordinate() {
@@ -512,14 +528,14 @@ public class Position {
 	}
 	
 	/**
-	 * Checks whether the given y-coordinate is a valid y-coordinate for
-	 * any unit.
+	 * Checks whether the given y-coordinate is a valid y-coordinate for this position.
 	 *  
 	 * @param	y-coordinate
-	 *         			The y-coordinate to check.
+	 *				The y-coordinate to check.
+	 *
 	 * @return True if and only if the given value is higher than or equal to the minimal coordinate value
-	 *						and less than the maximal value.
-	 *       			| result == ((yCoordinate >= World.CUBE_COORDINATE_MIN) && (yCoordinate < this.getWorld().getMaximumYValue())) 
+	 *				and less than the maximal value.
+	 *				| result == ((yCoordinate >= World.CUBE_COORDINATE_MIN) && (yCoordinate < this.getWorld().getMaximumYValue())) 
 	*/
 	@Raw
 	public boolean canHaveAsYCoordinate(double yCoordinate) {
@@ -527,15 +543,17 @@ public class Position {
 	}
 	
 	/**
-	 * Set the y-coordinate of this unit to the given y-coordinate.
+	 * Sets the y-coordinate of this position to the given y-coordinate.
 	 * 
-	 * @param	 yCoordinate
-	 *         			The new y-coordinate for this unit.
-	 * @post	The y-coordinate of this new unit is equal to the given y-coordinate.
-	 *       		| new.getYCoordinate() == yCoordinate
+	 * @param	yCoordinate
+	 *				The new y-coordinate for this position.
+	 *
+	 * @post	The y-coordinate of this position is equal to the given y-coordinate.
+	 *				| new.getYCoordinate() == yCoordinate
+	 *
 	 * @throws	IllegalArgumentException
-	 *         			The given y-coordinate is not a valid y-coordinate for any unit.
-	 *       			| ! isValidYCoordinate(getYCoordinate())
+	 *				The given y-coordinate is not a valid y-coordinate for any unit.
+	 *				| ! isValidYCoordinate(getYCoordinate())
 	 */
 	@Raw
 	public void setYCoordinate(double yCoordinate) throws IllegalArgumentException {
@@ -545,7 +563,7 @@ public class Position {
 	}
 	
 	/**
-	 * Return the z-coordinate of this unit.
+	 * Returns the z-coordinate of this position.
 	 */
 	@Basic @Raw
 	public double getZCoordinate() {
@@ -553,13 +571,14 @@ public class Position {
 	}
 	
 	/**
-	 * Checks whether the given z-coordinate is a valid z-coordinate for any unit.
+	 * Checks whether the given z-coordinate is a valid z-coordinate for this position.
 	 *  
 	 * @param	z-coordinate
 	 *         			The z-coordinate to check.
+	 *         
 	 * @return	True if and only if the given value is higher than or equal to the minimal coordinate value
-	 *						and less than the maximal value.
-	 *       			| result == ((zCoordinate >= World.CUBE_COORDINATE_MIN) && (zCoordinate < this.getWorld().getMaximumZValue())) 
+	 *				and less than the maximal value.
+	 *				| result == ((zCoordinate >= World.CUBE_COORDINATE_MIN) && (zCoordinate < this.getWorld().getMaximumZValue())) 
 	 */     
 	@Raw
 	public boolean canHaveAsZCoordinate(double zCoordinate) {
@@ -567,15 +586,17 @@ public class Position {
 	}
 	
 	/**
-	 * Set the z-coordinate of this unit to the given z-coordinate.
+	 * Sets the z-coordinate of this position to the given z-coordinate.
 	 * 
 	 * @param	zCoordinate
-	 *         			The new z-coordinate for this unit.
-	 * @post	The z-coordinate of this new unit is equal to the given z-coordinate.
-	 *       		| new.getZCoordinate() == zCoordinate
+	 *				The new z-coordinate for this position.
+	 *
+	 * @post	The z-coordinate of this position is equal to the given z-coordinate.
+	 *				| new.getZCoordinate() == zCoordinate
+	 *
 	 * @throws IllegalArgumentException
-	 *         			The given z-coordinate is not a valid z-coordinate for any unit.
-	 *       			| ! isValidZCoordinate(getZCoordinate())
+	 *				The given z-coordinate is not a valid z-coordinate for this position.
+	 *				| ! isValidZCoordinate(getZCoordinate())
 	 */
 	@Raw
 	public void setZCoordinate(double zCoordinate) throws IllegalArgumentException {
@@ -585,24 +606,27 @@ public class Position {
 	}
 	
 	/**
-	 * Returns the world this is a position of.
+	 * Returns the world of this position.
 	 */
 	public World getWorld(){
 		return this.world;
 	}
 	
 	/**
-	 * Returns whether this world is a valid world.
-	 * @param world
+	 * Returns whether the given world is a valid world for any position.
+	 * 
+	 * @param	world
 	 *				The world to check.
-	 * @return The given world is an active world.
+	 *
+	 * @return	The given world is an active world.
+	 *				| result == (world != null)
 	 */
-	private boolean isValidWorld(World world) {
+	private static boolean isValidWorld(World world) {
 		return world != null;
 	}
 	
 	/**
-	 * A variable referencing the world this position belongs to.
+	 * A variable that stores the world of this position.
 	 */
 	private final World world;
 	
@@ -613,13 +637,15 @@ public class Position {
 	 *				The coordinates of the first cube.
 	 * @param	coordinates2
 	 *				The coordinates of the second cube.
+	 *
 	 * @return	True if all coordinates of coordinates1 and coordinates2 are the same.
+	 * 
 	 * @throws	IllegalArgumentException
- 	 *				The given coordinates 1 is invalid.
- 	 *					| ! (isValidArray(coordinates1))
+ 	 *				The given coordinates 1 are not three-dimensional.
+ 	 *				| ! (isValidArray(coordinates1))
  	 * @throws	IllegalArgumentException
- 	 *				The given coordinates 2 is invalid.
- 	 *					| ! (isValidArray(coordinates2))
+ 	 *				The given coordinates 2 are not three-dimensional.
+ 	 *				| ! (isValidArray(coordinates2))
 	 */
 	public static boolean equals (int[] coordinates1, int[] coordinates2) throws IllegalArgumentException {
 		if (! isValidArray(coordinates1))
@@ -631,16 +657,23 @@ public class Position {
 	}
 	
 	/**
-	 * Checks whether two given coordinates are the sameby comparing each of their coordinates.
+	 * Checks whether two given coordinates are the same by comparing each of their coordinates.
+	 * 
 	 * @param coordinates1
 	 *				One of the coordinates to compare.
 	 * @param coordinates2
 	 *				The other coordinates to compare.
+	 *
+	 * @return	True if all coordinates are nearly the same.
+	 *				| result == (Util.fuzzyEquals(coordinates1[0], coordinates2[0])) &&
+	 *				|	(Util.fuzzyEquals(coordinates1[1], coordinates2[1])) &&
+	 *				|	(Util.fuzzyEquals(coordinates1[2], coordinates2[2])) 
+	 *
 	 * @throws IllegalArgumentException
-	 *				The first given coordinates are not valid.
+	 *				The given coordinates1 are not three-dimensional.
 	 *				| isValidArray(coordinates1)
 	 * @throws IllegalArgumentException
-	 *				The second given coordinates are not valid.
+	 *				The given coordinates2 are not three-dimensional.
 	 *				| isValidArray(coordinates2)
 	 */
 	public static boolean equals(double[] coordinates1, double[] coordinates2) throws IllegalArgumentException {
@@ -653,41 +686,19 @@ public class Position {
 	}
 	
 	/**
-	 * Checks whether two coordinates are nearly the same.
-	 * @param	coordinates1
-	 *					The first coordinates.
-	 * @param	coordinates2
-	 *					The second coordinates.
-	 * @return	True if all coordinates are nearly the same.
-	 *					| result == (Util.fuzzyEquals(coordinates1[0]-coordinates2[0], 0)) &&
-	 *		 		|	(Util.fuzzyEquals(coordinates1[1]-coordinates2[1], 0)) &&
-	 *			 	|	(Util.fuzzyEquals(coordinates1[2]-coordinates2[2], 0)) 
-	 * @throws	IllegalArgumentException
- 	 *					The given coordinates 1 is invalid.
- 	 *					| ! (isValidArray(coordinates1))
- 	 * @throws	IllegalArgumentException
- 	 *					The given coordinates 2 is invalid.
- 	 *					| ! (isValidArray(coordinates2))
-	 */
-	public static boolean fuzzyEquals(double[] coordinates1, double[] coordinates2) throws IllegalArgumentException{
-		if (! isValidArray(coordinates1))
-			throw new IllegalArgumentException(Arrays.toString(coordinates1));
- 		if (! isValidArray(coordinates2))
- 			throw new IllegalArgumentException(Arrays.toString(coordinates2));
-		 return ( (Util.fuzzyEquals(coordinates1[0]-coordinates2[0], 0)) &&
-				 	(Util.fuzzyEquals(coordinates1[1]-coordinates2[1], 0)) &&
-				 	(Util.fuzzyEquals(coordinates1[2]-coordinates2[2], 0)) );
-	}
-	
-	/**
 	 * Determines whether 2 given coordinates are the same by comparing each of their coordinates.
-	 * @param coordinates1
-	 *				One of the coordinates to compare.
-	 * @param coordinates2
-	 *				The other coordinates to compare.
+	 * 
+	 * @param position1
+	 *				One of the positions to compare.
+	 * @param position2
+	 *				The other position to compare.
+	 *
+	 * @return True if the coordinates of the the two given positions are equal and the world of the two positions is equal.
+	 *				| result == (equals(position1.getCoordinates(),position2.getCoordinates()) && (position1.getWorld() == position2.getWorld()))
 	 */
-	public static boolean equals(Position coordinates1, Position coordinates2) throws IllegalArgumentException {
-		return equals(coordinates1.getCoordinates(),coordinates2.getCoordinates());
+	public static boolean equals(Position position1, Position position2) throws IllegalArgumentException {
+		return (equals(position1.getCoordinates(),position2.getCoordinates())
+				&& (position1.getWorld() == position2.getWorld()));
 	}
 	
 }
