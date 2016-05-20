@@ -1,7 +1,10 @@
 package hillbillies.model;
 
 /**
- * @version 1.1
+ * An enumeration of the possible activities of a unit.
+ * 
+ * @author Sander Mergan, Thomas Vrancken
+ * @version 2.0
  */
 public enum Activity {
 		WORK, 		
@@ -9,15 +12,4 @@ public enum Activity {
 		MOVE,
 		ATTACK,
 		NOTHING;
-		
-		
-//		public boolean canInterrupt(Activity oldActivity, Activity newActivity) {
-//			if (oldActivity == WORK)
-//				return true;
-//			else if (oldActivity == FREEREST)
-//				return true;
-//			else if (oldActivity == MOVELONG)
-//				return
-//			
-//		}
 }

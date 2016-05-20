@@ -15,16 +15,17 @@ import hillbillies.positions.Position;
  * This class is used for the moveTo method in Unit but it is easily generalisble.
  * 
  * @author Sander Mergan, Thomas Vrancken
+ * @version 3.0
  */
 public class PathFinder {
 	
 	/**
-	 * Maximal number of iterations. Prevents the path finding from searching forever.
+	 * A variable that stores maximal number of iterations. Prevents the path finding from searching forever or a really long time.
 	 */
 	public static final int MAX_ITERATION = 400;
 	
 	/**
-	 * Whether diagonal movement is allowed.
+	 * A variable that stores whether diagonal movement is allowed.
 	 */
 	public static final boolean ALLOW_DIAGONAL = true;
 	

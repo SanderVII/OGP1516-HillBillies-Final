@@ -1468,7 +1468,7 @@ public class Unit extends Entity{
 	 * @param	dz
 	 *				The move to make in the z-direction.
 	 * 
-	 * @effect Initiate movement to the given coordinates and disable default behaviour.
+	 * @effect Initiate movement to the given coordinates and disable default behavior.
 	 *				| moveToAdjacent(dx, dy, dz, false)
 	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalArgumentException{
@@ -1484,8 +1484,8 @@ public class Unit extends Entity{
 	 *				The move to make in the y-direction.
 	 * @param	dz
 	 *				The move to make in the z-direction.
-	 * @param thisIsDefaultBehaviour
-	 *				Whether the movement is initiated by default behaviour or the player.
+	 * @param thisIsDefaultBehavior
+	 *				Whether the movement is initiated by default behavior or the player.
 	 *
 	 * @post	The current activity of the unit is set to MOVE.
 	 *				| new.getCurrentActivity() == MOVE
@@ -1497,7 +1497,7 @@ public class Unit extends Entity{
 	 *
 	 * @note Throws no exception because Exception is caught.
 	 */
-	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehaviour) {
+	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehavior) {
 		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling.
 		try {
 			this.setProgress(0);
@@ -1505,7 +1505,7 @@ public class Unit extends Entity{
 			Cube destinationCube = this.getWorld().getCube(
 					this.getPosition().getCubeCoordinates()[0]+dx, this.getPosition().getCubeCoordinates()[1]+dy, this.getPosition().getCubeCoordinates()[2]+dz);
 			
-			if (( ! thisIsDefaultBehaviour) && (this.getDefaultBehaviorEnabled())){
+			if (( ! thisIsDefaultBehavior) && (this.getDefaultBehaviorEnabled())){
 				this.stopDefaultBehavior();
 			}
 			
@@ -1544,12 +1544,12 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Initializes movement for this unit to the given cube coordinates and disables default behaviour.
+	 * Initializes movement for this unit to the given cube coordinates and disables default behavior.
 	 * 
 	 * @param	destinationCoordinates
 	 *				The destination cube.
 	 * 
-	 * @effect Initializes movement for this unit to the given cube coordinates and disables default behaviour.
+	 * @effect Initializes movement for this unit to the given cube coordinates and disables default behavior.
 	 *				| this.moveTo(destinationCoordinates, false)
 	 */
 	public void moveTo(int[] destinationCoordinates) throws IllegalArgumentException{
@@ -1561,8 +1561,8 @@ public class Unit extends Entity{
 	 * 
 	 * @param	destinationCoordinates
 	 *				The destination cube.
-	 * @param	thisIsDefaultBehaviour
-	 *				Whether attacking is called by default behaviour or not.
+	 * @param	thisIsDefaultBehavior
+	 *				Whether attacking is called by default behavior or not.
 	 *
 	 * @post	The progress of this unit is equal to zero.
 	 *				|new.getProgress() == 0
@@ -1574,7 +1574,7 @@ public class Unit extends Entity{
 	 *				This prevents the program from trying all possible cubes in the world (which takes very long, even for small worlds),
 	 *				while we know there is no path.
 	 */
-	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehaviour) 
+	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehavior) 
 			throws IllegalArgumentException {
 		try {
 			if ( ! this.getPosition().canHaveAsCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
@@ -1586,7 +1586,7 @@ public class Unit extends Entity{
 				throw new IllegalStateException("already at destination");
 			
 			else {
-				if ( ! thisIsDefaultBehaviour)
+				if ( ! thisIsDefaultBehavior)
 					this.stopDefaultBehavior();
 				
 				this.setProgress(0);
@@ -2007,12 +2007,12 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Makes this unit start working at the given position and disables default behaviour.
+	 * Makes this unit start working at the given position and disables default behavior.
 	 * 
 	 * @param	workTarget
 	 *				The position to perform work at.
 	 *
-	 * @effect	Makes this unit start working at the given target coordinates and disables default behaviour.
+	 * @effect	Makes this unit start working at the given target coordinates and disables default behavior.
 	 *				| this.workAt(workTarget, false)
 	 */
 	public void workAt(int[] workTarget) {
@@ -2024,22 +2024,22 @@ public class Unit extends Entity{
 	 * 
 	 * @param	workTarget
 	 *				The position to perform work at.
-	 * @param	thisIsDefaultBehaviour
-	 *				Whether working is called by default behaviour or not.
+	 * @param	thisIsDefaultBehavior
+	 *				Whether working is called by default behavior or not.
 	 *
 	 * @post	The new current activity of this unit is equal to WORK.
 	 *				| new.getCurrentActivity() == Activity.WORK
 	 * @post	The new workTarget of this unit is equal to the given workTarget.
 	 *				| new.getWorkTarget() == workTarget
-	 * @post	If workAt is not called by defaultBehaviour, then default behaviour is disabled.
-	 *				| if ( ! thisIsDefaultBehaviour)
-	 *				|	then this.getDefaultBehaviourEnabled() == false 
+	 * @post	If workAt is not called by defaultBehavior, then default behavior is disabled.
+	 *				| if ( ! thisIsDefaultBehavior)
+	 *				|	then this.getDefaultBehaviorEnabled() == false 
 	 * @post	The progress of this unit is equal to zero.
 	 *				|new.getProgress() == 0
 	 */
-	public void workAt(int[] workTarget, boolean thisIsDefaultBehaviour){
+	public void workAt(int[] workTarget, boolean thisIsDefaultBehavior){
 		try {
-			if (( ! thisIsDefaultBehaviour) && (this.getDefaultBehaviorEnabled()))
+			if (( ! thisIsDefaultBehavior) && (this.getDefaultBehaviorEnabled()))
 				this.stopDefaultBehavior();
 			
 			if(this.hasItem() && ( ! this.getItem().canHaveAsCoordinates(workTarget)))
@@ -2094,9 +2094,9 @@ public class Unit extends Entity{
 	private int[] workTarget;
 	
 	/**
-	 * Makes this unit start resting and turns of default behaviour.
+	 * Makes this unit start resting and turns of default behavior.
 	 * 
-	 * @effect Makes this unit start resting and disables fedault behaviour.
+	 * @effect Makes this unit start resting and disables fedault behavior.
 	 *				| this.rest(false);
 	 */
 	public void rest(){
@@ -2106,18 +2106,18 @@ public class Unit extends Entity{
 	/**
 	 * Makes this unit start resting.
 	 * 
-	 * @param	thisIsDefaultBehaviour
-	 *				Whether resting is called by default behaviour or not.
+	 * @param	thisIsDefaultBehavior
+	 *				Whether resting is called by default behavior or not.
 	 *
 	 * @post	The new current activity of this unit is equal to REST.
 	 *				|new.getCurrentActivity() == Activity.REST
-	 * @post	If rest is not called by default behaviour, then it is disabled.
-	 *				| if ( ! thisIsDefaultBehaviour)
-	 *				|	then setDefaultBehaviourEnabled(true)
+	 * @post	If rest is not called by default behavior, then it is disabled.
+	 *				| if ( ! thisIsDefaultBehavior)
+	 *				|	then setDefaultBehaviorEnabled(true)
 	 * @post	The progress of this unit is equal to zero.
 	 *				|new.getProgress() == 0
 	 */
-	private void rest(boolean thisIsDefaultBehaviour){
+	private void rest(boolean thisIsDefaultBehavior){
 		// moveToAdjacent() may not be interrupted by resting. 
 		// moveTo() can however be interrupted.
 		try {
@@ -2125,7 +2125,7 @@ public class Unit extends Entity{
 			if((moveToPath.size() == 0) && (this.getCurrentActivity() == Activity.MOVE) )
 				throw new IllegalStateException();
 			
-			if (( ! thisIsDefaultBehaviour) && (this.getDefaultBehaviorEnabled()))
+			if (( ! thisIsDefaultBehavior) && (this.getDefaultBehaviorEnabled()))
 				this.stopDefaultBehavior();
 			
 			this.setProgress(0);
@@ -2288,12 +2288,12 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Makes this unit fight with a given defender and disables default behaviour.
+	 * Makes this unit fight with a given defender and disables default behavior.
 	 * 
 	 * @param	defender
 	 *				The unit to attack.
 	 * 
-	 * @effect Makes this unit start fighting with the given defender and disables default behaviour.
+	 * @effect Makes this unit start fighting with the given defender and disables default behavior.
 	 *				| this.fight(defender, false)
 	 */
 	public void fight(Unit defender){
@@ -2305,23 +2305,23 @@ public class Unit extends Entity{
 	 * 
 	 * @param	defender
 	 *				The unit to attack.
-	 * @param	thisIsDefaultBehaviour
-	 *				Whether attacking is called by default behaviour or not.
+	 * @param	thisIsDefaultBehavior
+	 *				Whether attacking is called by default behavior or not.
 	 * 
-	 * @post	If fight is not called by default behaviour, then default behaviour is stopped.
-	 *				| if ( ! thisIsDefaultBehaviour)
-	 *				|	this.setDefaultBehaviourEnabled(false)
+	 * @post	If fight is not called by default behavior, then default behavior is stopped.
+	 *				| if ( ! thisIsDefaultBehavior)
+	 *				|	this.setDefaultBehaviorEnabled(false)
 	 * @post	The unit under attack from this unit is set to the given defender.
 	 *				| this.getUnitUnderAttack() == defender
 	 * @post	If the given defender is in range, the current activity of this unit will be set to ATTACK.
 	 *				| if ( ! this.isAdjacentTo(other.getPosition().getCubeCoordinates()))
 	 *				|	then (new this).getUnitBeingFought() == other
 	 */
-	private void fight(Unit defender, boolean thisIsDefaultBehaviour){
-		if (thisIsDefaultBehaviour)
-			System.out.println("fight by defaultBehaviour");
+	private void fight(Unit defender, boolean thisIsDefaultBehavior){
+		if (thisIsDefaultBehavior)
+			System.out.println("fight by defaultBehavior");
 		try {
-			if (( ! thisIsDefaultBehaviour) && (this.getDefaultBehaviorEnabled()))
+			if (( ! thisIsDefaultBehavior) && (this.getDefaultBehaviorEnabled()))
 				this.stopDefaultBehavior();
 			
 			if(defender == null)
@@ -2599,10 +2599,10 @@ public class Unit extends Entity{
 	}
 	
 	/**
-	 * Sets whether this unit's default behaviour is enabled to the given value.
+	 * Sets whether this unit's default behavior is enabled to the given value.
 	 * 
-	 * @post	The value of whether this unit's default behaviour is enabled, is equal to the given value.
-	 *				|new.getDefaultBehaviourEnabled() == true
+	 * @post	The value of whether this unit's default behavior is enabled, is equal to the given value.
+	 *				|new.getDefaultBehaviorEnabled() == true
 	 *
 	 * @throws	IllegalStateException
 	 *				This unit is terminated.
@@ -2621,18 +2621,10 @@ public class Unit extends Entity{
 	private boolean defaultBehaviorEnabled;
 	
 	/**
-	 * A symbolic constant used to limit the range of moving for units which have enabled default behavior.
-	 * This value is chosen based on observations, and prevents units from moving to far away locations, 
-	 * as these take a huge amount of time to calculate paths for and may even cause the game to crash. 
-	 * If the path finding  algorithm is better optimized, this value can be raised or even ignored.
-	 */
-	private final static int MAX_RANGE_DEFAULTMOVE = 2;
-	
-	/**
 	 * Starts the default behavior of this unit.
 	 * 
-	 * @effect	Sets whether this unit's default behaviour is enabled to true.
-	 *				| this.setDefaultBehaviourEnabled(true)
+	 * @effect	Sets whether this unit's default behavior is enabled to true.
+	 *				| this.setDefaultBehaviorEnabled(true)
 	 */
 	public void startDefaultBehavior() throws IllegalStateException {
 		this.setDefaultBehaviorEnabled(true);
@@ -2643,8 +2635,8 @@ public class Unit extends Entity{
 	 * 
 	 * @effect	This unit stops executing its task.
 	 * 				| getTask().stopExecuting()
-	 * @effect	Sets whether this unit's default behaviour is enabled to false.
-	 *				| this.setDefaultBehaviourEnabled(false)
+	 * @effect	Sets whether this unit's default behavior is enabled to false.
+	 *				| this.setDefaultBehaviorEnabled(false)
 	 * 			
 	 */
 	public void stopDefaultBehavior() {
@@ -3351,7 +3343,7 @@ public class Unit extends Entity{
 			
 			if (randomActivity == Activity.MOVE) {
 				RandomSetElement<int[]> randomElement = new RandomSetElement<>();
-				Set<int[]> cubes = DefaultManager.getAvailableMoveCubes(this, Unit.MAX_RANGE_DEFAULTMOVE);
+				Set<int[]> cubes = DefaultManager.getAvailableMoveCubes(this, DefaultManager.MAX_RANGE_DEFAULTMOVE);
 				int[] cube = randomElement.getRandomElement(cubes);
 				this.moveTo(cube,true);
 			}

@@ -8,17 +8,17 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 
 /**
- * A class of factions involving ...
+ * A class of factions involving a world, units and a scheduler.
  * 
- * @invar   Each faction must have proper units.
- *        | hasProperUnits()
+ * @invar	Each faction must have proper units.
+ *				| hasProperUnits()
  * @invar	Each faction must have a proper world.
- * 		  | hasProperWorld()
+ *				| hasProperWorld()
  * @invar	Each faction must have a proper scheduler.
- * 		  | hasProperScheduler()
+ *				| hasProperScheduler()
  * 
  * @author Sander Mergan, Thomas Vranken
- * @version 2.7
+ * @version 2.8
  */
 public class Faction {
 
@@ -26,10 +26,10 @@ public class Faction {
 	 * Creates a new faction with the given unit as a member, 
 	 * connected to the given world.
 	 * 
-	 * @param 	unit
-	 * 				The given unit.
+	 * @param	unit
+	 *				The given unit.
 	 * @param	world
-	 * 				The world to connect this faction to.
+	 *				The world to connect this faction to.
 	 * 
 	 * @post	This new faction has the given unit as one of its units.
 	 * @post	The given unit has this faction as its faction.
@@ -39,8 +39,8 @@ public class Faction {
 	 *				The scheduler references this faction and vice-versa.
 	 * 
 	 * @throws	IllegalArgumentException
-	 * 			The given unit is invalid, or the unit has a proper world 
-	 * 			which is not the given world.
+	 *				The given unit is invalid, or the unit has a proper world 
+	 *				which is not the given world.
 	 */
 	@Raw
 	public Faction(Unit unit, World world) throws IllegalArgumentException{	
@@ -63,14 +63,16 @@ public class Faction {
 	/**
 	 * Creates a new empty faction with the given world as its world.
 	 * 
-	 * @param 	world
-	 * 				The given world.
+	 * @param	world
+	 *				The given world.
+	 *
 	 * @post	This new faction has the given world as its world.
 	 * @post	This faction has no units.
 	 * @effect	A new scheduler is created for this faction.
-	 * 			The scheduler references this faction and vice-versa.
+	 *				The scheduler references this faction and vice-versa.
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			The given world is invalid.
+	 *				The given world is invalid.
 	 */
 	@Raw
 	public Faction(World world) throws IllegalArgumentException {	
@@ -84,14 +86,16 @@ public class Faction {
 	/**
 	 * Creates a new faction with the given unit as a member.
 	 * 
-	 * @param 	unit
-	 * 				The given unit.
+	 * @param	unit
+	 *				The given unit.
+	 *
 	 * @post	This new faction has the given unit as one of its units.
 	 * @post	The given unit has this faction as its faction.
 	 * @post	This new faction has the unit's world as its world.
 	 * @post	The unit's world has this faction as its faction.
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			The given unit is invalid.
+	 *				The given unit is invalid.
 	 */
 	@Raw
 	public Faction(Unit unit) throws IllegalArgumentException{	
@@ -117,17 +121,18 @@ public class Faction {
 		return string;
 	}
 	
+	
 	// =================================================================================================
 	// Destructor for factions.
 	// =================================================================================================
 	
 	/**
-	 * Terminate this faction.
+	 * Terminates this faction.
 	 *
-	 * @post   This faction  is terminated.
-	 *       | new.isTerminated()
-	 * @post   All units in this faction, if any, are terminated.
-	 *       
+	 * @post	This faction  is terminated.
+	 *				| new.isTerminated()
+	 *
+	 * @post	All units in this faction, if any, are terminated. 
 	 */
 	//TODO terminate all connections. (schedulers)
 	 public void terminate() {
@@ -143,8 +148,7 @@ public class Faction {
 	 }
 	 
 	 /**
-	  * Return a boolean indicating whether or not this faction
-	  * is terminated.
+	  * Returns whether this faction is terminated.
 	  */
 	 @Basic @Raw
 	 public boolean isTerminated() {
@@ -152,9 +156,10 @@ public class Faction {
 	 }
 	 
 	 /**
-	  * Variable registering whether this faction is terminated.
+	  * A variable that stores whether this faction is terminated.
 	  */
 	 private boolean isTerminated = false;
+	 
 	 
 	// =================================================================================================
 	// Methods concerning the units in this faction. (bidirectional association)
@@ -162,11 +167,13 @@ public class Faction {
 	// =================================================================================================
 
 	/**
-	 * Check whether this faction has the given unit as one of its
-	 * units.
+	 * Checks whether this faction has the given unit as one of its units.
 	 * 
-	 * @param  unit
-	 *         The unit to check.
+	 * @param	unit
+	 *				The unit to check.
+	 *
+	 * @return This faction has the given unt as one of its units.
+	 *				| result == units.contains(unit)
 	 */
 	@Basic
 	@Raw
@@ -175,16 +182,16 @@ public class Faction {
 	}
 
 	/**
-	 * Check whether this faction can have the given unit
-	 * as one of its units.
+	 * Checks whether this faction can have the given unit as one of its units.
 	 * 
-	 * @param  unit
-	 *         The unit to check.
-	 * @return True if and only if the given unit is effective
-	 *         and that unit is a valid unit for a faction.
-	 *       | result ==
-	 *       |   (unit != null) &&
-	 *       |   Unit.canHaveAsFaction(this)
+	 * @param	unit
+	 *				The unit to check.
+	 *
+	 * @return	True if and only if the given unit is effective
+	 *				and that unit is a valid unit for a faction.
+	 *				| result ==
+	 *				|   (unit != null) &&
+	 *				|   Unit.canHaveAsFaction(this)
 	 */
 	@Raw
 	public boolean canHaveAsUnit(Unit unit) {
@@ -192,16 +199,16 @@ public class Faction {
 	}
 
 	/**
-	 * Check whether this faction has proper units attached to it.
+	 * Checks whether this faction has proper units attached to it.
 	 * 
-	 * @return True if and only if this faction can have each of the
-	 *         units attached to it as one of its units,
-	 *         and if each of these units references this faction as
-	 *         the faction to which they are attached.
-	 *       | for each unit in Unit:
-	 *       |   if (hasAsUnit(unit))
-	 *       |     then canHaveAsUnit(unit) &&
-	 *       |          (unit.getFaction() == this)
+	 * @return	True if and only if this faction can have each of the
+	 *				units attached to it as one of its units,
+	 *				and if each of these units references this faction as
+	 *				the faction to which they are attached.
+	 *				| for each unit in Unit:
+	 *				|   if (hasAsUnit(unit))
+	 *				|     then canHaveAsUnit(unit) &&
+	 *				|          (unit.getFaction() == this)
 	 */
 	public boolean hasProperUnits() {
 		for (Unit unit : units) {
@@ -214,25 +221,27 @@ public class Faction {
 	}
 
 	/**
-	 * Return the number of units associated with this faction.
+	 * Returns the number of units associated with this faction.
 	 *
-	 * @return  The total number of units collected in this faction.
+	 * @return	The total number of units collected in this faction.
 	 */
 	public int getNbUnits() {
 		return units.size();
 	}
 
 	/**
-	 * Add the given unit to the set of units of this faction.
+	 * Adds the given unit to the set of units of this faction.
 	 * 
-	 * @param  unit
-	 *         The unit to be added.
-	 * @pre    The given unit is effective and already references
-	 *         this faction.
-	 *       | (unit != null) && (unit.getFaction() == this)
-	 * @post   This faction has the given unit as one of its units.
-	 *       | new.hasAsUnit(unit)
-	 * @throws IllegalArgumentException
+	 * @param	unit
+	 *				The unit to be added.
+	 *
+	 * @pre	The given unit is effective and already references this faction.
+	 *				| (unit != null) && (unit.getFaction() == this)
+	 *
+	 * @post	This faction has the given unit as one of its units.
+	 *				| new.hasAsUnit(unit)
+	 *
+	 * @throws	IllegalArgumentException
 	 *				The given unit is not an active unit or the given unit is not correctly connected to this faction.
 	 */
 	// NOTE: A check to see if the faction is not full, is executed in unit.setFaction().
@@ -243,18 +252,19 @@ public class Faction {
 	}
 
 	/**
-	 * Remove the given unit from the set of units of this faction.
+	 * Removes the given unit from the set of units of this faction.
 	 * 
-	 * @param  unit
-	 *         The unit to be removed.
-	 * @pre    This faction has the given unit as one of
-	 *         its units, and the given unit does not
-	 *         reference any faction.
-	 *       | this.hasAsUnit(unit) &&
-	 *       | (unit.getFaction() == null)
-	 * @post   This faction no longer has the given unit as
-	 *         one of its units.
-	 *       | ! new.hasAsUnit(unit)
+	 * @param	unit
+	 *				The unit to be removed.
+	 *
+	 * @pre	This faction has the given unit as one of
+	 *				its units, and the given unit does not
+	 *				reference any faction.
+	 *				| this.hasAsUnit(unit) &&
+	 *				| (unit.getFaction() == null)
+	 *
+	 * @post	This faction no longer has the given unit ascone of its units.
+	 *				| ! new.hasAsUnit(unit)
 	 */
 	@Raw
 	public void removeUnit(Unit unit) {
@@ -264,30 +274,29 @@ public class Faction {
 	}
 
 	/**
-	 * Variable referencing a set collecting all the units
-	 * of this faction.
+	 * A variable that stores a set collecting all the units of this faction.
 	 * 
-	 * @invar  The referenced set is effective.
-	 *       | units != null
-	 * @invar  Each unit registered in the referenced list is
-	 *         effective and not yet terminated.
-	 *       | for each unit in units:
-	 *       |   ( (unit != null) &&
-	 *       |     (! unit.isTerminated()) )
+	 * @invar	The referenced set is effective.
+	 *				| units != null
+	 * @invar	Each unit registered in the referenced list is effective and not yet terminated.
+	 *				| for each unit in units:
+	 *				|   ( (unit != null) &&
+	 *				|     (! unit.isTerminated()) )
 	 */
 	private final Set<Unit> units = new HashSet<Unit>();
 	
 	/**
 	 * Returns a set collecting all the units of this faction. 
 	 * 
-	 * @return	The resulting set does not contain a null reference.
-	 * @return	Each unit in the resulting set is attached to this faction,
-	 * 			and vice versa.
+	 * @note	The resulting set does not contain a null reference.
+	 * 
+	 * @return	Each unit in the resulting set is attached to this faction and vice versa.
 	 */
 	// NOTE: this is the formal way (same as in textbook) to return all objects of the set.
 	public Set<Unit> getUnits() {
 		return new HashSet<Unit>(this.units);
 	}
+	
 	
 	// =================================================================================================
 	// Methods concerning the world of this faction. (bidirectional association)
@@ -296,7 +305,7 @@ public class Faction {
 	// =================================================================================================
 	
 	/**
-	 * Return the world this faction is part of.
+	 * Returns the world of this faction.
 	 */
 	@Basic @Raw
 	public World getWorld() {
@@ -306,16 +315,15 @@ public class Faction {
 	/**
 	 * Checks whether this faction can have the given world as its world.
 	 * 
-	 * @param 	world
-	 *			The world to check.
-	 * @return	If this faction is terminated, true if the given world
-	 * 			is not effective.
-	 * 			| if (isTerminated())
-	 * 			|	then result == (world == null)
-	 * 			Else, true if the given world is effective
-	 * 			and not yet terminated.
-	 * 			| else
-	 * 			|	then result == (world != null) && (!world.isTerminated())
+	 * @param	world
+	 *				The world to check.
+	 *
+	 * @return	If this faction is terminated, true if the given world is not effective.
+	 *				| if (isTerminated())
+	 *				|	then result == (world == null)
+	 *				Else, true if the given world is effective and not yet terminated.
+	 *				| else
+	 *				|	then result == (world != null) && (!world.isTerminated())
 	 */
 	@Raw
 	public boolean canHaveAsWorld(@Raw World world) {
@@ -326,13 +334,13 @@ public class Faction {
 	}
 	
 	/**
-	 * Checks whether this faction has a proper world to which it is attached.
+	 * Checks whether this faction has a proper world.
 	 * 
 	 * @return	True if and only if this faction can have the world to which it
-	 * 			is attached as its world, and if that world is either not
-	 * 			effective or has this faction as one of its factions.
-	 * 			| (this.canHaveAsWorld(this.getWorld()) 
-	 *			|  && ( (this.getWorld() == null) || (this.getWorld().hasAsFaction(this))) )
+	 *				is attached as its world, and if that world is either not
+	 *				effective or has this faction as one of its factions.
+	 *				| (this.canHaveAsWorld(this.getWorld()) 
+	 *				|  && ( (this.getWorld() == null) || (this.getWorld().hasAsFaction(this))) )
 	 */
 	public boolean hasProperWorld() {
 		return ( this.canHaveAsWorld(this.getWorld()) 
@@ -340,16 +348,18 @@ public class Faction {
 	}
 	
 	/**
-	 * Sets the world to which this faction is attached to to the given world.
+	 * Sets the world to this faction is attached to to the given world.
 	 * 
 	 * @param	world
-	 * 			The world to attach this faction to.
+	 *				The world to attach this faction to.
+	 *
 	 * @post	This faction references the given world as the world to which it is attached.
-	 * 			| new.getWorld() == world
+	 *				| new.getWorld() == world
+	 *
 	 * @throws	IllegalArgumentException
-	 * 			This faction cannot have the given world as its world,
-	 * 			Or the world is at its maximum capacity.
-	 * 			| (! canHaveAsWorld(world)) || (world.getNbFactions() >= World.MAX_FACTIONS)
+	 *				This faction cannot have the given world as its world,
+	 *				Or the world is at its maximum capacity.
+	 *				| (! canHaveAsWorld(world)) || (world.getNbFactions() >= World.MAX_FACTIONS)
 	 */
 	public void setWorld(@Raw World world) throws IllegalArgumentException {
 		if ( ! this.canHaveAsWorld(world))
@@ -361,16 +371,17 @@ public class Faction {
 	}
 	
 	/**
-	 * A variable referencing the world to which this faction is attached.
+	 * A variable that stores the world of this faction.
 	 */
 	private World world;
+	
 	
 	// =================================================================================================
 	// Methods concerning the scheduler of this faction.
 	// =================================================================================================
 	
 	/**
-	 * Return the scheduler of this faction.
+	 * Returns the scheduler of this faction.
 	 */
 	@Basic @Raw
 	public Scheduler getScheduler() {
@@ -378,41 +389,44 @@ public class Faction {
 	}
 	
 	/**
-	 * Check whether this faction has a scheduler.
+	 * Checks whether this faction has a scheduler.
+	 * 
 	 * @return	True if the scheduler of this faction is effective.
-	 * 			| result == (getScheduler() != null)
+	 *				| result == (getScheduler() != null)
 	 */
 	public boolean hasScheduler() {
 		return this.getScheduler() != null;
 	}
 	
 	/**
-	 * Checks whether this faction has a proper scheduler attached to it.
+	 * Checks whether this faction has a proper scheduler.
 	 * 
 	 * @return	True if and only if the scheduler of this faction does not reference
-	 * 			an effective scheduler, or that scheduler references this faction
-	 * 			as its faction.
-	 * 			| result == ( (this.getScheduler() == null) || 
-	 * 			|				(this.getScheduler().getFaction() == this) )
+	 *				an effective scheduler, or that scheduler references this faction
+	 *				as its faction.
+	 *				| result == ( (this.getScheduler() == null) || 
+	 *				|		(this.getScheduler().getFaction() == this) )
 	 */
 	public boolean hasProperScheduler() {
 		return ( (this.getScheduler() == null) || (this.getScheduler().getFaction() == this) );
 	}
 	
 	/**
-	 * Sets the scheduler attached to this faction to to the given scheduler.
+	 * Sets the scheduler of this faction to to the given scheduler.
 	 * 
 	 * @param	scheduler
-	 * 			The scheduler to attach to this faction.
+	 *				The scheduler to attach to this faction.
+	 *
 	 * @post	This faction references the given scheduler as its scheduler.
-	 * 			| new.getScheduler() == scheduler
+	 *				| new.getScheduler() == scheduler
+	 *
 	 * @throws	IllegalArgumentException
-	 * 			The given scheduler is effective but does not references
-	 * 			this faction as its faction.
-	 * 			| (scheduler != null) && (scheduler.getFaction() != this)
-	 * 			Or, the scheduler is not effective and this faction references
-	 * 			a scheduler which still references this faction as its faction.
-	 * 			| (scheduler == null) && (this.hasScheduler() && (this.getScheduler().getFaction() == this))
+	 *				The given scheduler is effective but does not references
+	 *				this faction as its faction.
+	 *				| (scheduler != null) && (scheduler.getFaction() != this)
+	 *				Or, the scheduler is not effective and this faction references
+	 *				a scheduler which still references this faction as its faction.
+	 *				| (scheduler == null) && (this.hasScheduler() && (this.getScheduler().getFaction() == this))
 	 */
 	public void setScheduler(@Raw Scheduler scheduler) throws IllegalArgumentException {
 		if ( (scheduler != null) && (scheduler.getFaction() != this) )
@@ -423,11 +437,12 @@ public class Faction {
 	}
 	
 	/**
-	 * A variable referencing the scheduler attached to this faction.
+	 * A variable that stores the scheduler of this faction.
 	 */
 	private Scheduler scheduler;
+	
 	/**
-	 * Symbolic constant denoting the maximum amount of units
+	 * A symbolic constant denoting the maximum amount of units
 	 * belonging to the same faction.
 	 */
 	public static final int MAX_UNITS_FACTION = 50;

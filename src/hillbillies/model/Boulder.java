@@ -3,30 +3,25 @@ package hillbillies.model;
 import java.util.Random;
 
 /**
- * A class of boulders, involving a world, weight and a position.
- * 
- * @invar  The target position of each boulder must be a valid target position for any
- *         boulder.
- *       | isValidTargetPosition(getTargetPosition())
- * @invar  The initial position of each boulder must be a valid initial position for any
- *         boulder.
- *       | isValidInitialPosition(getInitialPosition())
+ * A class of boulders, involving a world, weight and position.
+ *
  * @author Sander Mergan, Thomas Vranken
- * @version 2.5
+ * @version 3.0
  */
 
 public class Boulder extends Item{
 	
 	/**
-	 * Initialize this new boulder with the given world, coordinates and weight.
+	 * Initializes this new boulder with the given world, coordinates and weight.
 	 * 
 	 * @param	world
-	 * 				The world of this new boulder.
+	 *				The world of this new boulder.
 	 * @param	coordinates
-	 * 				The coordinates of this new boulder.
-	 * @effect	The world of this boulder is set to the given world.
-	 * @effect	The coordinates of this boulder is set to the given coordinates.
-	 * @effect	The weight of this boulder is set to the given weight.
+	 *				The coordinates of this new boulder.
+	 *
+	 * @effect	Initializes this boulder with the given world, coordinates and weight and adds this new boulder to the world.
+	 *				| super(world, coordinates, weight)
+	 *				| world.addEntity(this)
 	 */
 	public Boulder(World world, int[] coordinates, int weight) throws IllegalArgumentException{
 		super(world, coordinates,weight);
@@ -34,20 +29,20 @@ public class Boulder extends Item{
 	}
 		
 	/**
-	 * Initializes this new log with given world and cube coordinates and
+	 * Initializes this new boulder with given world and cube coordinates and
 	 * a random weight bewteen 10 and 50 inclusively.
 	 * 
 	 * @param	world
-	 * 				The world of this new log.
+	 *				The world of this new boulder.
 	 * @param	coordinates
-	 * 				The coordinates of this new log.
-	 * @effect	Creates a new log with given attributes and
-	 * 				a random valid weight. 
-	 * 				The log is placed in the center of the given cube.
+	 *				The coordinates of this new boulder.
+	 *
+	 * @effect	Creates a new boulder with the given world and coordinates and a random valid weight. 
+	 *				| this(world, coordinates, new Random().nextInt(41)+10)
+	 *				| world.addEntity(this)
 	 */
 	public Boulder(World world, int[] coordinates) {
-		super(world, coordinates, new Random().nextInt(41)+10);
+		this(world, coordinates, new Random().nextInt(41)+10);
 		world.addEntity(this);
 	}
-	
 }
