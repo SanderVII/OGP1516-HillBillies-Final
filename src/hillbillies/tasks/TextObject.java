@@ -30,7 +30,6 @@ public abstract class TextObject implements Cloneable {
 	 * have specific conditions and must override this method.
 	 * @return
 	 */
-	//TODO maybe better to make abstract?
 	public boolean isWellFormed() {
 		return true;
 	}

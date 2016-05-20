@@ -9,6 +9,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.exceptions.MaxIterationException;
+import hillbillies.exceptions.TerminatedException;
 import hillbillies.exceptions.UnitMaxedOutException;
 import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
@@ -1558,8 +1559,7 @@ public class Unit extends Entity{
 	 *				This prevents the program from trying all possible cubes in the world (which takes very long, even for small worlds),
 	 *				while we know there is no path.
 	 */
-	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehavior) 
-			throws IllegalArgumentException {
+	public void moveTo(int[] destinationCoordinates, boolean thisIsDefaultBehavior){
 		try {
 			if ( ! this.getPosition().canHaveAsCoordinates(destinationCoordinates)) {// Checking if the target cube is passable happens in canHaveAsUnitCoordinates.	
 				throw new IllegalArgumentException();
@@ -3242,48 +3242,51 @@ public class Unit extends Entity{
 	}
 	
 	private void advanceTimeFall(double deltaT) {
-		double[] newCoordinates;
-
-		double[] targetCoordinates = Position.getCubeCenter(this.getWorld().getCubeBelow(Position.getCubeCoordinates(initialCoordinates)).getPosition().getCoordinates());
-		this.setTargetCoordinates(targetCoordinates);
-
-		this.setCoordinates(this.getPosition().getSurfaceCenter());
-		
-		// No other movement allowed.
-		this.moveToPath.clear();
-		
-		// Calculate the new position.
-		newCoordinates = Position.calculateNextCoordinates(this.getCoordinates(), Entity.FALL_VELOCITY, deltaT);
-		
-		// No updates needed for orientation (only for x and y).
-		
-		// The target position is reached or surpassed.
-		if (Position.getDistance(this.getTargetCoordinates(), this.getInitialCoordinates()) 
-				<= Position.getDistance(newCoordinates, this.getInitialCoordinates())) {
-
-			// Update initial position
-			this.setInitialCoordinates(targetCoordinates);
-			this.setCoordinates(targetCoordinates);
+		try{
+			double[] newCoordinates;
+	
+			double[] targetCoordinates = Position.getCubeCenter(this.getWorld().getCubeBelow(Position.getCubeCoordinates(initialCoordinates)).getPosition().getCoordinates());
+			this.setTargetCoordinates(targetCoordinates);
+	
+			this.setCoordinates(this.getPosition().getSurfaceCenter());
 			
-			// Lose health
-			if (this.getCurrentHealth() > 10)
-				this.setCurrentHealth(this.getCurrentHealth()-10);
-			else{
-				this.setCurrentHealth(0);
-				this.terminate();
-			}
+			// No other movement allowed.
+			this.moveToPath.clear();
 			
-			// The unit has stopped falling
-			if (this.hasSolidNeighbours(UnitPosition.getCubeCoordinates(targetCoordinates))) {
+			// Calculate the new position.
+			newCoordinates = Position.calculateNextCoordinates(this.getCoordinates(), Entity.FALL_VELOCITY, deltaT);
+			
+			// No updates needed for orientation (only for x and y).
+			
+			// The target position is reached or surpassed.
+			if (Position.getDistance(this.getTargetCoordinates(), this.getInitialCoordinates()) 
+					<= Position.getDistance(newCoordinates, this.getInitialCoordinates())) {
+	
+				// Update initial position
+				this.setInitialCoordinates(targetCoordinates);
+				this.setCoordinates(targetCoordinates);
 				
-				this.setCoordinates(this.getTargetCoordinates());
-				this.setCurrentActivity(Activity.NOTHING);
-				this.resetCoordinates();
-				this.setIsFalling(false);
-			}
-		} else {
-			this.setCoordinates(newCoordinates); 				
-		}	
+				// Lose health
+				if (this.getCurrentHealth() > 10)
+					this.setCurrentHealth(this.getCurrentHealth()-10);
+				else{
+					this.setCurrentHealth(0);
+					this.terminate();
+					throw new TerminatedException();
+				}
+				
+				// The unit has stopped falling
+				if (this.hasSolidNeighbours(UnitPosition.getCubeCoordinates(targetCoordinates))) {
+					
+					this.setCoordinates(this.getTargetCoordinates());
+					this.setCurrentActivity(Activity.NOTHING);
+					this.resetCoordinates();
+					this.setIsFalling(false);
+				}
+			} else {
+				this.setCoordinates(newCoordinates); 				
+			}	
+		} catch(TerminatedException e){}
 	}
 	
 	private void advanceTimeDefault(double deltaT) {

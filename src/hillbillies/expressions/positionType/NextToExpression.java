@@ -22,10 +22,8 @@ public class NextToExpression<E extends PositionExpression>
 				getDirectlyAdjacentCoordinates(dummy[0], dummy[1], dummy[2]);
 		Set<int[]> copy = new HashSet<>();
 		for (int[] coordinate: directlyAdjacentCoordinates)
-//			if ( this.getUnit().canHaveAsCoordinates(coordinate))
 				copy.add(coordinate);
 		
-		//TODO remove unit check? currently blocks an all solid cube.
 		int random = new Random().nextInt(copy.size());
 		int i = 0;
 		for (int[] cubeCoordinate: copy) {

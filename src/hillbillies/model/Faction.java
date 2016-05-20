@@ -134,16 +134,18 @@ public class Faction {
 	 *
 	 * @post	All units in this faction, if any, are terminated. 
 	 */
-	//TODO terminate all connections. (schedulers)
 	 public void terminate() {
 		 if (! this.isTerminated()) {
 			 if (this.getNbUnits() > 0)
 				 for (Unit unit: units)
 					 unit.terminate();
 			 World world = this.getWorld();
+			 Scheduler scheduler = this.getScheduler();
 			 this.isTerminated = true;
 			 this.setWorld(null);
 			 world.removeFaction(this);
+			 this.setScheduler(null);
+			 scheduler.setFaction(null);
 		 }
 	 }
 	 

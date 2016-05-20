@@ -51,7 +51,7 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 				unit.stopDefaultBehavior();
 			return unit;
 		}
-		catch(IllegalArgumentException e){
+		catch(Exception e){
 			throw new ModelException();
 		}
 	}
@@ -345,8 +345,6 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 			unit.moveToAdjacent(dx, dy, dz);
 		}
 		catch (Exception e){
-//			unit.cancelMoveTo();
-//			throw e;
 		}
 	}
 
@@ -397,7 +395,7 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 		try{
 			unit.startSprinting();
 		}
-		catch(IllegalArgumentException e){
+		catch(Exception e){
 			throw new ModelException();
 		}
 	}
@@ -511,6 +509,9 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 		catch(IllegalArgumentException e){
 			throw new ModelException();
 		}
+		catch(IllegalStateException e){
+			throw new ModelException();
+		}
 	}
 
 	/**
@@ -568,20 +569,17 @@ public class Facade implements hillbillies.part1.facade.IFacade {
 	 */
 	@Override
 	public void setDefaultBehaviorEnabled(Unit unit, boolean value) throws ModelException {
-//		try{
+		try{
 			if (value){
 				unit.startDefaultBehavior();
 			}
 			else{
 				unit.stopDefaultBehavior();
 			}
-//		}
-//		catch(IllegalArgumentException e){
-//			throw new ModelException();
-//		}
-//		catch(NullPointerException e){
-//			throw new ModelException();
-//		}
+		}
+		catch(Exception e){
+			throw new ModelException();
+		}
 	}
 
 	/**

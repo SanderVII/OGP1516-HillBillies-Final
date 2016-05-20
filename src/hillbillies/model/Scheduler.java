@@ -141,7 +141,7 @@ public class Scheduler {
 	 *				| (! canHaveAsFaction(faction)) ||
 	 *				| ((faction != null) && (faction.getScheduler() != null))
 	 */
-	private void setFaction(@Raw Faction faction) throws IllegalArgumentException {
+	public void setFaction(@Raw Faction faction) throws IllegalArgumentException {
 		if (! this.canHaveAsFaction(faction))
 			throw new IllegalArgumentException();
 		if (faction != null)

@@ -52,7 +52,11 @@ public class Facade extends hillbillies.part1.facade.Facade implements hillbilli
 	 */
 	@Override
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException {
-		return new World(terrainTypes, modelListener);
+		try{
+			return new World(terrainTypes, modelListener);
+		}catch(IllegalArgumentException | NullPointerException e){
+			throw new ModelException();
+		}
 	}
 
 	/**
@@ -114,16 +118,13 @@ public class Facade extends hillbillies.part1.facade.Facade implements hillbilli
 			world.advanceTime(dt);
 		}
 		catch(IllegalArgumentException e){
-//			throw new ModelException();
-			throw e;
+			throw new ModelException();
 		}
 		catch(NullPointerException e){
-//			throw new ModelException();
-			throw e;
+			throw new ModelException();
 		}
 		catch(IllegalStateException e){
-//			throw new ModelException();
-			throw e;
+			throw new ModelException();
 		}
 	}
 
@@ -146,11 +147,11 @@ public class Facade extends hillbillies.part1.facade.Facade implements hillbilli
 	 */
 	@Override
 	public int getCubeType(World world, int x, int y, int z) throws ModelException {
-//		try {
+		try {
 			return world.getTerrain(x, y, z).ordinal();
-//		} catch (Exception e) {
-//			throw new ModelException();
-//		}
+		} catch (Exception e) {
+			throw new ModelException();
+		}
 	}
 
 	/**
@@ -255,7 +256,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements hillbilli
 		try{
 			world.addEntity(unit);
 		}
-		catch(IllegalStateException e){
+		catch(IllegalStateException | IllegalArgumentException e){
 			throw new ModelException();
 		}
 	}
@@ -350,7 +351,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements hillbilli
 		try {
 			unit.workAt(new int[] {x, y, z});
 		} 
-		catch (NullPointerException | IllegalArgumentException e) {
+		catch (NullPointerException e) {
 			throw new ModelException();
 		}
 	}
