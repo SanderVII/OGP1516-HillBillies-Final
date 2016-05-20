@@ -65,12 +65,13 @@ public abstract class Entity {
 	 */
 	public void terminate() {
 		if (! this.isTerminated()) {
+			this.isTerminated = true;
 			if (this.getWorld() != null) {
-				this.getWorld().removeEntity(this);
+				World world = this.getWorld();
 				this.setWorld(null);
+				world.removeEntity(this);
 			}
 		}
-		this.isTerminated = true;
 	 }
 	 
 	/**

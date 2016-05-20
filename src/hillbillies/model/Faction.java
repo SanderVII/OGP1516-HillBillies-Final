@@ -257,18 +257,19 @@ public class Faction {
 	 * @param	unit
 	 *				The unit to be removed.
 	 *
-	 * @pre	This faction has the given unit as one of
-	 *				its units, and the given unit does not
-	 *				reference any faction.
-	 *				| this.hasAsUnit(unit) &&
-	 *				| (unit.getFaction() == null)
-	 *
 	 * @post	This faction no longer has the given unit ascone of its units.
 	 *				| ! new.hasAsUnit(unit)
+	 *
+	 * @throws	IllegalArgumentException
+	 *				This faction doesn't have the given unit as one of its units
+	 *				| ( ! this.hasAsUnit(unit))
 	 */
 	@Raw
-	public void removeUnit(Unit unit) {
-		assert this.hasAsUnit(unit) && (unit.getFaction() == null);
+	public void removeUnit(Unit unit) throws IllegalArgumentException{
+		
+		if ( ! this.hasAsUnit(unit) )
+			throw new IllegalArgumentException();
+		
 		units.remove(unit);
 		unit.setFaction(null);
 	}

@@ -241,9 +241,10 @@ public class Unit extends Entity{
 				this.dropItem(this.getCubeCoordinates());
 			
 			this.isTerminated = true;
-			
-			 this.getFaction().removeUnit(this);
-			 this.getWorld().removeEntity(this);
+			Faction faction = this.getFaction();
+			World world = this.getWorld();
+			 faction.removeUnit(this);
+			 world.removeEntity(this);
 		 }
 	 }
 	
@@ -992,18 +993,6 @@ public class Unit extends Entity{
 	public UnitPosition getPosition(){
 		return (UnitPosition) this.position;
 	}
- 	
- 	/**
- 	 * Returns the position of the 2D-center of the cube this unit is standing in.
- 	 * The 2D-center is defined as the center in the XY-plane. The z-coordinate
- 	 * is the same as this unit's z-coordinate.
- 	 * 
- 	 * @return	The coordinates of the center of the cube this unit occupies.
- 	 *				| result == Position.getSurfaceCenter(getPosition().getCoordinates)
- 	 */
- 	public double[] getSurfaceCenter() {
- 		return (UnitPosition.getSurfaceCenter(this.getCoordinates()));
- 	}
  
 	/**
 	 * Sets the coordinates of this unit to the given coordinates.

@@ -576,15 +576,17 @@ public class UnitTest {
 	@Test
 	public void setFactionTest(){
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unit = new Unit(world, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
-		Unit unit2 = new Unit(world, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
 		Faction faction = new Faction(world);
 		Faction faction2 = new Faction(world);
+		Faction faction3 = new Faction(world);
+		Unit unit = new Unit(world, faction3, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
+		Unit unit2 = new Unit(world, "UnitMax",new int[]{0, 0, 1}, 100,100,100,100);
 		
 		assertTrue(unit.canHaveAsFaction(faction));
 		assertTrue(unit.canHaveAsFaction(faction2));
 		assertFalse(unit.canHaveAsFaction(null));
-		try{unit.setFaction(faction2); assertTrue(true);}catch(IllegalArgumentException e){assertTrue(false);}
+		try{unit.setFaction(faction2); faction2.addUnit(unit); assertTrue(unit.getFaction() == faction2 && faction2.hasAsUnit(unit));}catch(IllegalArgumentException e){assertTrue(false);}
+		
 		try{unit.setFaction(null); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
 		
 		faction.terminate();
@@ -594,6 +596,7 @@ public class UnitTest {
 		try{unit.setFaction(null); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
 		try{unit.setFaction(faction); assertTrue(false);}catch(IllegalArgumentException e){assertTrue(true);}
 		
+		assertFalse(unit.getFaction() == faction);
 		unit.terminate();
 		
 		assertFalse(unit.canHaveAsFaction(faction2));
@@ -1302,8 +1305,6 @@ public class UnitTest {
 			advanceTimeFor(world, 1.125, 0.0078125);
 			
 			if (unit.getCurrentHealth() < previousHealth){
-				System.out.println("previous health: "+previousHealth);
-				System.out.println(unit.getCurrentHealth());
 				nbSuccesfulAttacks++;
 			}
 		}

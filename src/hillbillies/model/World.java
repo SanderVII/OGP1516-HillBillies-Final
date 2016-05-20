@@ -994,13 +994,12 @@ public class World {
 	 *				| ! new.hasAsEntity(entity)
 	 *
 	 * @throws IllegalArgumentException
-	 *				This world doesn't have the given entity as one of its entities or
-	 *				the given entity still references this world as its world.
-	 *				| (( ! this.hasAsEntity(entity)) || (entity.getWorld() != null))
+	 *				This world doesn't have the given entity as one of its entities
+	 *				| ( ! this.hasAsEntity(entity))
 	 */
 	@Raw
 	public void removeEntity(Entity entity) throws IllegalArgumentException {
-		if (( ! this.hasAsEntity(entity)) || (entity.getWorld() != null))
+		if ( ! this.hasAsEntity(entity) && ( ! this.isTerminated()))
 			throw new IllegalArgumentException();
 		
 		entities.remove(entity);
