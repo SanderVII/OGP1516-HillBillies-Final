@@ -10,7 +10,7 @@ public class SelectedPositionExpression extends PositionExpression {
 
 	@Override
 	public int[] evaluate() {
-		return this.getSuperTask().getPosition();
+		return this.getSuperTask().getCoordinates();
 	}
 
 }
