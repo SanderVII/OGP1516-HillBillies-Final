@@ -345,7 +345,7 @@ public class World {
 	 * A symbolic constant that stores the probability of
 	 * creating a boulder or rock after a cube collapses.
 	 */
-	public static final double DROP_CHANCE = 0.25;
+	public static final double DROP_CHANCE = 1.0;
 	
 	/**
 	 * A symbolic constant that stores the maximal amount of units in this world.
@@ -464,8 +464,12 @@ public class World {
 	 *
 	 * @throws	IllegalArgumentException
 	 *				The given coordinates are invalid.
+	 *@throws	IllegalStateException
+	 *				This world is terminated..
 	 */
-	public Cube getCube(int x, int y, int z) throws IllegalArgumentException {
+	public Cube getCube(int x, int y, int z) throws IllegalArgumentException, IllegalStateException {
+		if (this.isTerminated())
+			throw new IllegalStateException();
 		if (! this.canHaveAsCoordinates(x, y, z))
 			throw new IllegalArgumentException();
 		return cubes[x][y][z];
@@ -580,15 +584,17 @@ public class World {
 	}
 	
 	/**
-	 * Returns the terrain type of the cube with the given coordinates.
-	 * @param 	x
-	 * 			The x-coordinate of the cube.
-	 * @param 	y
-	 * 			The y-coordinate of the cube.
+	 * Returns the terrain type of the cube at the given coordinates.
+	 * 
+	 * @param	x
+	 *				The x-coordinate of the cube.
+	 * @param	y
+	 *				The y-coordinate of the cube.
 	 * @param 	z
-	 * 			The z-coordinate of the cube.
+	 *				The z-coordinate of the cube.
+	 *
 	 * @return	the terrain value of the cube.
-	 * 			| result == cubes.get(x).get(y).get(z).getTerrainType();
+	 *				| result == cubes.get(x).get(y).get(z).getTerrainType();
 	 * 
 	 */
 	public Terrain getTerrain(int x, int y, int z) {
@@ -597,12 +603,14 @@ public class World {
 	
 	/**
 	 * Returns a list of all units standing in the given cube.
-	 * @param 	x
+	 * 
+	 * @param	x
 	 * 			The x-coordinate of the cube.
-	 * @param 	y
+	 * @param	y
 	 * 			The y-coordinate of the cube.
-	 * @param 	z
+	 * @param	z
 	 * 			The z-coordinate of the cube.
+	 * 
 	 * @return	A list containing all units which currently occupy this cube.
 	 */
 	public Set<Unit> getUnitsInCube(int x, int y, int z) {
@@ -617,17 +625,20 @@ public class World {
 	}
 	
 	/**
-	 * Return a set of cubes which are the directly adjacent cubes
+	 * Returns a set of cubes which are the directly adjacent cubes
 	 * (as defined in the assignment) of the given cube.
-	 * @param 	x
-	 * 			The x-coordinate of the cube.
-	 * @param 	y
-	 * 			The y-coordinate of the cube.
-	 * @param 	z
-	 * 			The z-coordinate of the cube.
+	 * 
+	 * @param	x
+	 *				The x-coordinate of the cube.
+	 * @param	y
+	 *				The y-coordinate of the cube.
+	 * @param	z
+	 *				The z-coordinate of the cube.
+	 *
 	 * @return	A set of cubes which are directly adjacent.
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			The given coordinates are illegal for this world.
+	 *				The given coordinates are illegal for this world.
 	 */
 	public Set<int[]> getDirectlyAdjacentCoordinates(int x, int y, int z) throws IllegalArgumentException{
 		if (! this.canHaveAsCoordinates(x, y, z))
@@ -653,17 +664,21 @@ public class World {
 	}
 	
 	/**
-	 * Return the list of coordinates that are no longer connected to a border of the
+	 * Returns the list of coordinates that are no longer connected to a border of the
 	 * world due to changing the cube at the given coordinates to passable.
-	 * @param 	x
-	 * 			The x-coordinate of the cube.
-	 * @param 	y
-	 * 			The y-coordinate of the cube.
-	 * @param 	z
-	 * 			The z-coordinate of the cube.
+	 * 
+	 * @param	x
+	 *				The x-coordinate of the cube.
+	 * @param	y
+	 *				The y-coordinate of the cube.
+	 * @param	z
+	 *				The z-coordinate of the cube.
+	 *
 	 * @return A list of coordinates where there is solid terrain that is no longer connected to the border.
+	 *				| this.connectedToBorder.changeSolidToPassable(x, y, z)
+	 * 
 	 * @throws IllegalArgumentException
-	 * 			The given coordinates are invalid for this world.
+	 *				The given coordinates are invalid for this world.
 	 */
 	private List<int[]> changeSolidToPassable(int x, int y, int z) throws IllegalArgumentException {
 		if (! this.canHaveAsCoordinates(x, y, z))
@@ -674,16 +689,17 @@ public class World {
 	
 	/**
 	 * Returns whether the cube at the given coordinates is a solid cube that is
-	 * connected to a border of the world through other directly adjacent solid
-	 * cubes.
+	 * connected to a border of the world through other directly adjacent solid cubes.
 	 * 
-	 * @param x
-	 *            The x-coordinate of the cube to test
-	 * @param y
-	 *            The y-coordinate of the cube to test
-	 * @param z
-	 *            The z-coordinate of the cube to test
-	 * @return true if the cube is connected; false otherwise
+	 * @param	x
+	 *				The x-coordinate of the cube to test
+	 * @param	y
+	 *				The y-coordinate of the cube to test
+	 * @param	z
+	 *				The z-coordinate of the cube to test
+	 *
+	 * @return True if the cube is solid and connected to the border of this world, false otherwise.
+	 *				| return this.connectedToBorder.isSolidConnectedToBorder(x, y, z)
 	 */
 	public boolean isSolidConnectedToBorder(int x, int y, int z) throws IllegalArgumentException {
 		if (! this.canHaveAsCoordinates(x, y, z))
@@ -694,51 +710,65 @@ public class World {
 	
 	/**
 	 * Collapses the cube at the given cube coordinates.
-	 * @param cubeCoordinates
+	 * 
+	 * @param	cubeCoordinates
 	 *				The cube coordinates to collaps a cube at.
+	 *
+	 * @effect	Drops an item at the given coordinates. Items are dropped with a chance of World.DROP_CHANCE
+	 *				| this.dropItem(cubeCoordinates);
+	 * @effect	The terrain type of the cube at the given coordinates is set to AIR.
+	 *				| this.getCube(x, y, z).setTerrainType(Terrain.AIR)
 	 */
-	protected void collapsCube(int[] cubeCoordinates){
+	protected void collapsCube(int[] cubeCoordinates) throws IllegalStateException,IllegalArgumentException {
 		int x =cubeCoordinates[0];
 		int y =cubeCoordinates[1];
 		int z =cubeCoordinates[2];
 		
-		Cube cube = this.getCube(x, y, z);
 		
-		this.dropItem(DROP_CHANCE, cubeCoordinates);
-		
-		cube.setTerrainType(Terrain.AIR);
+		Terrain terrain = this.getCube(x, y, z).getTerrainType();
+		this.getCube(x, y, z).setTerrainType(Terrain.AIR);
+		this.dropItem(cubeCoordinates, terrain);
 		
 		collapsingCubes.addAll(this.changeSolidToPassable(x, y, z));
 		this.terrainChangeListener.notifyTerrainChanged(x, y, z);
 	}
 	
 	/**
-	 * Drops an item in accordance with the terrain of the given cube with a given chance at the given coordinates.
-	 * @param chance
-	 *				The drop chance of an item.
+	 * Drops an item in accordance with the given terrain with a chance of World.DROP_CHANCE at the given coordinates.
+	 * 
+	 * @param cubeCoordinates
+	 *				The coordinates to drop an item at.
+	 *
+	 * @effect Adds an item to this world at the given coordinates with a chance of World.DROP_CHANCE. 
+	 *				If the given terrain is WOOD, then a new log is added.
+	 *				| if (terrain == Terrain.WOOD)
+	 *				|	then new Log(this, cubeCoordinates)
+	 *				If the given terrain is ROCK, then a new Boulder is added.
+	 *				| if (terrain == Terrain.ROCK)
+	 *				|	then new Boulder(this, cubeCoordinates)
+	 *
 	 */
-	private void dropItem(double chance, int[] cubeCoordinates) throws NullPointerException,IllegalStateException{
-		Cube cube = this.getCube(cubeCoordinates);
+	private void dropItem(int[] cubeCoordinates, Terrain terrain) throws NullPointerException,IllegalStateException{
 		double dropChance = World.DROP_CHANCE;
 		double succesRate = Math.random();
 		if (succesRate <= dropChance){
-			if (cube.getTerrainType() == Terrain.WOOD)
-				this.addEntity(new Log(this, cubeCoordinates));
-			if (cube.getTerrainType() == Terrain.ROCK)
-				this.addEntity(new Boulder(this, cubeCoordinates));
+			if (terrain == Terrain.WOOD)
+				new Log(this, cubeCoordinates);
+			if (terrain == Terrain.ROCK)
+				new Boulder(this, cubeCoordinates);
 		}
 	}
 	
 	/**
 	 * Makes the cubes that are listed for caving in actually cave in.
 	 * 
-	 * @effect The cubes in the list collapsingCubes cave in.
+	 * @effect The cubes in the list collapsingCubes collaps.
+	 *				| for each collapsingCube in this.collapsingCubes
+	 *				|	this.collapsCube(collapsingCube)
 	 */
 	private void caveInCollapsingCubes() throws NullPointerException, IllegalStateException{
 		for (int[] collapsingCube: this.collapsingCubes){
-			this.getCube(collapsingCube).setTerrainType(Terrain.AIR);
-			this.dropItem(DROP_CHANCE, collapsingCube);
-			this.terrainChangeListener.notifyTerrainChanged(collapsingCube[0], collapsingCube[1], collapsingCube[2]);
+			collapsCube(collapsingCube);
 		}
 		collapsingCubes.clear();
 	}
