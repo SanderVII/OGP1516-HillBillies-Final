@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -16,10 +15,6 @@ import hillbillies.positions.UnitPosition;
 import hillbillies.statements.Statement;
 import hillbillies.statements.Status;
 import util.RandomSetElement;
-	
-/** 
- * @version 2.20
- */
 
 /**
  * A class of units involving a world, a faction, a name, a position, a number of primary attributes, health and stamina,
@@ -59,6 +54,7 @@ import util.RandomSetElement;
  *				| isValidIsFalling(getIsFalling())
  * 
  * @author Sander Mergan, Thomas Vranken
+ * @version 3.0
  */
 public class Unit extends Entity{
 	

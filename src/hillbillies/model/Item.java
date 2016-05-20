@@ -13,7 +13,7 @@ import ogp.framework.util.Util;
  * @invar	Each item can have its weight as weight.
  *				| canHaveAsWeight(this.getWeight())
  * @author	Sander Mergan, Thomas Vranken
- * @version	2.3
+ * @version	3.0
  *
  */
 public abstract class Item extends Entity {

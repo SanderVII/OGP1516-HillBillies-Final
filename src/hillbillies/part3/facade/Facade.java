@@ -12,6 +12,9 @@ import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.tasks.TaskFactory;
 import ogp.framework.util.ModelException;
 
+/**
+ * @version 3.0
+ */
 public class Facade  extends hillbillies.part2.facade.Facade implements hillbillies.part3.facade.IFacade{
 
 	@Override

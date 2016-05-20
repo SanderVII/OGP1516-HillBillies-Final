@@ -18,7 +18,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *				| hasProperScheduler()
  * 
  * @author Sander Mergan, Thomas Vranken
- * @version 2.8
+ * @version 3.0
  */
 public class Faction {
 
