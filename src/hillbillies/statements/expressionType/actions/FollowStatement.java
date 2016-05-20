@@ -3,6 +3,7 @@ package hillbillies.statements.expressionType.actions;
 import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.Status;
 
 public class FollowStatement<E extends UnitExpression> 
 		extends ActionUnitStatement<E>{
@@ -13,9 +14,12 @@ public class FollowStatement<E extends UnitExpression>
 
 	@Override
 	public void execute() {
-		Unit unit = this.getExpression().evaluate();
-		this.getSuperTask().startExplicitStatement(this);
-		this.getSuperTask().getUnit().follow(unit, true);
+		if (this.getStatus() == Status.NOTSTARTED) {
+			this.setStatus(Status.EXECUTING);
+			Unit unit = this.getExpression().evaluate();
+			this.getSuperTask().startExplicitStatement(this);
+			this.getSuperTask().getUnit().follow(unit, true);
+		}
 	}
 
 }

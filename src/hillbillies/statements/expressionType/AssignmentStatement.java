@@ -13,8 +13,11 @@ public class AssignmentStatement<E extends Expression>
 	}
 
 	public void execute() {
-		this.getSuperTask().addVariable(this.getVariableName(),this.getExpression());
-		this.setStatus(Status.DONE);
+		if (this.getStatus() == Status.NOTSTARTED) {
+			this.setStatus(Status.EXECUTING);
+			this.getSuperTask().addVariable(this.getVariableName(),this.getExpression());
+			this.setStatus(Status.DONE);
+		}
 	}
 	
 	private final String variableName;

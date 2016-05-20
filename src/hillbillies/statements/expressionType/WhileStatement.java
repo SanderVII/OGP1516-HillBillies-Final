@@ -18,11 +18,22 @@ public class WhileStatement<E extends BooleanExpression>
 		if (this.getExpression().evaluate()) {
 			Statement statement = this.getStatement();
 			Status status = statement.getStatus();
-			// Only execute a statement when it is not started or done (can be re-executed).
-			if ((status == Status.NOTSTARTED) || (status == Status.DONE)) {
-				statement.execute();
-				// Reset status so the while statement can be used again.
-				this.setStatus(Status.NOTSTARTED);
+			switch (status) {
+				case NOTSTARTED:
+					statement.execute();
+					break;
+				case DONE:
+					// reset status so this while can be reused.
+					this.resetStatus();
+					break;
+				case FAILED:
+					this.setStatus(Status.FAILED);
+					break;
+				case EXECUTING:
+					statement.execute();
+					break;
+				default:
+					break;
 			}
 		}
 		else

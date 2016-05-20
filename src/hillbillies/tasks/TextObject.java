@@ -40,4 +40,10 @@ public abstract class TextObject implements Cloneable {
 		return (TextObject) super.clone();
 	}
 	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+		
+	}
+	
 }

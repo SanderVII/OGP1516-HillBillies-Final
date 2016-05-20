@@ -7,8 +7,6 @@ public class BreakStatement extends Statement {
 
 	public BreakStatement(SourceLocation sourceLocation) {
 		super(sourceLocation);
-		if (! (this.getSuperText() instanceof WhileStatement))
-			throw new IllegalStateException("incorrect break placement");
 	}
 
 	@Override
@@ -17,7 +15,7 @@ public class BreakStatement extends Statement {
 			Statement superText = this.getSuperText();
 			while ( !superText.hasTask()) {
 				if (superText instanceof WhileStatement)
-					this.getSuperText().setStatus(Status.DONE);
+					superText.setStatus(Status.DONE);
 				else
 					// to prevent statements in between break and while to continue executing.
 					superText.setStatus(Status.DONE);

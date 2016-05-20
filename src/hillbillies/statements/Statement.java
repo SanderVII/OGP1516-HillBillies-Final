@@ -105,6 +105,11 @@ public abstract class Statement extends TextObject {
 		cloned.resetStatus();
 		return cloned;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() +" status: " + this.status;
+	}
 
 	// =================================================================================================
 	// Methods concerning the task which holds this statement.
