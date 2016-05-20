@@ -34,6 +34,7 @@ import hillbillies.statements.expressionType.actions.AttackStatement;
 import hillbillies.statements.expressionType.actions.FollowStatement;
 import hillbillies.statements.expressionType.actions.MoveToStatement;
 import hillbillies.statements.expressionType.actions.WorkAtStatement;
+import ogp.framework.util.ModelException;
 
 /**
  * 
@@ -273,7 +274,7 @@ public class TaskFactoryTest {
 		advanceTimeFor(world, 0.001, 0.001);
 		
 		assertTrue(unit.hasTask());
-		Task task = unit.getTask();
+		unit.getTask();
 		advanceTimeFor(world, 1, 0.001);
 		// NOTE: the output is consistent aside from a minor difference
 		// in output (only visible with "show whitespace characters"

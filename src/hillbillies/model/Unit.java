@@ -1483,7 +1483,6 @@ public class Unit extends Entity{
 	 * @note Throws no exception because Exception is caught.
 	 */
 	private void moveToAdjacent(int dx, int dy, int dz, boolean thisIsDefaultBehavior) {
-		// TODO Moving to an adjacent cube may only be interrupted if the unit is attacked, or falling.
 		try {
 			this.setProgress(0);
 			
@@ -1585,7 +1584,6 @@ public class Unit extends Entity{
 				this.setPreviousActivity(this.getCurrentActivity());
 				this.setCurrentActivity(Activity.MOVE);
 				this.setInitialCoordinates(this.getCoordinates());
-		 		
 			}
 		} catch (IllegalArgumentException e) {
 			if (this.hasTask())
@@ -2647,7 +2645,7 @@ public class Unit extends Entity{
 	 * Checks whether this unit has to follow another unit.
 	 * 
 	 * @return	True if the unit to follow is effective.
-	 * 				| result == getUnitToFollow() != null
+	 *				| result == getUnitToFollow() != null
 	 */
 	public boolean hasUnitToFollow() {
 		return this.getUnitToFollow() != null;
@@ -2656,24 +2654,24 @@ public class Unit extends Entity{
 	/**
 	 * Sets the unit this unit has to follow to the given unit.
 	 * 
-	 * @param 	unitToFollow
+	 * @param	unitToFollow
 	 *				The new unit to follow.
+	 *
 	 * @post	This unit is following the given unit.
-	 * 				| new.getUnitToFollow() == unitToFollow
+	 *				| new.getUnitToFollow() == unitToFollow
 	 */
 	private void setUnitToFollow(Unit unitToFollow) {
 		this.unitToFollow = unitToFollow;
 	}
 	
 	/**
-	 * Checks if this unit is next to the given unit.
+	 * Checks whether this unit is next to the given unit.
 	 * 
-	 * @param 	other
-	 * 				The other unit.
-	 * @return	True if the cube coordinates of this unit are next to
-	 * 				the cube coordinates of the other unit.
-	 * 				| result == Position.isAdjacentTo(
-	 * 				|	this.getCubeCoordinates(), other.getCubeCoordinates())
+	 * @param	other
+	 *				The other unit.
+	 *
+	 * @return	True if the cube coordinates of this unit are next to the cube coordinates of the other unit.
+	 *				| result == Position.isAdjacentTo(this.getCubeCoordinates(), other.getCubeCoordinates())
 	 */
 	public boolean isNextTo(Unit other) {
 		return Position.isAdjacentTo(this.getCubeCoordinates(), other.getCubeCoordinates());
@@ -2682,32 +2680,36 @@ public class Unit extends Entity{
 	/**
 	 * Starts the follow behavior of this unit, causing it to follow the given unit.
 	 * 
-	 * @param 	other
-	 * 				The unit to follow.
-	 * @param	Whether default behavior should be turned off.
+	 * @param	other
+	 *				The unit to follow.
+	 * @param	defaultBehavior
+	 *				Whether default behavior should be turned off.
+	 * 
 	 * @post	This unit is following the other unit.
-	 * 				| new.getUnitToFollow() == other
+	 *				| new.getUnitToFollow() == other
 	 * @post	This unit is executing default behavior.
-	 * 				| this.startDefaultBehavior()
+	 *				| this.getDefaultBehaviourEnabled()
 	 * @effect	This unit is moving towards the cube of the other unit.
-	 * 				| this.moveTo(other.getCubeCoordinates())	
+	 *				| this.moveTo(other.getCubeCoordinates())	
 	 *				If the other unit is terminated or this unit is next to it,
 	 *				and this unit has a task, that task is finished.
 	 *				| if (other.isTerminated()) || (this.isNextTo(other))
 	 *				| 	then if (this.hasTask())
 	 *				|		then this.finishTask()
 	 */
-	public void follow(Unit other, boolean defaultbehavior) {
+	public void follow(Unit other, boolean defaultBehavior) {
 		try {
 			if (other.isTerminated())
 				throw new IllegalArgumentException("other unit is dead.");
 			if (this.isNextTo(other))
-				throw new IllegalStateException("already next to other unit.");
+				throw new IllegalArgumentException("already next to other unit.");
 			
-			if ( ! defaultbehavior)
+			if ( ! defaultBehavior)
 				this.stopDefaultBehavior();
-			this.setUnitToFollow(other);
-			this.moveTo(other.getCubeCoordinates(),defaultbehavior);
+			else{
+				this.setUnitToFollow(other);
+				this.moveTo(other.getCubeCoordinates(),defaultBehavior);
+			}
 		} catch (Exception e) {
 			if (this.hasTask())
 				this.finishTask();
