@@ -382,7 +382,9 @@ public class Scheduler {
 	// Iterator and stream methods for all tasks of this scheduler.
 	// =================================================================================================
 	
-	//TODO doc
+	/**
+	 * An iterator to iterate over the tasks of this scheduler.
+	 */
 	public Iterator<Task> priorityIterator() {
         return new Iterator<Task>() {
 
@@ -428,7 +430,6 @@ public class Scheduler {
      * @note	This method does not change the order of elements.
      *				The resulting list will have the same order as the original list.
      */
-    //TODO check doc
     public List<Task> getTasksWithPredicate(Predicate<Task> predicate) {
 		return this.streamTasks().filter(predicate).collect(Collectors.toList());
     }

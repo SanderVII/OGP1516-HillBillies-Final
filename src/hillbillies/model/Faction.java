@@ -140,10 +140,10 @@ public class Faction {
 			 if (this.getNbUnits() > 0)
 				 for (Unit unit: units)
 					 unit.terminate();
-			 World formerWorld = this.getWorld();
+			 World world = this.getWorld();
 			 this.isTerminated = true;
 			 this.setWorld(null);
-			 formerWorld.removeFaction(this);
+			 world.removeFaction(this);
 		 }
 	 }
 	 

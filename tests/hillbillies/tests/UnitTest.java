@@ -880,7 +880,6 @@ public class UnitTest {
 		assertFalse(unit2.canDoMoveToAdjacent());
 	}
 	
-	// TODO tests for not interrupting moveToAdjacent. (not implemented in unit yet.)
 	@Test
 	public void moveToTest() {
 		World world = new World(terrain("20x40x10IsolatedAirPosition"), new DefaultTerrainChangeListener());

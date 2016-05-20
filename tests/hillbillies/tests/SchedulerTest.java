@@ -101,7 +101,6 @@ public class SchedulerTest {
 		assertTrue(null == scheduler4);
 	}
 	
-	//TODO move to faction test?
 	@Test
 	public void SetScheduler_CurrentScheduler() {
 		Scheduler scheduler2 = faction2.getScheduler();
