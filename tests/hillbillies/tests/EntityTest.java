@@ -99,7 +99,7 @@ public class EntityTest {
 		
 		assertTrue(log.canHaveAsPosition(position));
 		assertFalse(log.canHaveAsPosition(position2));
-		assertTrue(log.canHaveAsPosition(position3));
+		assertFalse(log.canHaveAsPosition(position3));
 		assertTrue(log.canHaveAsCoordinates(position.getCoordinates()));
 		assertFalse(log.canHaveAsCoordinates(position3.getCoordinates()));
 	}

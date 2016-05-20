@@ -21,6 +21,8 @@ import hillbillies.positions.Position;
 import hillbillies.positions.UnitPosition;
 import hillbillies.statements.expressionType.actions.FollowStatement;
 import ogp.framework.util.Util;
+// TODO tests for follow methods
+
 
 /**
  * A class of tests for the public methods in the class Unit.
@@ -1275,14 +1277,63 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void AdvanceTimeTest_DeltaT() {
+	public void AdvanceTimeFightTest() {
 		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
-		Unit unitMin = new Unit(world, "UnitMin", new int[]{0, 0, 1}, 25, 25, 25, 25);
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2},100, 100, 100, 100);
+		Unit unit2 = new Unit(world, "Unit two", new int[]{0, 1, 2},25,25,25, 25);
+		Unit unit3 = new Unit(world, "Unit three", new int[]{0, 1, 2},25,25,25, 25);
 		
-		assertTrue(unitMin.getGametime() == 0);
+		int nbSuccesfulAttacks = 0;
+		int previousHealth = unit2.getMaxPoints();
+		for(int x=0; x<10; x++ ){
+			unit.fight(unit2);
+			advanceTimeFor(world, 1.125, 0.0078125);
+			if (unit2.getCurrentHealth() < previousHealth){
+				nbSuccesfulAttacks++;
+			}
+		}
+		assertTrue(nbSuccesfulAttacks > 0);
+		assertTrue(unit2.isTerminated());
+			
+		nbSuccesfulAttacks = 0;
+		previousHealth = (int)unit.getCurrentHealth();
+		for(int x=0; x<10; x++ ){
+			unit3.fight(unit);
+			advanceTimeFor(world, 1.125, 0.0078125);
+			
+			if (unit.getCurrentHealth() < previousHealth){
+				System.out.println("previous health: "+previousHealth);
+				System.out.println(unit.getCurrentHealth());
+				nbSuccesfulAttacks++;
+			}
+		}
+		assertTrue(nbSuccesfulAttacks == 0);
+		assertFalse(unit.isTerminated());
 		
-		unitMin.advanceTime(0.2);
-		assertTrue(Util.fuzzyEquals(unitMin.getGametime(), 0.2));
+	}
+	
+	@Test
+	public void AdvanceTimeFallTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{19, 39, 9},100, 100, 100, 100);
+		
+		advanceTimeFor(world, 10, 0.0078125);
+		
+		assertFalse(unit.getCurrentHealth() == unit.getMaxPoints());
+		assertFalse(UnitPosition.equals(unit.getCubeCoordinates(), new int[]{19, 39, 9}));
+		assertTrue(unit.getExperience() == 0);
+	}
+	
+	@Test
+	public void AdvanceTimeDefaultTest(){
+		World world = new World(terrain("20x40x10"), new DefaultTerrainChangeListener());
+		Unit unit = new Unit(world, "Unit", new int[]{0, 0, 2},100, 100, 100, 100);
+		unit.startDefaultBehavior();
+		assertTrue(unit.getDefaultBehaviorEnabled());
+		advanceTimeFor(world, 10, 0.0078125);
+		assertTrue(unit.getDefaultBehaviorEnabled());
+		
+		assertFalse(unit.getCurrentActivity() == Activity.NOTHING );
 	}
 	
 	/**

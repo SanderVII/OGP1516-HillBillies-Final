@@ -4,31 +4,35 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+//TODO Tests
 public class DefaultManager {
 	
 	/**
-	 * Check if the given unit can perform random default behavior.
-	 * @param 	unit
-	 * 			The unit to check.
-	 * @return	True if the unit does not have a task and its default behavior is enabled.
+	 * A symbolic constant used to limit the range of moving for units which have enabled default behavior.
+	 * This value is chosen based on observations, and prevents units from moving to far away locations, 
+	 * as these take a huge amount of time to calculate paths for and may even cause the game to crash. 
+	 * If the path finding  algorithm is better optimized, this value can be raised or even ignored.
+	 */
+	final static int MAX_RANGE_DEFAULTMOVE = 2;
+	
+	/**
+	 * Checks whether the given unit can perform random default behavior.
+	 * 
+	 * @param	unit
+	 *				The unit to check.
+	 *
+	 * @return	True if and only if the unit does not have a task and its default behavior is enabled.
 	 */
 	public static boolean canDoRandomDefault(Unit unit) {
 		return (!unit.hasTask()) && (unit.getDefaultBehaviorEnabled());
 	}
 	
 	/**
-	 * Starts the random default behavior of the given unit.
+	 * Returns a list of activities which can currently be performed by the given unit.
+	 * 
+	 * @param	unit
+	 *				The unit to check activities for.
 	 */
-	public static void startRandomDefaultBehavior(Unit unit) {
-		
-	}
-	
-	/**
-	 * Return a list of activities which can currently be performed by the given unit.
-	 * @param unit
-	 */
-	//TODO
 	public static List<Activity> getAvailableRandomActivities(Unit unit) {
 		List<Activity> result = new ArrayList<>();
 		if (DefaultManager.getAvailableEnemies(unit).size() != 0)
@@ -43,11 +47,13 @@ public class DefaultManager {
 	}
 	
 	/**
-	 * Return a list of enmy units which are next to the given unit.
-	 * @param 	unit
-	 * 			The unit to search for enemies around it for.
+	 * Returns a list of enmy units which are next to the given unit.
+	 * 
+	 * @param	unit
+	 *				The unit to search for enemies around it for.
+	 *
 	 * @return	A set of units in which each unit is an enemy of the given unit
-	 * 			and is at most one cube away from him.
+	 *				and is at most one cube away from him.
 	 */
 	public static Set<Unit> getAvailableEnemies(Unit unit) {
 		Set<Unit> result = new HashSet<>();
@@ -62,20 +68,24 @@ public class DefaultManager {
 	}
 	
 	/**
-	 * Return a set of coordinates on which the unit can work.
-	 * @param 	unit
-	 * 			The unit to search for working cubes for.
+	 * Returns a set of coordinates on which the unit can work.
+	 * 
+	 * @param	unit
+	 *				The unit to search for working cubes for.
+	 *
 	 * @return	A set of coordinates which are only one cube away and are valid
-	 * 			for the world of the unit.
+	 *				for the world of the unit.
 	 */
 	public static Set<int[]> getAvailableWorkCubes(Unit unit) {
 		return unit.getWorld().getValidCubeCoordinatesInRange(unit.getCubeCoordinates(), 1);
 	}
 	
 	/**
-	 * Return a set of cubes which the given unit can move to.
-	 * @param 	unit
-	 * 			The unit to search for destinations for.
+	 * Returns a set of cubes which the given unit can move to.
+	 * 
+	 * @param	unit
+	 *				The unit to search for destinations for.
+	 * 
 	 * @return	All cubes which the unit can move to according to the canMoveTo-method.
 	 */
 	public static Set<int[]> getAvailableMoveCubes(Unit unit) {
@@ -94,9 +104,11 @@ public class DefaultManager {
 	}
 	
 	/**
-	 * Return a set of cubes which the given unit can move to.
-	 * @param 	unit
-	 * 			The unit to search for destinations for.
+	 * Returns a set of cubes which the given unit can move to.
+	 * 
+	 * @param	unit
+	 *				The unit to search for destinations for.
+	 * 
 	 * @return	All cubes which the unit can move to according to the canMoveTo-method.
 	 */
 	public static Set<int[]> getAvailableMoveCubes(Unit unit, int range) {
@@ -108,50 +120,5 @@ public class DefaultManager {
 					result.add(cube);
 		}
 		return result;
-	}
-	
-	/**
-	 * Starts the random default behavior of the given unit.
-	 */
-	//TODO
-	public void advanceTimeDefaultBehavior(Unit unit) throws IllegalArgumentException, NullPointerException {
-//		this.setDefaultBehaviorEnabled(true);
-//		// TODO default behaviour volgens part 3 implementeren.
-//		Scheduler scheduler = this.getFaction().getScheduler();
-//		List<Task> availableTasks = scheduler.getUnassignedTasks();
-//		if (availableTasks.size() != 0) {
-//			availableTasks.get(0).assignTo(this);
-//			this.getTask().getStatement().execute();
-//		}
-//		else {
-////		try {
-//			int choice =  new Random().nextInt(4);
-//			if (choice == 0){
-//				// The unit chose to work. 
-//				this.workAt(this.getWorld().getRandomValidCubeCoordinatesInRange(this.getPosition().getCoordinates(), 1), true);
-//			}
-//			else if (choice == 1){
-//				// The unit chose to rest.
-//				this.rest(true);
-//			}
-//			else if (choice == 2){
-//				// The unit chose to go to a random position. Once the unit is moving, it can decide to start sprinting until it runs out of stamina.
-//				int[] randomPosition = this.getWorld().getRandomUnitCoordinatesInRange(this.getPosition().getCoordinates(), MAX_RANGE_DEFAULTMOVE);
-//				this.moveTo(randomPosition, true);
-//			}
-//			else if (choice == 3){
-//				//	The unit chose to attack a random unit in its reach.
-//				// If there are no attackable units in its reach, then a new behaviour is chosen.
-//				Unit combattant = this.getUnitThatCanBeAtacked();
-//				if (combattant == null)
-//					this.startDefaultBehavior();
-//				else 
-//					this.fight(combattant, true); 
-//			}
-////		} catch (Exception e){
-////			// Do nothing
-////			System.out.println("I do nothing now because I failed at default behaviour.");
-////		}
-//		}
 	}
 }

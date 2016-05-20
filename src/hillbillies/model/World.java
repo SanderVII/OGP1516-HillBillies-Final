@@ -725,8 +725,8 @@ public class World {
 	 */
 	private void caveInCollapsingCubes() throws NullPointerException, IllegalStateException{
 		for (int[] collapsingCube: this.collapsingCubes){
+			this.getCube(collapsingCube).setTerrainType(Terrain.AIR);
 			this.dropItem(DROP_CHANCE, collapsingCube);
-			this.getCube(collapsingCube).setTerrainType(Terrain.AIR);;
 			this.terrainChangeListener.notifyTerrainChanged(collapsingCube[0], collapsingCube[1], collapsingCube[2]);
 		}
 		collapsingCubes.clear();

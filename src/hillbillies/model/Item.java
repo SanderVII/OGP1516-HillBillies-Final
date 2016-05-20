@@ -10,10 +10,10 @@ import ogp.framework.util.Util;
  * A class of items, a specific type of entities, which can be picked up by units.
  * An item has a specific weight, next to the properties of an entity.
  * 
- * @invar  	Each item can have its weight as weight.
- *       	| canHaveAsWeight(this.getWeight())
- * @author 	Sander Mergan, Thomas Vranken
- * @version	2.2
+ * @invar	Each item can have its weight as weight.
+ *				| canHaveAsWeight(this.getWeight())
+ * @author	Sander Mergan, Thomas Vranken
+ * @version	2.3
  *
  */
 public abstract class Item extends Entity {
@@ -21,14 +21,15 @@ public abstract class Item extends Entity {
 	/**
 	 * Initializes this new item with given world, coordinates and weight.
 	 * 
-	 * @param 	world
-	 * 				The given world of this new item.
-	 * @param 	coordinates
-	 * 				The coordinates of this new item.
+	 * @param	world
+	 *				The given world of this new item.
+	 * @param	coordinates
+	 *				The coordinates of this new item.
 	 * @param	weight
-	 * 				The weight of this new item.
+	 *				The weight of this new item.
+	 *
 	 * @throws	IllegalArgumentException
-	 * 				The given weight is invalid.
+	 *				The given weight is invalid.
 	 */
 	protected Item(World world, int[] coordinates, int weight) {
 		super(world, coordinates, weight);
@@ -37,30 +38,33 @@ public abstract class Item extends Entity {
 	/**
 	 * Initializes this new item with given world, coordinates and a random valid weight.
 	 * 
-	 * @param 	world
-	 * 				The given world of this new item.
-	 * @param 	coordinates
-	 * 				The coordinates of this new item.
-	 * @effect The weight of this item is set to a random valid weight
+	 * @param	world
+	 *				The given world of this new item.
+	 * @param	coordinates
+	 *				The coordinates of this new item.
+	 *
+	 * @effect	The weight of this item is set to a random valid weight
 	 *				| (new.getWeight() == weight) && (canHaveAsWeight(weight))
+	 *
 	 * @throws	IllegalArgumentException
-	 * 				The given weight is invalid.
+	 *				The given weight is invalid.
 	 */
 	protected Item(World world, int[] coordinates) {
 		this(world, coordinates, new Random().nextInt(41)+10);
 	}
 	
 	/**
-	 * Transfer this item to the world of the unit which carries it. 
+	 * Transfers this item to the world of the unit which carries it. 
 	 * 
 	 * @post	This item no longer references the unit, and that unit no longer 
-	 * 			references this item.
+	 *				references this item.
 	 * @post	This item is connected to the world of the unit it was connected to.
-	 * 			That world references this item as one of its entities.
+	 *				That world references this item as one of its entities.
 	 * @post	This item is placed at the location the unit was standing.
+	 * 
 	 * @throws	IllegalStateException
-	 * 			This item is terminated, does not reference an effective unit, or that
-	 * 			unit does not reference an effective world.
+	 *				This item is terminated, does not reference an effective unit, or that
+	 *				unit does not reference an effective world.
 	 */
 	public void moveToWorld() throws IllegalStateException {
 		if (this.isTerminated())
@@ -80,17 +84,17 @@ public abstract class Item extends Entity {
 	
 	/**
 	 * Transfers this item from its world to the given unit.
-	 * @param 	unit
-	 * 			The unit which will carry the item.
-	 * @post	This item references the given unit as its unit, and that
-	 * 			unit references this item as its item.
-	 * @post	This item references no world, and the world no longer
-	 * 			references this item.
+	 * 
+	 * @param	unit
+	 *				The unit which will carry the item.
+	 * 
+	 * @post	This item references the given unit as its unit, and that unit references this item as its item.
+	 * @post	This item references no world, and the world no longer references this item.
+	 * 
 	 * @throws	IllegalStateException
-	 * 			This item is terminated.
+	 *				This item is terminated.
 	 * @throws	IllegalArgumentException
-	 * 			The world of this item and the world of the unit are different, or
-	 * 			the unit carries an item or is terminated.
+	 *				The world of this item and the world of the unit are different, or the unit carries an item or is terminated.
 	 */
 	public void moveToUnit(Unit unit) throws IllegalStateException, IllegalArgumentException {
 		if (this.isTerminated())
@@ -113,12 +117,13 @@ public abstract class Item extends Entity {
 	// ==========================================================================================
 	
 	/**
-	 * Check whether this item can have the given weight as its weight.
+	 * Checks whether this item can have the given weight as its weight.
 	 *  
-	 * @param  weight
-	 *         The weight to check.
-	 * @return True if the given weight is greater than or equal to zero.
-	 *			| result == ((weight >= 10) && (weight <= 50))
+	 * @param	weight
+	 *				The weight to check.
+	 *
+	 * @return	True if the given weight is greater than or equal to zero.
+	 *				| result == ((weight >= 10) && (weight <= 50))
 	*/
 	@Override @Raw
 	public boolean canHaveAsWeight(int weight) {
@@ -126,12 +131,12 @@ public abstract class Item extends Entity {
 	}
 	
 	/**
-	 * A variable holding the minimal weight for an item.
+	 * A variable that stores the minimal weight for an item.
 	 */
 	public static final int MINIMAL_WEIGHT = 10; 
 	
 	/**
-	 * A variable holding the maximal weight for an item.
+	 * A variable that stores the maximal weight for an item.
 	 */
 	public static final int MAXIMAL_WEIGHT = 50;
 	
@@ -142,8 +147,11 @@ public abstract class Item extends Entity {
 	
 	/**
 	 * Checks whether the given coordinates are valid coordinates for this item.
+	 * If this item has a world, then the checkers of its Entity superclass can be used, 
+	 * but when it does'nt have a world and does have a unit, then the checkers of the Entity superclass of its unit is used.
 	 * 
-	 * @return True if and only if 
+	 * @param coordinates
+	 *				The coordinates to check.
 	 */
 	@Override
 	public boolean canHaveAsCoordinates(int[] coordinates) {
@@ -159,12 +167,12 @@ public abstract class Item extends Entity {
 	// ==========================================================================================
 	
 	/**
-	 * A variable referencing the unit to which this item is attached.
+	 * A variable that stores the unit of this item.
 	 */
 	private Unit unit;
 
 	/**
-	 * Return the unit this item is part of.
+	 * Returns the unit of this item.
 	 */
 	@Basic @Raw
 	public Unit getUnit() {
@@ -174,13 +182,13 @@ public abstract class Item extends Entity {
 	/**
 	 * Checks whether this item can have the given unit as its unit.
 	 * 
-	 * @param 	unit
-	 *			The unit to check.
-	 * @return	If this item is terminated, true if the given unit
-	 * 			is not effective.
-	 * 			If this item's world is effective, true if the world of this
-	 * 			item and the given unit's world are the same or the given unit is not effective.
-	 * 			Else, return true.
+	 * @param	unit
+	 *				The unit to check.
+	 *
+	 * @return	If this item is terminated, true if the given unit is not effective.
+	 *				If this item's world is effective, true if the world of this
+	 *				item and the given unit's world are the same or the given unit is not effective.
+	 *				Else, return true.
 	 */
 	public boolean canHaveAsUnit(Unit unit) {
 		if (this.isTerminated())
@@ -192,11 +200,11 @@ public abstract class Item extends Entity {
 	}
 	
 	/**
-	 * Checks whether this item has a proper unit to which it is attached.
+	 * Checks whether this item has a proper unit.
 	 * 
 	 * @return	True if and only if this item can have the unit to which it
-	 * 			is attached as its unit, and if that unit is either not
-	 * 			effective or has this item as its item.
+	 *				is attached as its unit and if that unit is either not
+	 *				effective or has this item as its item.
 	 */
 	public boolean hasProperUnit() {
 		return ( this.canHaveAsUnit(this.getUnit()) 
@@ -204,13 +212,15 @@ public abstract class Item extends Entity {
 	}
 	
 	/**
-	 * Sets the unit to which this item is attached to to the given unit.
+	 * Sets the unit to of this item to the given unit.
 	 * 
 	 * @param	unit
-	 * 			The unit to attach this item to.
+	 *				The unit to attach this item to.
+	 *
 	 * @post	This item references the given unit as the unit to which it is attached.
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			This item cannot have the given unit as its unit.
+	 *				his item cannot have the given unit as its unit.
 	 */
 	protected void setUnit(@Raw Unit unit) throws IllegalArgumentException {
 		if (! this.canHaveAsUnit(unit))
