@@ -18,7 +18,9 @@ import hillbillies.model.*;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.facade.Facade;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.part3.programs.TaskParser;
 import hillbillies.positions.Position;
+import hillbillies.statements.Statement;
 import hillbillies.statements.expressionType.actions.FollowStatement;
 import ogp.framework.util.ModelException;
 
@@ -146,6 +148,28 @@ public class SchedulerTest {
 		List<Task> result3 = scheduler.getTasksWithPredicate((Task x) -> (x.getName().contains("test1")));
 		assertFalse(result3.contains(tasks.get(1)));
 		assertTrue(result3.contains(tasks.get(0)));
+	}
+	
+	@Test
+	public void taskWithMultipleSchedulers() throws ModelException {
+		Scheduler scheduler = faction.getScheduler();
+		Scheduler scheduler2 = faction2.getScheduler();
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"work task\"\npriority: 1\nactivities: work selected;", facade.createTaskFactory(),
+				Collections.singletonList(new int[] { 1, 1, 1 }));
+
+		assertNotNull(tasks);
+		assertEquals(1, tasks.size());
+		Task taskdummy = tasks.get(0);
+		
+		facade.schedule(scheduler, taskdummy);
+		facade.schedule(scheduler2, taskdummy);
+		assertTrue(scheduler.hasAsTask(taskdummy));
+		assertTrue(scheduler2.hasAsTask(taskdummy));
+		
+		taskdummy.terminate();
+		assertTrue(! scheduler.hasAsTask(taskdummy));
+		assertTrue(! scheduler2.hasAsTask(taskdummy));
 	}
 	
 	
