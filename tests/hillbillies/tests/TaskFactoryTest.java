@@ -32,7 +32,6 @@ import hillbillies.statements.expressionType.actions.AttackStatement;
 import hillbillies.statements.expressionType.actions.FollowStatement;
 import hillbillies.statements.expressionType.actions.MoveToStatement;
 import hillbillies.statements.expressionType.actions.WorkAtStatement;
-import ogp.framework.util.ModelException;
 
 /**
  * 
@@ -215,6 +214,7 @@ public class TaskFactoryTest {
 		@SuppressWarnings("unchecked")
 		MoveToStatement<PositionExpression> statement = (MoveToStatement<PositionExpression>) task.getStatement();
 		assertTrue(statement.getTask() == task);
+		@SuppressWarnings("unchecked")
 		PositionOfExpression<UnitExpression> expression = (PositionOfExpression<UnitExpression>) statement.getExpression();
 		assertTrue(expression.getSuperText() == statement);
 		assertTrue(expression.getSuperTask() == task);
