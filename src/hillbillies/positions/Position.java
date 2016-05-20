@@ -71,7 +71,8 @@ public class Position {
 	 * @return	True if the coordinates are within the range of this position's world.
 	 */
 	public boolean canHaveAsCoordinates(double[] coordinates) {
-		return ( (coordinates != null) &&
+		return ( (isValidArray(coordinates)) &&
+				(coordinates != null) &&
 				(this.canHaveAsXCoordinate(coordinates[0])) && 
 				(this.canHaveAsYCoordinate(coordinates[1])) && 
 				(this.canHaveAsZCoordinate(coordinates[2])) );

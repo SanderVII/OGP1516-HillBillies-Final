@@ -1331,7 +1331,7 @@ public class Unit extends Entity{
 	 */
 	@Raw
 	public boolean isAdjacentTo(int[]targetCube) throws IllegalArgumentException {
-		if (!this.getWorld().canHaveAsCoordinates(targetCube[0],targetCube[1],targetCube[2]))
+		if (!this.getWorld().canHaveAsCoordinates(targetCube))
 			throw new IllegalArgumentException(Arrays.toString(targetCube));
 	
 		return (Position.isAdjacentTo(this.getPosition().getCubeCoordinates(), targetCube));

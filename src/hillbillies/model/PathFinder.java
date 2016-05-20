@@ -237,23 +237,23 @@ public class PathFinder {
 		int y = coordinates[1];
 		int z = coordinates[2];
 		
-		if ( ! world.canHaveAsCoordinates(x, y, z))
+		if ( ! world.canHaveAsCoordinates(coordinates))
 			throw new IllegalArgumentException();
 		Set<int[]> directlyAdjacentCoordinates = new HashSet<>();
 		
-		if ( (world.canHaveAsCoordinates(x-1,y,z)) && (world.getCube(new int[]{x-1,y,z}).isPassable()) ) 
+		if ( (world.canHaveAsCoordinates(new int[]{x-1,y,z})) && (world.getCube(new int[]{x-1,y,z}).isPassable()) ) 
 			directlyAdjacentCoordinates.add(new int[]{x-1,y,z});
-		if (world.canHaveAsCoordinates(x+1,y,z) && (world.getCube(new int[]{x+1,y,z}).isPassable()) )
+		if (world.canHaveAsCoordinates(new int[]{x+1,y,z}) && (world.getCube(new int[]{x+1,y,z}).isPassable()) )
 			directlyAdjacentCoordinates.add(new int[]{x+1,y,z});
 		
-		if (world.canHaveAsCoordinates(x,y-1,z) && (world.getCube(new int[]{x,y-1,z}).isPassable()) )
+		if (world.canHaveAsCoordinates(new int[]{x,y-1,z}) && (world.getCube(new int[]{x,y-1,z}).isPassable()) )
 			directlyAdjacentCoordinates.add(new int[]{x,y-1,z});
-		if (world.canHaveAsCoordinates(x,y+1,z) && (world.getCube(new int[]{x,y+1,z}).isPassable()) )
+		if (world.canHaveAsCoordinates(new int[]{x,y+1,z}) && (world.getCube(new int[]{x,y+1,z}).isPassable()) )
 			directlyAdjacentCoordinates.add(new int[]{x,y+1,z});
 		
-		if (world.canHaveAsCoordinates(x,y,z-1) && (world.getCube(new int[]{x,y,z-1}).isPassable()) )
+		if (world.canHaveAsCoordinates(new int[]{x,y,z-1}) && (world.getCube(new int[]{x,y,z-1}).isPassable()) )
 			directlyAdjacentCoordinates.add(new int[]{x,y,z-1});
-		if (world.canHaveAsCoordinates(x,y,z+1) && (world.getCube(new int[]{x,y,z+1}).isPassable()) )
+		if (world.canHaveAsCoordinates(new int[]{x,y,z+1}) && (world.getCube(new int[]{x,y,z+1}).isPassable()) )
 			directlyAdjacentCoordinates.add(new int[]{x,y,z+1});
 		
 		return directlyAdjacentCoordinates;
@@ -271,15 +271,11 @@ public class PathFinder {
 	 *				The given coordinates are illegal for this world.
 	 */
 	private static Set<int[]> getPassableNeighbourCoordinates(int[] coordinates, World world) throws IllegalArgumentException{
-		int x = coordinates[0];
-		int y = coordinates[1];
-		int z = coordinates[2];
-		
-		if ( ! world.canHaveAsCoordinates(x, y, z))
+		if ( ! world.canHaveAsCoordinates(coordinates))
 			throw new IllegalArgumentException();
 		
 		Set<int[]> passableNeighbourCoordinates = new HashSet<>();
-		Set<int[]> dummy = world.getNeighbours(x, y, z);
+		Set<int[]> dummy = world.getNeighbours(coordinates);
 		for (int[] neighbourCoordinates: dummy){
 			if (world.getCube(neighbourCoordinates).isPassable())
 				passableNeighbourCoordinates.add(neighbourCoordinates);
