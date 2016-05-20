@@ -2,6 +2,8 @@ package hillbillies.tests;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,6 +50,7 @@ public class TaskFactoryTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 	}
+	
 
 	private Facade facade;
 	private World world;
@@ -75,6 +78,18 @@ public class TaskFactoryTest {
 		Faction faction = facade.getFaction(unit);
 
 		scheduler = facade.getScheduler(faction);
+	}
+	
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+
+	@Before
+	public void setUpStreams() {
+	    System.setOut(new PrintStream(outContent));
+	}
+
+	@After
+	public void cleanUpStreams() {
+	    System.setOut(null);
 	}
 
 	@After
@@ -123,7 +138,7 @@ public class TaskFactoryTest {
 				"name: \"attack enemy\"" + "\n" + 
 				"priority: 1" + "\n" + 
 				"activities: attack enemy;", 
-				facade.createTaskFactory(),Collections.singletonList(new int[] { 1, 1, 1 }));
+				facade.createTaskFactory(),Collections.emptyList());
 		
 		// tasks are created
 		assertNotNull(tasks);
@@ -158,7 +173,7 @@ public class TaskFactoryTest {
 				"name: \"follow any\"" + "\n" + 
 				"priority: 10" + "\n" + 
 				"activities: follow any;", 
-				facade.createTaskFactory(),Collections.singletonList(new int[] { 1, 1, 1 }));
+				facade.createTaskFactory(),Collections.emptyList());
 		
 		// tasks are created
 		assertNotNull(tasks);
@@ -186,7 +201,7 @@ public class TaskFactoryTest {
 	}
 
 	@Test
-	public void MoveToPositionOfAlly() throws Exception {
+	public void moveToPositionOfAlly() throws Exception {
 		Unit friend = new Unit(world, unit.getFaction(), "Ally", new int[] { 2, 2, 0 }, 50, 50, 50, 50);
 		facade.addUnit(friend, world);
 		
@@ -195,7 +210,7 @@ public class TaskFactoryTest {
 				"priority: 10" + "\n" + 
 				"activities :" + "\n" +
 				"moveTo(position_of(friend));", 
-				facade.createTaskFactory(),Collections.singletonList(new int[] { 1, 1, 1 }));
+				facade.createTaskFactory(),Collections.emptyList());
 		
 		// tasks are created
 		assertNotNull(tasks);
@@ -204,6 +219,7 @@ public class TaskFactoryTest {
 		Task taskdummy = tasks.get(0);
 		facade.schedule(scheduler, taskdummy);
 		unit.startDefaultBehavior();
+		friend.stopDefaultBehavior();
 		advanceTimeFor(world, 0.1, 0.1);
 		
 		assertTrue(unit.hasTask());
@@ -224,12 +240,127 @@ public class TaskFactoryTest {
 		
 		assertTrue(friendExpression.evaluate() == friend);
 		assertTrue(unit.getCurrentActivity() == Activity.MOVE);
-		advanceTimeFor(world, 10, 0.2);
+		advanceTimeFor(world, 2.9, 0.2);
+		
 		assertTrue(Position.equals(unit.getCubeCoordinates(), friend.getCubeCoordinates()));
 	}
 	
+	@Test
+	public void whileSequencePrintAssignStatement() throws Exception {
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"while sequence\"" + "\n" + 
+				"priority: 10" + "\n" + 
+				"activities :" + "\n" +
+				"b:=true;" + "\n" +
+				"c:=true;" + "\n" +
+				"while(b) do" + "\n" +
+				"if c then" + "\n" +
+				"c:=false;" + "\n" +
+				"else" + "\n" +
+				"b:=false;" + "\n" +
+				"fi" + "\n" +
+				"done" + "\n" +
+				"print(b);",
+				facade.createTaskFactory(),Collections.emptyList());
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task taskdummy = tasks.get(0);
+		facade.schedule(scheduler, taskdummy);
+		unit.startDefaultBehavior();
+		advanceTimeFor(world, 0.001, 0.001);
+		
+		assertTrue(unit.hasTask());
+		Task task = unit.getTask();
+		advanceTimeFor(world, 1, 0.001);
+		// NOTE: the output is consistent aside from a minor difference
+		// in output (only visible with "show whitespace characters"
+		// We therefore 'trim' the output stream.
+		assertEquals(Boolean.FALSE.toString(), outContent.toString().trim());
+	}
 	
+	@Test
+	public void whileBreak() throws Exception {
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"while sequence\"" + "\n" + 
+				"priority: 10" + "\n" + 
+				"activities :" + "\n" +
+				"b:=true;" + "\n" +
+				"while b do" + "\n" +
+				"b:=true;" + "\n" +
+				"break;" + "\n" +
+				"done", 
+				facade.createTaskFactory(),Collections.emptyList());
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task taskdummy = tasks.get(0);
+		facade.schedule(scheduler, taskdummy);
+		unit.startDefaultBehavior();
+		advanceTimeFor(world, 0.1, 0.001);
+		
+		assertTrue(! unit.hasTask());
+	}
 	
+	@Test
+	public void booleanExpressions() throws ModelException {
+		Unit any = new Unit(world, "Any", new int[] { 2, 2, 0 }, 50, 50, 50, 50);
+		facade.addUnit(any, world);
+		
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"expressions\"" + "\n" + 
+				"priority: 10" + "\n" + 
+				"activities :" + "\n" +
+				"a:=true;" + "\n" +
+				"b:= !a;" + "\n" +
+				"c:= a&&b;" + "\n" +
+				"d:= a||b;" + "\n" +
+				"e:= (d);" + "\n" +
+				"f:= workshop;" + "\n" +
+				"g:= is_passable f;" + "\n" +
+				"h:= is_solid f;" + "\n" +
+				"i:= enemy;" + "\n" +
+				"j:= is_friend i;" + "\n" +
+				"k:= is_enemy i;" + "\n" +
+				"l:= is_alive this;" + "\n" +
+				"m:= carries_item this;" + "\n" +
+				"print c;" + "\n" +
+				"print d;" + "\n" +
+				"print e;" + "\n" +
+				"print g;" + "\n" +
+				"print h;" + "\n" +
+				"print j;" + "\n" +
+				"print k;" + "\n" +
+				"print l;" + "\n" +
+				"print m;" + "\n",
+				facade.createTaskFactory(),Collections.emptyList());
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task taskdummy = tasks.get(0);
+		facade.schedule(scheduler, taskdummy);
+		unit.startDefaultBehavior();
+		advanceTimeFor(world, 10, 0.001);
+		
+		// NOTE: the output is consistent aside from a minor difference
+		// in output (only visible with "show whitespace characters"
+		// We do not how to solve it.
+		assertEquals(false + "\n" +
+				true + "\n" +
+				true + "\n" +
+				true + "\n" +
+				false + "\n" +
+				false + "\n" +
+				true + "\n" +
+				true + "\n" +
+				false + "\n", outContent.toString());
+	}
 	
 	/**
 	 * Helper method to advance time for the given world by some time.

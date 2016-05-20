@@ -1503,7 +1503,7 @@ public class World {
 		for(Unit unit: this.getUnits()){
 			try{unit.advanceTime(deltaT);}
 			catch(Exception e){
-//				throw e;
+				throw e;
 			}
 		}
 		

@@ -33,6 +33,9 @@ public class SequenceStatement extends Statement implements ISubStatement {
 			case FAILED:
 				this.setStatus(Status.FAILED);
 				break;
+			case EXECUTING:
+				this.getStatementAt(getCursor()).execute();
+				break;
 			default:
 				break;
 		}

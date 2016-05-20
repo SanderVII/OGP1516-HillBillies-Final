@@ -13,11 +13,12 @@ public class MoveToStatement<E extends PositionExpression>
 
 	@Override
 	public void execute() {
-//		if (this.getStatus() == Status.NOTSTARTED) {
+		if (this.getStatus() == Status.NOTSTARTED) {
+			this.setStatus(Status.EXECUTING);
 			int[] position = this.getExpression().evaluate();
 			this.getSuperTask().startExplicitStatement(this);
 			this.getSuperTask().getUnit().moveTo(position,true);
-//		}
+		}
 	}
 
 }

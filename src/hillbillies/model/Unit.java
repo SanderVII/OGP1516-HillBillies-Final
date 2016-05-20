@@ -3301,9 +3301,15 @@ public class Unit extends Entity{
 						break;
 					case DONE:
 						this.finishTask();
+						i = deltaT;
 						break;
 					case FAILED:
 						this.returnFailedTask();
+						i = deltaT;
+						break;
+					case EXECUTING:
+						statement.execute();
+						break;
 					default:
 						break;
 				}

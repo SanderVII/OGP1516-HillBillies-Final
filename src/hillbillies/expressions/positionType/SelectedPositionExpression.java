@@ -12,5 +12,10 @@ public class SelectedPositionExpression extends PositionExpression {
 	public int[] evaluate() {
 		return this.getSuperTask().getCoordinates();
 	}
+	
+	@Override
+	public boolean isWellFormed() {
+		return this.getSuperTask().getCoordinates() != null;
+	}
 
 }

@@ -5,7 +5,7 @@ import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.positions.Position;
 
-public class WorkshopPositionExpression extends PositionExpression{
+public class WorkshopPositionExpression extends PositionExpression {
 	
 	public WorkshopPositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);

@@ -2,6 +2,7 @@ package hillbillies.statements.expressionType;
 
 import hillbillies.expressions.Expression;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.statements.Status;
 
 public class PrintStatement<E extends Expression> extends ExpressionStatement<E> {
 
@@ -11,7 +12,11 @@ public class PrintStatement<E extends Expression> extends ExpressionStatement<E>
 
 	@Override
 	public void execute() {
-		System.out.println(this.getExpression().evaluate());
+		if (this.getStatus() == Status.NOTSTARTED) {
+			this.setStatus(Status.EXECUTING);
+			System.out.print(this.getExpression().evaluate() + "\n");
+			this.setStatus(Status.DONE);
+		}
 	}
 
 }
