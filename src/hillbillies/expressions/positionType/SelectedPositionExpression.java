@@ -15,7 +15,7 @@ public class SelectedPositionExpression extends PositionExpression {
 	
 	@Override
 	public boolean isWellFormed() {
-		return this.getSuperTask().getPosition() != null;
+		return this.getSuperTask().getCoordinates() != null;
 	}
 
 }
