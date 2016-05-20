@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -16,10 +15,6 @@ import hillbillies.positions.UnitPosition;
 import hillbillies.statements.Statement;
 import hillbillies.statements.Status;
 import util.RandomSetElement;
-	
-/** 
- * @version 2.20
- */
 
 /**
  * A class of units involving a world, a faction, a name, a position, a number of primary attributes, health and stamina,
@@ -59,6 +54,7 @@ import util.RandomSetElement;
  *				| isValidIsFalling(getIsFalling())
  * 
  * @author Sander Mergan, Thomas Vranken
+ * @version 3.0
  */
 public class Unit extends Entity{
 	
@@ -241,9 +237,10 @@ public class Unit extends Entity{
 				this.dropItem(this.getCubeCoordinates());
 			
 			this.isTerminated = true;
-			
-			 this.getFaction().removeUnit(this);
-			 this.getWorld().removeEntity(this);
+			Faction faction = this.getFaction();
+			World world = this.getWorld();
+			 faction.removeUnit(this);
+			 world.removeEntity(this);
 		 }
 	 }
 	
@@ -992,18 +989,6 @@ public class Unit extends Entity{
 	public UnitPosition getPosition(){
 		return (UnitPosition) this.position;
 	}
- 	
- 	/**
- 	 * Returns the position of the 2D-center of the cube this unit is standing in.
- 	 * The 2D-center is defined as the center in the XY-plane. The z-coordinate
- 	 * is the same as this unit's z-coordinate.
- 	 * 
- 	 * @return	The coordinates of the center of the cube this unit occupies.
- 	 *				| result == Position.getSurfaceCenter(getPosition().getCoordinates)
- 	 */
- 	public double[] getSurfaceCenter() {
- 		return (UnitPosition.getSurfaceCenter(this.getCoordinates()));
- 	}
  
 	/**
 	 * Sets the coordinates of this unit to the given coordinates.
@@ -1331,7 +1316,7 @@ public class Unit extends Entity{
 	 */
 	@Raw
 	public boolean isAdjacentTo(int[]targetCube) throws IllegalArgumentException {
-		if (!this.getWorld().canHaveAsCoordinates(targetCube[0],targetCube[1],targetCube[2]))
+		if (!this.getWorld().canHaveAsCoordinates(targetCube))
 			throw new IllegalArgumentException(Arrays.toString(targetCube));
 	
 		return (Position.isAdjacentTo(this.getPosition().getCubeCoordinates(), targetCube));
@@ -1679,7 +1664,7 @@ public class Unit extends Entity{
 			return false;
 		else
 			return ( ! hasSolidNeighbours(this.getPosition().getCubeCoordinates())
-					 && (Position.fuzzyEquals(this.getCoordinates(), this.getCubeCenter())));
+					 && (Position.equals(this.getCoordinates(), this.getCubeCenter())));
 	}
 	
 	/**
@@ -3197,7 +3182,7 @@ public class Unit extends Entity{
 			}
 			
 			// Set the orientation towards the target position.
-			if (! Position.fuzzyEquals(this.getTargetCoordinates(), newPosition)) {
+			if (! Position.equals(this.getTargetCoordinates(), newPosition)) {
 				this.setOrientation(this.getVelocity(this.getTargetCoordinates())[0], this.getVelocity(this.getTargetCoordinates())[1]);
 			}
 			

@@ -13,7 +13,7 @@ import ogp.framework.util.Util;
  *				| canHaveAsPosition(this.getPosition())
  * 
  * @author	Sander Mergan, Thomas Vranken
- * @version	2.3
+ * @version	3.0
  */
 // world heeft een set of entity en legt losse voorwaarden op aan entities. Specifieke voorwaarden worden
 // door de subentity zelf uitgewerkt met canHaveAs.
@@ -65,12 +65,13 @@ public abstract class Entity {
 	 */
 	public void terminate() {
 		if (! this.isTerminated()) {
+			this.isTerminated = true;
 			if (this.getWorld() != null) {
-				this.getWorld().removeEntity(this);
+				World world = this.getWorld();
 				this.setWorld(null);
+				world.removeEntity(this);
 			}
 		}
-		this.isTerminated = true;
 	 }
 	 
 	/**

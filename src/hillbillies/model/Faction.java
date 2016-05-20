@@ -18,7 +18,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *				| hasProperScheduler()
  * 
  * @author Sander Mergan, Thomas Vranken
- * @version 2.8
+ * @version 3.0
  */
 public class Faction {
 
@@ -140,10 +140,10 @@ public class Faction {
 			 if (this.getNbUnits() > 0)
 				 for (Unit unit: units)
 					 unit.terminate();
-			 World formerWorld = this.getWorld();
+			 World world = this.getWorld();
 			 this.isTerminated = true;
 			 this.setWorld(null);
-			 formerWorld.removeFaction(this);
+			 world.removeFaction(this);
 		 }
 	 }
 	 
@@ -257,18 +257,19 @@ public class Faction {
 	 * @param	unit
 	 *				The unit to be removed.
 	 *
-	 * @pre	This faction has the given unit as one of
-	 *				its units, and the given unit does not
-	 *				reference any faction.
-	 *				| this.hasAsUnit(unit) &&
-	 *				| (unit.getFaction() == null)
-	 *
 	 * @post	This faction no longer has the given unit ascone of its units.
 	 *				| ! new.hasAsUnit(unit)
+	 *
+	 * @throws	IllegalArgumentException
+	 *				This faction doesn't have the given unit as one of its units
+	 *				| ( ! this.hasAsUnit(unit))
 	 */
 	@Raw
-	public void removeUnit(Unit unit) {
-		assert this.hasAsUnit(unit) && (unit.getFaction() == null);
+	public void removeUnit(Unit unit) throws IllegalArgumentException{
+		
+		if ( ! this.hasAsUnit(unit) )
+			throw new IllegalArgumentException();
+		
 		units.remove(unit);
 		unit.setFaction(null);
 	}

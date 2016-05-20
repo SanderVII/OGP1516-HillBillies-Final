@@ -14,7 +14,7 @@ import hillbillies.positions.Position;
  *				| isValidCubeCoordinates(this.getPosition().getCubeCoordinates)
  *
  * @author	Sander Mergan, Thomas Vranken
- * @version	2.0
+ * @version	3.0
  */	
 public class Cube {
 	

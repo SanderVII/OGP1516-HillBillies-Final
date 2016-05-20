@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
     PathFinderTest.class,
     PositionTest.class, 
     TaskFactoryTest.class,
-//    SchedulerTest.class,
+    SchedulerTest.class,
     UnitTest.class, 
     WorldTest.class})
 public class AllTests {

@@ -11,7 +11,7 @@ import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
 /**
- * @version	2.3
+ * @version	3.0
  */
 public class Facade extends hillbillies.part1.facade.Facade implements hillbillies.part2.facade.IFacade {
 	

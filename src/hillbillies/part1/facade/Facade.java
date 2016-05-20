@@ -6,7 +6,7 @@ import ogp.framework.util.ModelException;
 
 
 /**
- * @version	2.1
+ * @version	3.0
  */
 public class Facade implements hillbillies.part1.facade.IFacade {
 	

@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-//TODO Tests
+/**
+ * A helper class for managing the default behaviour of units.
+ * 
+ * @author Sander Mergan, Thomas Vrancken.
+ * @version 3.0
+ */
 public class DefaultManager {
 	
 	/**

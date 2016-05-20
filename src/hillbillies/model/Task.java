@@ -1,7 +1,6 @@
 package hillbillies.model;
 
 import java.util.*;
-
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.expressions.Expression;
 import hillbillies.statements.Statement;
@@ -23,6 +22,8 @@ import hillbillies.statements.expressionType.actions.ActionStatement;
  *				| hasProperSchedulers()
  * @invar   Each task must have proper variables.
  *				| hasProperVariables()
+ * @invar	The position of each task must be a valid position for any task.
+ *				| isValidPosition(getPosition())
  *
  * @author 	Sander Mergan, Thomas Vranken
  * @version	3.0
@@ -80,6 +81,7 @@ public class Task implements Comparable<Task> {
 		this(name, priority, activities, null);
 	}
 	
+	
 	// =================================================================================================
 	// Methods concerning the termination of this task.
 	// =================================================================================================
@@ -87,12 +89,14 @@ public class Task implements Comparable<Task> {
 	/**
 	 * Terminate this task.
 	 *
-	 * @post   This task  is terminated.
-	 *       | new.isTerminated()
-	 * @post   ...
-	 *       | ...
+	 * @post	This task is terminated.
+	 *				| new.isTerminated()
+	 * @effect	Sets the task of this task's unit to null.
+	 *				| this.getUnit.setTask(null)
+	 * @effect	Sets the unit of this task to null.
+	 *				| this.setUnit(null)
+	 * @effect All the schedulers this task is in remove this task and this task removes those schedulers.
 	 */
-	//TODO finish
 	 public void terminate() {
 		 this.isTerminated = true;
 		 for (Scheduler scheduler: this.getSchedulers()) {
@@ -105,8 +109,7 @@ public class Task implements Comparable<Task> {
 	 }
 	 
 	 /**
-	  * Return a boolean indicating whether or not this task
-	  * is terminated.
+	  * Returns a boolean that indicates whether or not this task is terminated.
 	  */
 	 @Basic @Raw
 	 public boolean isTerminated() {
@@ -114,7 +117,7 @@ public class Task implements Comparable<Task> {
 	 }
 	 
 	 /**
-	  * Variable registering whether this task is terminated.
+	  * A variable that registers whether this task is terminated.
 	  */
 	 private boolean isTerminated = false;
 	 
@@ -124,7 +127,7 @@ public class Task implements Comparable<Task> {
 	// =================================================================================================
 	
 	/**
-	 * Return the name of this task.
+	 * Returns the name of this task.
 	 */
 	@Basic @Raw
 	public String getName() {
@@ -132,11 +135,11 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Check whether the given name is a valid name for
-	 * any task.
+	 * Checks whether the given name is a valid name for any task.
 	 *  
-	 * @param  name
-	 *         The name to check.
+	 * @param	name
+	 *				The name to check.
+	 *
 	 * @return Always true, any string is allowed.
 	 *       | result == true
 	*/
@@ -145,17 +148,17 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Set the name of this task to the given name.
+	 * Sets the name of this task to the given name.
 	 * 
-	 * @param  name
-	 *         The new name for this task.
-	 * @post   The name of this new task is equal to
-	 *         the given name.
-	 *       | new.getName() == name
+	 * @param	name
+	 *				The new name for this task.
+	 *
+	 * @post	The name of this new task is equal to the given name.
+	 *				| new.getName() == name
+	 *
 	 * @throws IllegalArgumentException
-	 *         The given name is not a valid name for any
-	 *         task.
-	 *       | ! isValidName(getName())
+	 *				The given name is not a valid name for any task.
+	 *				| ! isValidName(name)
 	 */
 	@Raw
 	public void setName(String name) 
@@ -166,7 +169,7 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Variable registering the name of this task.
+	 * A variable that stores the name of this task.
 	 */
 	private String name;
 	
@@ -175,7 +178,7 @@ public class Task implements Comparable<Task> {
 	// =================================================================================================
 	
 	/**
-	 * Return the priority of this task.
+	 * Returns the priority of this task.
 	 */
 	@Basic @Raw
 	public int getPriority() {
@@ -183,32 +186,33 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Check whether the given priority is a valid priority for
-	 * any task.
+	 * Checks whether the given priority is a valid priority for any task.
 	 *  
-	 * @param  priority
-	 *         The priority to check.
-	 * @return Always true, any integer (even negative) is allowed.
-	 *       | result == true
+	 * @param	priority
+	 *				The priority to check.
+	 *
+	 * @return	Always true, any integer (even negative) is allowed.
+	 *				| result == true
+	 *
 	 * @note	Values above the maximal integer value and below the minimal integer
-	 * 			value behave as usual in java.
+	 *				value behave as usual in java.
 	 */
 	public static boolean isValidPriority(int priority) {
 		return true;
 	}
 	
 	/**
-	 * Set the priority of this task to the given priority.
+	 * Sets the priority of this task to the given priority.
 	 * 
-	 * @param  priority
-	 *         The new priority for this task.
-	 * @post   The priority of this new task is equal to
-	 *         the given priority.
-	 *       | new.getPriority() == priority
-	 * @throws IllegalArgumentException
-	 *         The given priority is not a valid priority for any
-	 *         task.
-	 *       | ! isValidPriority(getPriority())
+	 * @param	priority
+	 *				The new priority for this task.
+	 *
+	 * @post	The priority of this new task is equal to the given priority.
+	 *				| new.getPriority() == priority
+	 *
+	 * @throws	IllegalArgumentException
+	 *				The given priority is not a valid priority for any task.
+	 *				| ! isValidPriority(priority)
 	 */
 	@Raw
 	private void setPriority(int priority) 
@@ -219,75 +223,67 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Variable registering the priority of this task.
+	 * A variable that stores the priority of this task.
 	 */
 	private int priority;
+	
 	
 	// =================================================================================================
 	// Methods concerning the selected position.
 	// =================================================================================================
 	
-	//TODO finish doc and code
-	/** TO BE ADDED TO CLASS HEADING
-	 * @invar  The position of each task must be a valid position for any
-	 *         task.
-	 *       | isValidPosition(getPosition())
-	 */
-	
 	/**
-	 * Return the position of this task.
+	 * Returns the coordinates of this task.
 	 */
 	@Basic @Raw
-	public int[] getPosition() {
-		return this.position;
+	public int[] getCoordinates() {
+		return this.coordinates;
 	}
 	
 	/**
-	 * Check whether the given position is a valid position for
-	 * any task.
+	 * Checks whether the given coordinates are valid coordinates for any task.
 	 *  
-	 * @param  coordinates
-	 *         The position to check.
-	 * @return 
-	 *       | result == 
+	 * @param	coordinates
+	 *				The coordinates to check.
+	 *
+	 * @return Always true;
+	 *				| result == true
 	 */
-	//TODO doc
 	public static boolean isValidCoordinates(int[] coordinates) {
 		return true;
 	}
 	
 	/**
-	 * Set the position of this task to the given position.
+	 * Sets the coordinates of this task to the given coordinates.
 	 * 
-	 * @param  position
-	 *         The new position for this task.
-	 * @post   The position of this new task is equal to
-	 *         the given position.
-	 *       | new.getPosition() == position
-	 * @throws IllegalArgumentException
-	 *         The given position is not a valid position for any
-	 *         task.
-	 *       | ! isValidPosition(getPosition())
+	 * @param	coordinates
+	 *				The new coordinates for this task.
+	 *
+	 * @post	The coordinates of this new task are equal to the given coordinates.
+	 *				| new.getCoordinates() == coordinates
+	 *
+	 * @throws	IllegalArgumentException
+	 *				The given coordinates are not  valid coordinates for any task.
+	 *				| ! isValidPosition(getPosition())
 	 */
 	@Raw
-	public void setCoordinates(int[] position) 
-			throws IllegalArgumentException {
-		if (! isValidCoordinates(position))
+	public void setCoordinates(int[] coordinates) throws IllegalArgumentException {
+		if (! isValidCoordinates(coordinates))
 			throw new IllegalArgumentException();
-		this.position = position;
+		this.coordinates = coordinates;
 	}
 	
 	/**
-	 * Variable registering the position of this task.
+	 * A variable that stores the coordinates of this task.
 	 */
-	private int[] position;
+	private int[] coordinates;
 	
 	// =================================================================================================
 	// Methods concerning whether this task is finished.
 	// =================================================================================================
 	
 	/**
-	 * Return the finished property of this task.
+	 * Returns the finished property of this task.
 	 */
 	@Basic @Raw
 	public boolean getFinished() {
@@ -295,21 +291,21 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Set the finished property of this task to the given finished property.
+	 * Sets the finished property of this task to the given value.
 	 * 
-	 * @param  finished
-	 *         The new finished property for this task.
-	 * @post   The finished property of this new task is equal to
-	 *         the given finished property.
-	 *       | new.getFinished() == finished
+	 * @param	value
+	 *				The new finished property for this task.
+	 *
+	 * @post	The finished property of this new task is equal to the given value.
+	 *				| new.getFinished() == value
 	 */
 	@Raw
-	public void setFinished(boolean finished) {
-		this.finished = finished;
+	public void setFinished(boolean value) {
+		this.finished = value;
 	}
 	
 	/**
-	 * Variable registering the finished property of this task.
+	 * A variable that stores the finished property of this task.
 	 * The default value is false.
 	 */
 	private boolean finished = false;
@@ -319,7 +315,7 @@ public class Task implements Comparable<Task> {
 	// =================================================================================================
 	
 	/**
-	 * Return the unit which executes this task.
+	 * Returns the unit which executes this task.
 	 */
 	@Basic @Raw
 	public Unit getUnit() {
@@ -327,7 +323,8 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Check if this task is being executed by a unit.
+	 * Checks whether this task is being executed by a unit.
+	 * 
 	 * @return	True if the unit executing this task is effective.
 	 * 			| result == (getUnit() != null)
 	 */
@@ -338,19 +335,18 @@ public class Task implements Comparable<Task> {
 	/**
 	 * Checks whether this task can have the given unit as its unit.
 	 * 
-	 * @param 	unit
-	 *			The unit to check.
-	 * @return	If this task is terminated, true if the given unit
-	 * 			is not effective.
-	 * 			| if (isTerminated())
-	 * 			|	then result == (unit == null)
-	 * 			Else if the unit is effective, true if the given unit 
-	 * 			is not yet terminated.
-	 * 			| else if (unit!= null)
-	 * 			|	then result == (!unit.isTerminated())
-	 * 			Else, return true.
-	 * 			| else
-	 * 			|	then result == true
+	 * @param	unit
+	 *				The unit to check.
+	 *
+	 * @return	If this task is terminated, true if the given unit is not effective.
+	 *				| if (isTerminated())
+	 *				|	then result == (unit == null)
+	 *				Else if the unit is effective, true if the given unit  is not yet terminated.
+	 *				| else if (unit!= null)
+	 *				|	then result == (!unit.isTerminated())
+	 *				Else, return true.
+	 *				| else
+	 *				|	then result == true
 	 */
 	@Raw
 	public boolean canHaveAsUnit(@Raw Unit unit) {
@@ -366,10 +362,10 @@ public class Task implements Comparable<Task> {
 	 * Checks whether this task has a proper unit to which it is attached.
 	 * 
 	 * @return	True if and only if this task can have the unit to which it
-	 * 			is attached as its unit, and if that unit is either not
-	 * 			effective or has this task as one of its tasks.
-	 * 			| (this.canHaveAsUnit(this.getUnit()) 
-	 *			|  && ( (this.getUnit() == null) || (this.getUnit().hasAsTask(this))) )
+	 *				is attached as its unit, and if that unit is either not
+	 *				effective or has this task as one of its tasks.
+	 *				| (this.canHaveAsUnit(this.getUnit()) 
+	 *				|  && ( (this.getUnit() == null) || (this.getUnit().hasAsTask(this))) )
 	 */
 	public boolean hasProperUnit() {
 		return ( this.canHaveAsUnit(this.getUnit()) 
@@ -377,15 +373,17 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Sets the unit to which this task is attached to to the given unit.
+	 * Sets the unit to which this task is attached to the given unit.
 	 * 
 	 * @param	unit
-	 * 			The unit to attach this task to.
+	 *				The unit to attach this task to.
+	 * 
 	 * @post	This task references the given unit as the unit to which it is attached.
-	 * 			| new.getUnit() == unit
+	 *				| new.getUnit() == unit
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			This task cannot have the given unit as its unit.
-	 * 			| (! canHaveAsUnit(unit))
+	 *				This task cannot have the given unit as its unit.
+	 *				| (! canHaveAsUnit(unit))
 	 */
 	public void setUnit(@Raw Unit unit) throws IllegalArgumentException {
 		if (! this.canHaveAsUnit(unit))
@@ -394,19 +392,20 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * A variable referencing the unit to which this task is attached.
+	 * A variable that stores the unit to which this task is attached.
 	 */
 	private Unit unit;
 	
 	/**
 	 * Assigns this task to the given unit.
 	 * 
-	 * @param 	unit
-	 * 			The unit to assign this task to.
-	 * @effect	This task references the unit as its unit.
-	 * 			| setUnit(unit)
-	 * 			The unit references this task as its task.
-	 * 			| unit.setTask(this)
+	 * @param	unit
+	 *				The unit to assign this task to.
+	 *
+	 * @effect	This task references the given unit as its unit.
+	 *				| this.setUnit(unit)
+	 * @effect	The given unit references this task as its task.
+	 *				| unit.setTask(this)
 	 */
 	public void assignTo(Unit unit) throws IllegalArgumentException {
 		this.setUnit(unit);
@@ -414,15 +413,15 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Stop the execution of this task, if necessary.
+	 * Stops the execution of this task, if necessary.
 	 * The task is send back to the scheduler of the unit faction.
 	 * 
 	 * @post	This task no longer references a unit.
-	 * 			| ! new.hasUnit()
+	 *				| ! new.hasUnit()
 	 * @post	The unit of this task no longer references this task.
-	 * 			| ! this.getUnit().hasTask()
+	 *				| ! this.getUnit().hasTask()
 	 * @effect	The status of this task's statement and its substatements are reset.
-	 * 			| this.getStatement().resetStatus()
+	 *				| this.getStatement().resetStatus()
 	 */
 	//NOTE: total programming is allowed.
 	public void stopExecuting() throws IllegalArgumentException {
@@ -434,12 +433,13 @@ public class Task implements Comparable<Task> {
 		}
 	}
 	
+	
 	// =================================================================================================
 	// Methods concerning the statement of this task.
 	// =================================================================================================
 	
 	/**
-	 * Return the statement of this task.
+	 * Returns the statement of this task.
 	 */
 	@Basic @Raw
 	public Statement getStatement() {
@@ -447,10 +447,10 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Check whether this task has a statement.
+	 * Checks whether this task has a statement.
 	 * 
 	 * @return	True if the statement of this task is effective.
-	 * 				| result == (getStatement() != null)
+	 *				| result == (getStatement() != null)
 	 */
 	public boolean hasStatement() {
 		return this.getStatement() != null;
@@ -460,29 +460,31 @@ public class Task implements Comparable<Task> {
 	 * Checks whether this task has a proper statement attached to it.
 	 * 
 	 * @return	True if and only if the statement of this task does not reference
-	 * 				an effective statement, or that statement references this task
-	 * 				as its task.
-	 * 				| result == ( (this.getStatement() == null) || 
-	 * 				|				(this.getStatement().getTask() == this) )
+	 *				an effective statement, or that statement references this task
+	 *				as its task.
+	 *				| result == ( (this.getStatement() == null) || 
+	 *				|				(this.getStatement().getTask() == this) )
 	 */
 	public boolean hasProperStatement() {
 		return ( (this.getStatement() == null) || (this.getStatement().getTask() == this) );
 	}
 	
 	/**
-	 * Sets the statement attached to this task to to the given statement.
+	 * Sets the statement attached to this task to the given statement.
 	 * 
 	 * @param	statement
-	 * 				The statement to attach to this task.
+	 *				The statement to attach to this task.
+	 * 
 	 * @post	This task references the given statement as its statement.
-	 * 				| new.getStatement() == statement
+	 *				| new.getStatement() == statement
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 				The given statement is effective but does not references
-	 * 				this task as its task.
-	 * 				| (statement != null) && (statement.getTask() != this)
-	 * 				Or, the statement is not effective and this task references
-	 * 				a statement which still references this task as its task.
-	 * 				| (statement == null) && (this.hasStatement() && (this.getStatement().getTask() == this))
+	 *				The given statement is effective but does not references
+	 *				this task as its task.
+	 *				| (statement != null) && (statement.getTask() != this)
+	 *				Or, the statement is not effective and this task references
+	 *				a statement which still references this task as its task.
+	 *				| (statement == null) && (this.hasStatement() && (this.getStatement().getTask() == this))
 	 */
 	public void setStatement(@Raw Statement statement) throws IllegalArgumentException {
 		if ( (statement != null) && (statement.getTask() != this)  )
@@ -493,46 +495,47 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * A variable referencing the statement attached to this task.
+	 * A variable that stores the statement attached to this task.
 	 */
 	private Statement statement;
 	
 	/**
-	 * Check if the statement of this task is correctly formed.
+	 * Checks whether the statement of this task is correctly formed.
 	 * 
-	 * @return 	True if the statement of this task, and all of its sub-text objects
-	 *  		(if it has any) are well formed.
-	 *  		| result == this.getStatement().isWellFormed()
+	 * @return	True if the statement of this task, and all of its sub-text objects (if it has any) are well formed.
+	 *				| result == this.getStatement().isWellFormed()
 	 */
 	public boolean isWellFormed() {
 		return this.getStatement().isWellFormed();
 	}
+	
 	
 	// =================================================================================================
 	// Methods concerning the variables used in this task.
 	// =================================================================================================
 
 	/**
-	 * Check whether this task has the given variable as one of its
-	 * variables.
+	 * Checks whether this task has the given variable as one of its variables.
 	 * 
-	 * @param  	variable
-	 *         		The variable to check.
+	 * @param	variable
+	 *				The variable to check.
+	 *
+	 * @return | this.variables.containsKey(variable)
 	 */
 	@Basic
 	@Raw
 	public boolean hasAsVariable(@Raw String variable) {
-		return variables.containsKey(variable);
+		return this.variables.containsKey(variable);
 	}
 
 	/**
-	 * Check whether this task can have the given variable with value
-	 * as one of its variables.
+	 * Checks whether this task can have the given variable with the given value as one of its variables.
 	 * 
-	 * @param  	variable
-	 *         		The variable to check.
-	 * @return 	True if and only if the given value is effective.
-	 *       		| result == (value != null)
+	 * @param	variable
+	 *				The variable to check.
+	 *
+	 * @return	True if and only if the given value is effective.
+	 *				| result == (value != null)
 	 */
 	@Raw
 	public boolean canHaveAsVariable(String variable, Expression value) {
@@ -540,16 +543,16 @@ public class Task implements Comparable<Task> {
 	}
 
 	/**
-	 * Check whether this task has proper variables attached to it.
+	 * Checks whether this task has proper variables attached to it.
 	 * 
-	 * @return 	True if and only if this task can have each of the
-	 *         		variables attached to it as one of its variables,
-	 *        	 	and if the value(expression) of each variable references this task as
-	 *        	 	the task to which they are attached.
-	 *       		| for each variable in Variable:
-	 *       		|   if (hasAsVariable(variable))
-	 *       		|     then canHaveAsVariable(variable) &&
-	 *       		|          (variables.get(variable).getStatement().getTask() == this)
+	 * @return	True if and only if this task can have each of the
+	 *				variables attached to it as one of its variables,
+	 *				and if the value(expression) of each variable references this task as
+	 *				the task to which they are attached.
+	 *				| for each variable in Variable:
+	 *				|   if (hasAsVariable(variable))
+	 *				|     then canHaveAsVariable(variable) &&
+	 *				|          (variables.get(variable).getStatement().getTask() == this)
 	 */
 	public boolean hasProperVariables() {
 		for (String variable : variables.keySet()) {
@@ -562,24 +565,26 @@ public class Task implements Comparable<Task> {
 	}
 
 	/**
-	 * Return the number of variables associated with this task.
+	 * Returns the number of variables associated with this task.
 	 *
-	 * @return  The total number of variables collected in this task.
-	 *        		| result == variables.size()
+	 * @return	The total number of variables collected in this task.
+	 *				| result == variables.size()
 	 */
 	public int getNbVariables() {
 		return variables.size();
 	}
 
 	/**
-	 * Add the given variable with expression to the map of variables of this task.
+	 * Adds the given variable with the given expression to the map of variables of this task.
 	 * 
-	 * @param  	variable
-	 *         		The variable to be added.
+	 * @param	variable
+	 *				The variable to be added.
 	 * @param	value
-	 * 				The value to store for the variable.
-	 * @post   	This task has the given variable as one of its variables.
-	 *       		| new.hasAsVariable(variable)
+	 *				The value to store for the variable.
+	 *
+	 * @post	This task has the given variable as one of its variables.
+	 *				| new.hasAsVariable(variable)
+	 *
 	 * @throws	This task cannot have the given variable
 	 * 				as one of its variables.
 	 * 				| ! this.canHaveAsVariable(variable, value)
@@ -595,19 +600,21 @@ public class Task implements Comparable<Task> {
 	}
 
 	/**
-	 * Remove the given variable from the set of variables of this task.
+	 * Removes the given variable from the set of variables of this task.
 	 * 
-	 * @param  	variable
-	 *         		The variable to be removed.
-	 * @post   	This task no longer has the given variable as
-	 *         		one of its variables.
-	 *      		| ! new.hasAsVariable(variable)
+	 * @param	variable
+	 *				The variable to be removed.
+	 *
+	 * @post	This task no longer has the given variable as one of its variables.
+	 *				| ! new.hasAsVariable(variable)
+	 *
 	 * @throws	IllegalArgumentException
-	 * 				This task does no have the given variable.
-	 * 				| ! this.hasAsVariable(variable)
+	 *				This task does no have the given variable.
+	 *				| ! this.hasAsVariable(variable)
+	 *
 	 * @note	Because failed tasks must reset their variables,
-	 * 				It is allowed to remove a variable even if it has
-	 * 				this task as its (super)task.
+	 *				It is allowed to remove a variable even if it has
+	 *				this task as its (super)task.
 	 */
 	@Raw
 	public void removeVariable(String variable) {
@@ -617,43 +624,43 @@ public class Task implements Comparable<Task> {
 	}
 
 	/**
-	 * Variable referencing a map collecting all the variables
-	 * of this task and their values.
+	 * A variable that stores a map collecting all the variables of this task and their values.
 	 * 
-	 * @invar  	The referenced map is effective.
-	 *       		| variables != null
-	 * @invar  	Each variable registered in the referenced map holds an
-	 * 				expression which is effective and not yet terminated.
-	 *       		| for each variable in variables:
-	 *       		|   ( (variables.get(variable) != null) &&
-	 *       		|     (! (variables.get(variable).isTerminated()) )
+	 * @invar	The referenced map is effective.
+	 *				| variables != null
+	 * @invar	Each variable registered in the referenced map holds an
+	 *				expression which is effective and not yet terminated.
+	 *				| for each variable in variables:
+	 *				|   ( (variables.get(variable) != null) &&
+	 *				|     (! (variables.get(variable).isTerminated()) )
 	 */
 	private final Map<String, Expression> variables = new HashMap<>();
 	
 	/**
 	 * Returns a map collecting all the variables of this task. 
 	 * 
-	 * @return	A map in which each variable value is effective 
-	 * 				and not yet terminated.
-	 *       		| for each variable in result:
-	 *       		|   ( (variables.get(variable) != null) &&
-	 *       		|     (! (variables.get(variable).isTerminated()) )
+	 * @return	A map in which each variable value is effective and not yet terminated.
+	 *				| for each variable in result:
+	 *				|   ( (variables.get(variable) != null) &&
+	 *				|     (! (variables.get(variable).isTerminated()) )
 	 */
 	public Map<String, Expression> getVariables() {
 		return new HashMap<>(variables);
 	}
 	
 	/**
-	 * Return the value of the given variable.
+	 * Returns the value of the given variable.
 	 * 
-	 * @param 	variable
-	 * 				The variable which holds the value.
+	 * @param	variable
+	 *				The variable which holds the value.
+	 *
 	 * @return	The corresponding value of the variable.
-	 * 				| result == variables.get(variable)
+	 *				| result == variables.get(variable)
 	 */
 	public Expression getValue(String variable) {
 		return variables.get(variable);
 	}
+	
 	
 	// =================================================================================================
 	// Methods concerning the explicit statement being executed.
@@ -662,7 +669,7 @@ public class Task implements Comparable<Task> {
 	// =================================================================================================
 	
 	/**
-	 * A variable which holds an explicit statement.
+	 * A variable that stores an explicit statement.
 	 * Explicit statements are statements which directly 
 	 * influence the unit upon execution.
 	 * If this task holds an explicit statement, the unit will 
@@ -680,22 +687,22 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Checks if this task has an explicit statement attached.
+	 * Checks whether this task has an explicit statement attached to it.
+	 * 
 	 * @return	True if the explicit statement is effective.
-	 * 				| result == (this.getExplicitStatement() != null)
+	 *				| result == (this.getExplicitStatement() != null)
 	 */
 	public boolean hasExplicitStatement() {
 		return this.getExplicitStatement() != null;
 	}
 	
 	/**
-	 * Checks if the given statement is a valid explicit statement
-	 * for any task.
+	 * Checks whether the given statement is a valid explicit statement for any task.
 	 * 
-	 * @param 	statement
-	 * 				The statement to check.
-	 * @return	True if the statement is an instance of ActionStatement,
-	 * 				or the statement is not effective.
+	 * @param	statement
+	 *				The statement to check.
+	 *
+	 * @return	True if the statement is an instance of ActionStatement or the statement is not effective.
 	 */
 	public static boolean isValidExplicitStatement(Statement statement) {
 		return (statement instanceof ActionStatement<?>) || (statement == null);
@@ -704,13 +711,15 @@ public class Task implements Comparable<Task> {
 	/**
 	 * Sets the explicit statement of this task to the given statement.
 	 * 
-	 * @param 	statement
-	 * 				The new explicit statement.
-	 * @post	This task has the new statement as its explicit statement.
+	 * @param	statement
+	 *				The new explicit statement.
+	 *
+	 * @post	The explicit statemnt of this task is equal to the given statement.
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 				The statement is not of the appropriate type.
+	 *				The statement is not of the appropriate type.
 	 */
-	private void setExplicitStatement(Statement statement) {
+	private void setExplicitStatement(Statement statement) throws IllegalArgumentException {
 		if (! Task.isValidExplicitStatement(statement))
 			throw new IllegalArgumentException("statement not of appropriate type.");
 		this.explicitStatement = statement;
@@ -719,12 +728,13 @@ public class Task implements Comparable<Task> {
 	/**
 	 * Starts the execution of this explicit statement.
 	 * 
-	 * @param 	statement
-	 * 				The explicit statement to execute.
+	 * @param	statement
+	 *				The explicit statement to execute.
+	 *
 	 * @effect	If this unit does nothing,
-	 * 				the statement becomes the explicit statement of this task
-	 * 				and its status is set to EXECUTING.
-	 * 				| if (unit.getCurrentActivity() == Activity.NOTHING)
+	 *				then the statement becomes the explicit statement of this task
+	 *				and its status is set to EXECUTING.
+	 *				| if (unit.getCurrentActivity() == Activity.NOTHING)
 	 *				| 	then this.setExplicitStatement(statement) &&
 	 *				| 		 statement.setStatus(Status.EXECUTING)
 	 *				If the statement is invalid, nothing happens.
@@ -741,12 +751,12 @@ public class Task implements Comparable<Task> {
 	}
 	
 	/**
-	 * Finish the execution of this task's current explicit statement.
+	 * Finishes the execution of this task's current explicit statement.
 	 * 
 	 * @effect	If this task has an explicit statement,
-	 * 				its status is set to DONE and this task no longer
-	 * 				directly references it.
-	 * 				| if (this.hasExplicitStatement())
+	 *				its status is set to DONE and this task no longer
+	 *				directly references it.
+	 *				| if (this.hasExplicitStatement())
 	 *				|  then this.getExplicitStatement().setStatus(Status.DONE) &&
 	 *				| 		this.setExplicitStatement(null);
 	 */
@@ -757,16 +767,16 @@ public class Task implements Comparable<Task> {
 		}
 	}
 	
+	
 	// =================================================================================================
 	// Methods concerning the schedulers who have this task.
 	// =================================================================================================
 	
 	/**
-	 * Check whether this task has the given scheduler as one of its
-	 * schedulers.
+	 * Checks whether this task has the given scheduler as one of its schedulers.
 	 * 
-	 * @param  scheduler
-	 *         The scheduler to check.
+	 * @param	scheduler
+	 *				The scheduler to check.
 	 */
 	@Basic
 	@Raw
@@ -775,32 +785,30 @@ public class Task implements Comparable<Task> {
 	}
 
 	/**
-	 * Check whether this task can have the given scheduler
-	 * as one of its schedulers.
+	 * Checks whether this task can have the given scheduler as one of its schedulers.
 	 * 
-	 * @param  	scheduler
-	 *         	The scheduler to check.
-	 * @return 	True if and only if the given scheduler is effective.
-	 *       	| result ==
-	 *       	|   (scheduler != null)
+	 * @param	scheduler
+	 *				The scheduler to check.
+	 *
+	 * @return	True if and only if the given scheduler is effective.
+	 *				| result == (scheduler != null)
 	 */
 	@Raw
-	//NOTE: cannot use canHaveAsTask
 	public boolean canHaveAsScheduler(Scheduler scheduler) {
 		return (scheduler != null);
 	}
 
 	/**
-	 * Check whether this task has proper schedulers attached to it.
+	 * Checks whether this task has proper schedulers attached to it.
 	 * 
-	 * @return True if and only if this task can have each of the
-	 *         schedulers attached to it as one of its schedulers,
-	 *         and if each of these schedulers references this task as
-	 *         one of its tasks.
-	 *       | for each scheduler in Scheduler:
-	 *       |   if (hasAsScheduler(scheduler))
-	 *       |     then canHaveAsScheduler(scheduler) &&
-	 *       |          scheduler.hasAsTask(this)
+	 * @return	True if and only if this task can have each of the
+	 *				 schedulers attached to it as one of its schedulers,
+	 *				and if each of these schedulers references this task as
+	 *				one of its tasks.
+	 *				| for each scheduler in Scheduler:
+	 *				|	if (hasAsScheduler(scheduler))
+	 *				|		then canHaveAsScheduler(scheduler) &&
+	 *				|			scheduler.hasAsTask(this)
 	 */
 	public boolean hasProperSchedulers() {
 		for (Scheduler scheduler : schedulers) {
@@ -813,27 +821,28 @@ public class Task implements Comparable<Task> {
 	}
 
 	/**
-	 * Return the number of schedulers associated with this task.
+	 * Returns the number of schedulers associated with this task.
 	 *
-	 * @return  The total number of schedulers collected in this task.
-	 *        | result ==
-	 *        |   card({scheduler:Scheduler | hasAsScheduler({scheduler)})
+	 * @return	The total number of schedulers collected in this task.
+	 *				| result == card({scheduler:Scheduler | hasAsScheduler({scheduler)})
 	 */
 	public int getNbSchedulers() {
 		return schedulers.size();
 	}
 
 	/**
-	 * Add the given scheduler to the set of schedulers of this task.
+	 * Adds the given scheduler to the set of schedulers of this task.
 	 * 
-	 * @param  scheduler
-	 *         The scheduler to be added.
-	 * @post   This task has the given scheduler as one of its schedulers.
-	 *       | new.hasAsScheduler(scheduler)
+	 * @param	scheduler
+	 *				The scheduler to be added.
+	 *
+	 * @post	This task has the given scheduler as one of its schedulers.
+	 *				| new.hasAsScheduler(scheduler)
+	 *
 	 * @throws	IllegalStateException
-	 * 			The given scheduler is terminated.
+	 *				The given scheduler is terminated.
 	 * @throws	IllegalArgumentException
-	 * 			This task cannot have the given scheduler as its scheduler.
+	 *				This task cannot have the given scheduler as its scheduler.
 	 */
 	//NOTE: task controls the connection!
 	public void addScheduler(@Raw Scheduler scheduler) 
@@ -847,15 +856,16 @@ public class Task implements Comparable<Task> {
 	}
 
 	/**
-	 * Remove the given scheduler from the set of schedulers of this task.
+	 * Removes the given scheduler from the set of schedulers of this task.
 	 * 
-	 * @param  scheduler
-	 *         The scheduler to be removed.
-	 * @post   This task no longer has the given scheduler as
-	 *         one of its schedulers.
-	 *       | ! new.hasAsScheduler(scheduler)
+	 * @param	scheduler
+	 *				The scheduler to be removed.
+	 *
+	 * @post	This task no longer has the given scheduler as one of its schedulers.
+	 *				| ! new.hasAsScheduler(scheduler)
+	 *
 	 * @throws	IllegalArgumentException
-	 * 			This task does not have the given scheduler as one of its schedulers.    		
+	 *				This task does not have the given scheduler as one of its schedulers.    		
 	 */
 	@Raw
 	//NOTE: task controls the connection!
@@ -866,27 +876,25 @@ public class Task implements Comparable<Task> {
 	}
 
 	/**
-	 * Variable referencing a set collecting all the schedulers
-	 * of this task.
+	 * A variable that stores a set collecting all the schedulers of this task.
 	 * 
-	 * @invar  The referenced set is effective.
-	 *       | schedulers != null
-	 * @invar  Each scheduler registered in the referenced list is
-	 *         effective and not yet terminated.
-	 *       | for each scheduler in schedulers:
-	 *       |   ( (scheduler != null) &&
-	 *       |     (! scheduler.isTerminated()) )
+	 * @invar	The referenced set is effective.
+	 *				| schedulers != null
+	 * @invar	Each scheduler registered in the referenced list is
+	 *				effective and not yet terminated.
+	 *				| for each scheduler in schedulers:
+	 *				|   ( (scheduler != null) &&
+	 *				|     (! scheduler.isTerminated()) )
 	 */
 	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
 	
 	/**
 	 * Returns a set collecting all the schedulers of this task. 
 	 * 
-	 * @return	A set in which each scheduler is effective 
-	 * 			and not yet terminated.
-	 *       	| for each scheduler in result:
-	 *       	|   ( (scheduler != null) &&
-	 *       	|     (! scheduler.isTerminated()) )
+	 * @return	A set in which each scheduler is effective and not yet terminated.
+	 *				| for each scheduler in result:
+	 *				|   ( (scheduler != null) &&
+	 *				|     (! scheduler.isTerminated()) )
 	 */
 	public Set<Scheduler> getSchedulers() {
 		return new HashSet<Scheduler>(this.schedulers);
@@ -905,9 +913,10 @@ public class Task implements Comparable<Task> {
 	 *				| this.getStatement().resetStatus()
 	 *				| this.variables.clear()
 	 *				| this.setExplicitStatement(null)
+	 *
 	 * @throws	IllegalStateException
-	 * 				This task does not have a unit.
-	 * 				| ! this.hasUnit()
+	 *				This task does not have a unit.
+	 *				| ! this.hasUnit()
 	 */
 	public void returnFailedTask() throws IllegalStateException {
 		if (! this.hasUnit())
@@ -923,6 +932,7 @@ public class Task implements Comparable<Task> {
 			scheduler.replaceTask(this, this);
 	}
 	
+	
 	// =================================================================================================
 	// Compare method based on priority for tasks.
 	// =================================================================================================
@@ -930,20 +940,22 @@ public class Task implements Comparable<Task> {
 	/**
 	 * Compares this task to the given task.
 	 * 
-	 * @param 	task
-	 * 			The task to compare this task to.
+	 * @param	task
+	 *				The task to compare this task to.
+	 *
 	 * @return	An integer based on the difference in priority between the tasks.
-	 * 			If the priorities are equal, return 0.
-	 * 			| if (this.getPriority() == task.getPriority())
-	 * 			|	then result == 0
-	 * 			If this task has a lower priority than the given task, return -1.
-	 * 			| if (this.getPriority() < task.getPriority())
-	 * 			|	then result == -1
-	 * 			Else, return 1.
-	 * 			| else
-	 * 			|	then result == 1
-	 * @note	This class compares by using only PRIORITIES, and as such is incosistent
-	 * 			with the method 'equals'.
+	 *				If the priorities are equal, return 0.
+	 *				| if (this.getPriority() == task.getPriority())
+	 *				|	then result == 0
+	 *				If this task has a lower priority than the given task, return -1.
+	 *				| if (this.getPriority() < task.getPriority())
+	 *				|	then result == -1
+	 *				Else, return 1.
+	 *				| else
+	 *				|	then result == 1
+	 *
+	 * @note	This class compares by using only PRIORITIES, and as such is inconsistent
+	 *				with the method 'equals'.
 	 */
 	@Override
 	public int compareTo(Task task) {
