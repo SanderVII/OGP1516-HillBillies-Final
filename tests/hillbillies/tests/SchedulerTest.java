@@ -12,10 +12,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import hillbillies.expressions.unitType.AnyExpression;
+import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.model.*;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.facade.Facade;
+import hillbillies.part3.programs.SourceLocation;
 import hillbillies.positions.Position;
+import hillbillies.statements.expressionType.actions.FollowStatement;
 import ogp.framework.util.ModelException;
 
 /**
@@ -114,17 +118,18 @@ public class SchedulerTest {
 	public void addTasks() {
 		Scheduler scheduler = faction.getScheduler();
 		List<Task> tasks = new ArrayList<>();
-		tasks.add(new Task("test0", 100, null));
+		tasks.add(new Task("digTunnel", 100, new FollowStatement<UnitExpression>(new AnyExpression(new SourceLocation(0, 0)), new SourceLocation(0, 0))));
 		scheduler.addAllTasks(tasks);
-
 	}
 	
 	@Test
 	public void getTasksWithPredicate() {
 		Scheduler scheduler = faction.getScheduler();
 		List<Task> tasks = new ArrayList<>();
-		tasks.add(new Task("test1", 100, null));
-		tasks.add(new Task("test2", -5, null));
+		
+		
+		tasks.add(new Task("test1", 100, new FollowStatement<UnitExpression>(new AnyExpression(new SourceLocation(0, 0)), new SourceLocation(0, 0))));
+		tasks.add(new Task("test2", -5, new FollowStatement<UnitExpression>(new AnyExpression(new SourceLocation(0, 0)), new SourceLocation(0, 0))));
 		for (Task task: tasks)
 			task.addScheduler(scheduler);
 		scheduler.addAllTasks(tasks);
