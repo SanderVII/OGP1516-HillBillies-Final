@@ -303,7 +303,6 @@ public interface IFacade {
 	 * @throws ModelException
 	 *             A precondition was violated or an exception was thrown.
 	 */
-	@Deprecated
 	public void advanceTime(Unit unit, double dt) throws ModelException;
 
 	/* Basic movement */
@@ -418,7 +417,6 @@ public interface IFacade {
 	 * @throws ModelException
 	 *             A precondition was violated or an exception was thrown.
 	 */
-	@Deprecated
 	public void work(Unit unit) throws ModelException;
 
 	/**

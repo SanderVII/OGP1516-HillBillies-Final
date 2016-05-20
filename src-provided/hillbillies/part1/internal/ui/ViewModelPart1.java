@@ -49,6 +49,7 @@ public class ViewModelPart1 extends ViewModel implements IViewModel1 {
 
 	@Override
 	protected void updateVisibleTileZAt(int visibleX, int visibleY, int visibleZ) {
+		// TODO: ignore
 	}
 
 }

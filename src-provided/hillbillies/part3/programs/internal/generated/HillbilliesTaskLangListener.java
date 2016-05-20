@@ -317,85 +317,97 @@ public interface HillbilliesTaskLangListener extends ParseTreeListener {
 	void exitAnyUnit(HillbilliesTaskLangParser.AnyUnitContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code herePosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void enterHerePosition(HillbilliesTaskLangParser.HerePositionContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code herePosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void exitHerePosition(HillbilliesTaskLangParser.HerePositionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code logPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void enterLogPosition(HillbilliesTaskLangParser.LogPositionContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code logPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void exitLogPosition(HillbilliesTaskLangParser.LogPositionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code boulderPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void enterBoulderPosition(HillbilliesTaskLangParser.BoulderPositionContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code boulderPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void exitBoulderPosition(HillbilliesTaskLangParser.BoulderPositionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code workshopPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void enterWorkshopPosition(HillbilliesTaskLangParser.WorkshopPositionContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code workshopPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void exitWorkshopPosition(HillbilliesTaskLangParser.WorkshopPositionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code literalPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void enterLiteralPosition(HillbilliesTaskLangParser.LiteralPositionContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code literalPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void exitLiteralPosition(HillbilliesTaskLangParser.LiteralPositionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code nextToPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void enterNextToPosition(HillbilliesTaskLangParser.NextToPositionContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code nextToPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void exitNextToPosition(HillbilliesTaskLangParser.NextToPositionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code positionOfPosition}
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
+	 * @param ctx the parse tree
+	 */
+	void enterPositionOfPosition(HillbilliesTaskLangParser.PositionOfPositionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code positionOfPosition}
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
+	 * @param ctx the parse tree
+	 */
+	void exitPositionOfPosition(HillbilliesTaskLangParser.PositionOfPositionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code selectedPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void enterSelectedPosition(HillbilliesTaskLangParser.SelectedPositionContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code selectedPosition}
-	 * labeled alternative in {@link HillbilliesTaskLangParser#coordinates}.
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
 	 */
 	void exitSelectedPosition(HillbilliesTaskLangParser.SelectedPositionContext ctx);
