@@ -4,8 +4,10 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,7 +23,9 @@ import hillbillies.expressions.unitType.EnemyExpression;
 import hillbillies.expressions.unitType.FriendExpression;
 import hillbillies.expressions.unitType.UnitExpression;
 import hillbillies.model.Activity;
+import hillbillies.model.Boulder;
 import hillbillies.model.Faction;
+import hillbillies.model.Log;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
@@ -276,9 +280,6 @@ public class TaskFactoryTest {
 		assertTrue(unit.hasTask());
 		unit.getTask();
 		advanceTimeFor(world, 1, 0.001);
-		// NOTE: the output is consistent aside from a minor difference
-		// in output (only visible with "show whitespace characters"
-		// We therefore 'trim' the output stream.
 		assertEquals(Boolean.FALSE.toString(), outContent.toString().trim());
 	}
 	
@@ -337,7 +338,7 @@ public class TaskFactoryTest {
 				"print j;" + "\n" +
 				"print k;" + "\n" +
 				"print l;" + "\n" +
-				"print m;" + "\n",
+				"print m;",
 				facade.createTaskFactory(),Collections.emptyList());
 		
 		// tasks are created
@@ -348,10 +349,7 @@ public class TaskFactoryTest {
 		facade.schedule(scheduler, taskdummy);
 		unit.startDefaultBehavior();
 		advanceTimeFor(world, 10, 0.001);
-		
-		// NOTE: the output is consistent aside from a minor difference
-		// in output (only visible with "show whitespace characters"
-		// We do not how to solve it.
+
 		assertEquals(false + "\n" +
 				true + "\n" +
 				true + "\n" +
@@ -361,6 +359,106 @@ public class TaskFactoryTest {
 				true + "\n" +
 				true + "\n" +
 				false + "\n", outContent.toString());
+	}
+	
+	@Test
+	public void unitExpressions() throws ModelException {
+		Unit any = new Unit(world, "Any", new int[] { 2, 2, 0 }, 50, 50, 50, 50);
+		Unit friend = new Unit(world, unit.getFaction(), "Ally", new int[] { 2, 2, 0 }, 50, 50, 50, 50);
+		facade.addUnit(any, world);
+		facade.addUnit(friend, world);
+		
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"units\"" + "\n" + 
+				"priority: 10" + "\n" + 
+				"activities :" + "\n" +
+				"a:= friend;" + "\n" +
+				"b:= enemy;" + "\n" +
+				"print a;" + "\n" +
+				"print b;",
+				facade.createTaskFactory(),Collections.emptyList());
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task taskdummy = tasks.get(0);
+		facade.schedule(scheduler, taskdummy);
+		unit.startDefaultBehavior();
+		advanceTimeFor(world, 10, 0.01);
+		
+		assertEquals(friend.toString() + "\n" +
+				any.toString() + "\n", outContent.toString());
+	}
+	
+	@Test
+	public void positionExpressions() throws ModelException {
+		int[] logCoordinates = new int[] {2,2,0};
+		int[] boulderCoordinates = new int[] {2,1,0};
+		Log log = new Log(world, logCoordinates);
+		Boulder boulder = new Boulder(world, boulderCoordinates);
+		
+		Unit any = new Unit(world, "Any", new int[] { 2, 2, 0 }, 50, 50, 50, 50);
+		facade.addUnit(any, world);
+		
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"positions\"" + "\n" + 
+				"priority: 10" + "\n" + 
+				"activities:" + "\n" +
+				"a:= any;" + "\n" +
+				"b:= log;" + "\n" +
+				"c:= boulder;" + "\n" +
+				"d:= workshop;" + "\n" +
+				"print position_of a;" + "\n" +
+				"print b;" + "\n" +
+				"print c;" + "\n" +
+				"print d;",
+				facade.createTaskFactory(),Collections.emptyList());
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task taskdummy = tasks.get(0);
+		facade.schedule(scheduler, taskdummy);
+		unit.startDefaultBehavior();
+		advanceTimeFor(world, 10, 0.01);
+		
+		assertEquals(Arrays.toString(new int[]{2,2,0}) + "\n" +
+				Arrays.toString(logCoordinates) + "\n" +
+				Arrays.toString(boulderCoordinates) + "\n" +
+				Arrays.toString(new int[]{2,2,2}) + "\n", outContent.toString());
+	}
+	
+	@Test
+	public void nextToExpressions() throws ModelException {
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"nextToWorkshop\"" + "\n" + 
+				"priority: 10" + "\n" + 
+				"activities:" + "\n" +
+				"print next_to workshop;",
+				facade.createTaskFactory(),Collections.emptyList());
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task taskdummy = tasks.get(0);
+		facade.schedule(scheduler, taskdummy);
+		unit.startDefaultBehavior();
+		advanceTimeFor(world, 10, 0.01);
+
+		boolean result = false;
+		Set<int[]> neighbours = Position.getCubeCoordinatesInRange(new int[]{2,2,2}, 1);
+		for (int[] neighbour: neighbours) {
+			String dummy = Arrays.toString(neighbour) + "\n";
+			String dummy2 = outContent.toString();
+			if (dummy.equals(dummy2)
+					&& (world.canHaveAsCoordinates(neighbour))) {
+						result = true;
+			}
+		}
+		assertTrue(result);
 	}
 	
 	/**

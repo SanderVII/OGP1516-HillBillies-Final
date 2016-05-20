@@ -93,8 +93,9 @@ public class Task implements Comparable<Task> {
 	 *				| new.isTerminated()
 	 * @effect	Sets the task of this task's unit to null.
 	 *				| this.getUnit.setTask(null)
-	 * @effect	Sets the unit of this task to null.
-	 *				| this.setUnit(null)
+	 * @effect	Sets the unit of this task to null, if it has one.
+	 * 				| if this.hasUnit()
+	 *				| 	then this.setUnit(null)
 	 * @effect All the schedulers this task is in remove this task and this task removes those schedulers.
 	 */
 	 public void terminate() {
@@ -103,9 +104,11 @@ public class Task implements Comparable<Task> {
 			 this.removeScheduler(scheduler);
 			 scheduler.removeTask(this);
 		 }
-		 Unit unit = this.getUnit();
-		 this.setUnit(null);
-		 unit.setTask(null);
+		 if (this.hasUnit()) {
+			 Unit unit = this.getUnit();
+			 this.setUnit(null);
+			 unit.setTask(null);
+		 }
 	 }
 	 
 	 /**
