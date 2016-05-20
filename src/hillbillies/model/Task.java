@@ -13,18 +13,17 @@ import hillbillies.statements.expressionType.actions.ActionStatement;
  * a non-empty list of activities. Each task can be assigned to multiple schedulers,
  * but only one unit can execute a certain task at a time.
  * 
- * @invar  The name of each task must be a valid name for any
- *         task.
- *       | isValidName(getName())
- * @invar  The priority of each task must be a valid priority for any
- *         task.
- *       | isValidPriority(getPriority())
+ * @invar	The name of each task must be a valid name for any task.
+ *				| isValidName(getName())
+ * @invar  The priority of each task must be a valid priority for any task.
+ *				| isValidPriority(getPriority())
  * @invar  Each task must have a proper unit.
- * 		 | hasProperUnit()
+ *				| hasProperUnit()
  * @invar   Each task must have proper schedulers.
- *        | hasProperSchedulers()
+ *				| hasProperSchedulers()
  * @invar   Each task must have proper variables.
- *        | hasProperVariables() 		
+ *				| hasProperVariables()
+ *
  * @author 	Sander Mergan, Thomas Vranken
  * @version	3.0
  * 
@@ -32,18 +31,53 @@ import hillbillies.statements.expressionType.actions.ActionStatement;
  */
 public class Task implements Comparable<Task> {
 	
-	//TODO finish
-	public Task(String name, int priority, Statement activities, int[] selectedCube) {
+	/**
+	 * Initializes this task with the given name, priority, activities and selected cube 
+	 * 
+	 * @param	name
+	 *				The name for this new task.
+	 * @param	priority
+	 *				The priority for this new task.
+	 * @param	activities
+	 *				The activities for this new task.
+	 * @param	selectedCube
+	 * 				The selected cube for this new task.
+	 * 
+	 * @effect	Sets the name of this new task to the given name.
+	 *				| this.setName(name)
+	 * @effect	Sets the priority of this new task to the given priority.
+	 *				| this.setPriority(priority)
+	 * @effect	Sets the task of the given activities to this new task.
+	 *				| activities.setTask(this)
+	 * @effect	Sets the statement of this new task to the given activities.
+	 *				| this.setStatement(activities)
+	 * @effect	Sets the position of this new task to the given position.
+	 *				| this.setCoordinates(selectedCube)
+	 */
+	public Task(String name, int priority, Statement activities, int[] selectedCube) throws IllegalArgumentException {
 		//NOTE if multiple statements exist, these should be put together in one sequence statement.
 		this.setName(name);
 		this.setPriority(priority);
 		activities.setTask(this);
 		this.setStatement(activities);
-		this.setPosition(selectedCube);
+		this.setCoordinates(selectedCube);
 	}
 	
+	/**
+	 * Initializes this task with the given name , priority, activities and no selected cube.
+	 * 
+	 * @param	name
+	 *				The name for this new task.
+	 * @param	priority
+	 *				The priority for this new task.
+	 * @param	activities
+	 *				The activities for this new task.
+	 *
+	 * @effect Initializes this task with the given name , priority, activities and null as selected cube.
+	 *				| this(name, priority, activities, null)
+	 */
 	public Task(String name, int priority, Statement activities) {
-		this(name,priority,activities, null);
+		this(name, priority, activities, null);
 	}
 	
 	// =================================================================================================
@@ -212,13 +246,13 @@ public class Task implements Comparable<Task> {
 	 * Check whether the given position is a valid position for
 	 * any task.
 	 *  
-	 * @param  position
+	 * @param  coordinates
 	 *         The position to check.
 	 * @return 
 	 *       | result == 
 	 */
 	//TODO doc
-	public static boolean isValidPosition(int[] position) {
+	public static boolean isValidCoordinates(int[] coordinates) {
 		return true;
 	}
 	
@@ -236,9 +270,9 @@ public class Task implements Comparable<Task> {
 	 *       | ! isValidPosition(getPosition())
 	 */
 	@Raw
-	public void setPosition(int[] position) 
+	public void setCoordinates(int[] position) 
 			throws IllegalArgumentException {
-		if (! isValidPosition(position))
+		if (! isValidCoordinates(position))
 			throw new IllegalArgumentException();
 		this.position = position;
 	}
