@@ -617,17 +617,17 @@ public class WorldTest {
 		terrain[1][1][2] = TYPE_WORKSHOP;
 		World world = new World(terrain, new DefaultTerrainChangeListener());
 
-		assertTrue(world.isValidXCoordinate(0));
-		assertTrue(world.isValidYCoordinate(0));
+		assertTrue(world.canHaveAsXCoordinate(0));
+		assertTrue(world.canHaveAsYCoordinate(0));
 		assertTrue(world.isValidZCoordinate(0));
-		assertFalse(world.isValidXCoordinate(-1));
-		assertFalse(world.isValidYCoordinate(-1));
+		assertFalse(world.canHaveAsXCoordinate(-1));
+		assertFalse(world.canHaveAsYCoordinate(-1));
 		assertFalse(world.isValidZCoordinate(-1));
-		assertTrue(world.isValidXCoordinate(19));
-		assertTrue(world.isValidYCoordinate(39));
+		assertTrue(world.canHaveAsXCoordinate(19));
+		assertTrue(world.canHaveAsYCoordinate(39));
 		assertTrue(world.isValidZCoordinate(9));
-		assertFalse(world.isValidXCoordinate(20));
-		assertFalse(world.isValidYCoordinate(40));
+		assertFalse(world.canHaveAsXCoordinate(20));
+		assertFalse(world.canHaveAsYCoordinate(40));
 		assertFalse(world.isValidZCoordinate(10));
 	}
 	

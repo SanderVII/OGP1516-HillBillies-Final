@@ -605,11 +605,11 @@ public class World {
 	 * Returns a list of all units standing in the given cube.
 	 * 
 	 * @param	x
-	 * 			The x-coordinate of the cube.
+	 *			The x-coordinate of the cube.
 	 * @param	y
-	 * 			The y-coordinate of the cube.
+	 *			The y-coordinate of the cube.
 	 * @param	z
-	 * 			The z-coordinate of the cube.
+	 *			The z-coordinate of the cube.
 	 * 
 	 * @return	A list containing all units which currently occupy this cube.
 	 */
@@ -784,7 +784,7 @@ public class World {
 	 *				The given range.
 	 * 
 	 * @return	A set of coordinates which are valid. Their integer coordinates 
-	 *				are at most r away from the given coordinates.
+	 *				are at most r cubes away from the given coordinates.
 	 * 
 	 * @throws IllegalArgumentException
 	 *				The given coordinates are not valid coordinates for this world.
@@ -802,17 +802,19 @@ public class World {
 	}
 	
 	/**
-	 * Return  integer coordinates which are at most x cubes away from the given coordinates,
-	 * where x is the given range, and which is passable and valid for this world.
+	 * Returns  integer coordinates which are at most x cubes away from the given coordinates,
+	 * where x is the given range, and that are passable and valid for this world.
 	 * If no such coordinates can be found, return the cube coordinates of the original coordinates.
-	 * @param 	coordinates
-	 * 				The start coordinates.
-	 * @param 	range
-	 * 				How far the new coordinates may be from the given coordinates (in 3 dimensions).
-	 * @return	Passable, valid coordinates which is at most 'range' cubes away from the given coordinates,
-	 * 				or the original coordinates.	
+	 * 
+	 * @param	coordinates
+	 *				The start coordinates.
+	 * @param	range
+	 *				How far the new coordinates may be from the given coordinates (in 3 dimensions).
+	 *
+	 * @return	Passable, valid coordinates which are at most 'range' cubes away from the given coordinates.
+	 *				When no such coordinates are found, return the original coordinates.
 	 * @throws	IllegalArgumentException
-	 * 			There is no valid coordinates in range.
+	 *				There is no valid coordinates in range.
 	 */
 	public int[] getRandomValidCubeCoordinatesInRange(double[] coordinates, int range) {
 		Set<int[]> cubeSet = this.getValidCubeCoordinatesInRange(Position.getCubeCoordinates(coordinates), range);
@@ -828,21 +830,24 @@ public class World {
 				count++;
 		}
 		// If for some reason no coordinates are found, return the original cube.
-		// (This should almost never happen)
+		// This should never happen.
 		return Position.getCubeCoordinates(coordinates);
 	}
 	
 	/**
-	 * Return an integer array of coordinates which are at most x cubes away from the given coordinates,
-	 * where x is the given range, and which are solid and valid for this world.
-	 * @param 	coordinates
-	 * 				The start coordinates.
-	 * @param 	range
-	 * 				How far the new coordinates may be from the given coordinates (in 3 dimensions).
-	 * @return	Passable, valid coordinates which is at most 'range' cubes away from the given coordinates,
-	 * 				or the original coordinates.	
+	 * Returns coordinates that are at most x cubes away from the given coordinates,
+	 * where x is the given range, and that are solid and valid for this world.
+	 * 
+	 * @param	coordinates
+	 *				The start coordinates.
+	 * @param	range
+	 *				How far the new coordinates may be from the given coordinates (in 3 dimensions).
+	 *
+	 * @return	Passable, valid coordinates that are at most 'range' cubes away from the given coordinates.
+	 *				When no such coordinates are found, return the original coordinates.	
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			There is no valid coordinates in range.
+	 *				There is no valid coordinates in range.
 	 */
 	public int[] getRandomSolidCubeCoordinatesInRange(double[] coordinates, int range) {
 		Set<int[]> cubeCoordinatesInRange = this.getValidCubeCoordinatesInRange(Position.getCubeCoordinates(coordinates), range);
@@ -857,19 +862,22 @@ public class World {
 	}
 	
 	/**
-	 * Return integer coordinates which are at most x cubes away from the given coordinates,
+	 * Returns integer coordinates which are at most x cubes away from the given coordinates,
 	 * where x is the given range, and which are valid coordinates for a unit of this world.
 	 * If no such coordinates can be found, return the cube coordinates of the original coordinates.
-	 * @param 	coordinates
-	 * 				The start coordinates.
-	 * @param 	range
-	 * 				How far the new coordinates may be from the given coordinates (in 3 dimensions).
-	 * @return	Valid unit coordinates which is at most 'range' cubes away from the given coordinates,
-	 * 				or the original coordinates.	
+	 * 
+	 * @param	coordinates
+	 *				The start coordinates.
+	 * @param	range
+	 *				How far the new coordinates may be from the given coordinates (in 3 dimensions).
+	 * 
+	 * @return	Valid unit coordinates which is at most 'range' cubes away from the given coordinates.
+	 *				When no such coordinates are found, return the original coordinates.	
+	 * 
 	 * @throws	IllegalArgumentException
-	 * 			There are no valid coordinates in range.
+	 *				There are no valid coordinates in range.
 	 */
-	public int[] getRandomUnitCoordinatesInRange(double[] coordinates, int range) {
+	public int[] getRandomUnitCoordinatesInRange(double[] coordinates, int range) throws IllegalArgumentException {
 		Set<int[]> cubeSet = this.getValidCubeCoordinatesInRange(Position.getCubeCoordinates(coordinates), range);
 		Set<int[]> reducedSet = new HashSet<>();
 		int size = cubeSet.size();
@@ -899,11 +907,13 @@ public class World {
 	// =================================================================================================
 
 	/**
-	 * Checks whether this world has the given entity as one of its
-	 * entities.
+	 * Checks whether this world has the given entity as one of its entities.
 	 * 
-	 * @param  entity
-	 *         The entity to check.
+	 * @param	entity
+	 *				The entity to check.
+	 *
+	 * @return True if this world's list of entities contains the given entity.
+	 *				| this.entities.contains(entity)
 	 */
 	@Basic
 	@Raw
@@ -912,13 +922,13 @@ public class World {
 	}
 
 	/**
-	 * Checks whether this world can have the given entity
-	 * as one of its entities.
+	 * Checks whether this world can have the given entity as one of its entities.
 	 * 
-	 * @param  entity
-	 *         The entity to check.
-	 * @return True if and only if the given entity is effective
-	 *         and that entity is a valid entity for a world.
+	 * @param	entity
+	 *				The entity to check.
+	 *
+	 * @return	True if and only if the given entity is effective
+	 *				and that entity is a valid entity for a world.
 	 */
 	@Raw
 	public boolean canHaveAsEntity(Entity entity) {
@@ -929,9 +939,9 @@ public class World {
 	 * Checks whether this world has proper entities attached to it.
 	 * 
 	 * @return True if and only if this world can have each of the
-	 *         entities attached to it as one of its entities,
-	 *         and if each of these entities references this world as
-	 *         the world to which they are attached.
+	 *				entities attached to it as one of its entities,
+	 *				and if each of these entities references this world as
+	 *				the world to which they are attached.
 	 */
 	public boolean hasProperEntities() {
 		for (Entity entity : entities) {
@@ -944,71 +954,76 @@ public class World {
 	}
 
 	/**
-	 * Return the number of entities associated with this world.
+	 * Returns the number of entities associated with this world.
 	 *
-	 * @return  The total number of entities collected in this world.
+	 * @return	The total number of entities collected in this world.
+	 *				| entities.size();
 	 */
 	public int getNbEntities() {
 		return entities.size();
 	}
 
 	/**
-	 * Add the given entity to the set of entities of this world.
+	 * Adds the given entity to the set of entities of this world.
 	 * 
-	 * @param  entity
-	 *         The entity to be added.
-	 * @pre    The given entity is effective and already references
-	 *         this world.
-	 *       | (entity != null) && (entity.getWorld() == this)
-	 * @post   This world has the given entity as one of its entities.
-	 *       | new.hasAsEntitie(entity)
+	 * @param	entity
+	 *				The entity to be added.
+	 *
+	 * @post	This world has the given entity as one of its entities.
+	 *				| new.hasAsEntity(entity)
+	 *
+	 * @throws	IllegalArgumentException
+	 *				The given entity is not an active entity or
+	 *				the world the given entity references is not this world.
+	 *				| ((entity == null) || (entity.getWorld() != this))
 	 */
-	public void addEntity(@Raw Entity entity) {
-		assert (entity != null) && (entity.getWorld() == this);
+	public void addEntity(@Raw Entity entity) throws IllegalArgumentException {
+		if ((entity == null) || (entity.getWorld() != this))
+			throw new IllegalArgumentException();
+		
 		entities.add(entity);
 	}
 
 	/**
-	 * Remove the given entity from the set of entities of this world.
+	 * Removes the given entity from the set of entities of this world.
 	 * 
-	 * @param  entity
-	 *         The entity to be removed.
-	 * @pre    This world has the given entity as one of
-	 *         its entities, and the given entity does not
-	 *         reference any world.
-	 *       | this.hasAsEntity(entity) &&
-	 *       | (entity.getWorld() == null)
-	 * @post   This world no longer has the given entity as
-	 *         one of its entities.
-	 *       | ! new.hasAsEntity(entity)
+	 * @param	entity
+	 *				The entity to be removed.
+	 *
+	 * @post	This world no longer has the given entity as one of its entities.
+	 *				| ! new.hasAsEntity(entity)
+	 *
+	 * @throws IllegalArgumentException
+	 *				This world doesn't have the given entity as one of its entities or
+	 *				the given entity still references this world as its world.
+	 *				| (( ! this.hasAsEntity(entity)) || (entity.getWorld() != null))
 	 */
 	@Raw
-	public void removeEntity(Entity entity) {
-		assert this.hasAsEntity(entity) && (entity.getWorld() == null);
+	public void removeEntity(Entity entity) throws IllegalArgumentException {
+		if (( ! this.hasAsEntity(entity)) || (entity.getWorld() != null))
+			throw new IllegalArgumentException();
+		
 		entities.remove(entity);
 		entity.setWorld(null);
 	}
 
 	/**
-	 * Variable referencing a set collecting all the entities
-	 * of this world.
+	 * A variable that stores a set collecting all the entities of this world.
 	 * 
-	 * @invar  The referenced set is effective.
-	 *       | entities != null
-	 * @invar  Each entity registered in the referenced list is
-	 *         effective and not yet terminated.
-	 *       | for each entity in entities:
-	 *       |   ( (entity != null) &&
-	 *       |     (! entity.isTerminated()) )
+	 * @invar	The referenced set is effective.
+	 *				| entities != null
+	 * @invar	Each entity registered in the referenced list is effective and not yet terminated.
+	 *				| for each entity in entities:
+	 *				|   ( (entity != null) && (! entity.isTerminated()) )
 	 */
 	private final Set<Entity> entities = new HashSet<Entity>();
 	
 	/**
 	 * Returns a set collecting all the entities of this world. 
 	 * 
-	 * @return	The resulting set does not contain a null reference.
-	 * @return	Each entities in the resulting set is attached to this world,
-	 * 			and vice versa.
+	 * @note	The resulting set does not contain a null reference.
+	 * 
+	 * @return	Each entity in the resulting set is attached to this world and vice versa.
 	 */
 	// NOTE: this is the formal way (same as in textbook) to return all objects of the set.
 	public Set<Entity> getEntities() {
@@ -1016,17 +1031,19 @@ public class World {
 	}
 	
 	/**
-	 * Returns an item of this world that has a position equal to the given position.
-	 * @param 	position
+	 * Returns an item of this world that has coordinates equal to the given coordinates.
+	 * 
+	 * @param	coordinates
 	 *				The position to find an item at.
-	 * @return	An item which occupies the cube with the given position.
-	 * 				Return null if no such item exists.
+	 *
+	 * @return	An item which occupies the cube with the given coordinates.
+	 *				Return null if no such item exists.
 	 */
-	public Item getItemAt(int[] position){
+	public Item getItemAt(int[] coordinates){
 		for (Entity entity: this.getEntities()){
 			if (entity instanceof Item){
 				int[] entityPosition = entity.getPosition().getCubeCoordinates();
-				if (Position.equals(position, entityPosition))
+				if (Position.equals(coordinates, entityPosition))
 					return (Item) entity;
 			}
 		}
@@ -1034,13 +1051,15 @@ public class World {
 	}
 	
 	/**
-	 * Checks whether their are any items at the given position.
-	 * @param position
-	 *				The position to check.
-	 * @return	True if there is an item in this world which cube position is equal to the given position.	
+	 * Checks whether there are any items at the given position.
+	 * 
+	 * @param coordinates
+	 *				The coordinates to check.
+	 *
+	 * @return	True if there is an item in this world which cube coordinatesare equal to the given coordinates.	
 	 */
-	public boolean hasItemAt(int[] position){
-		Item item = this.getItemAt(position);
+	public boolean hasItemAt(int[] coordinates){
+		Item item = this.getItemAt(coordinates);
 		if (item == null)
 			return false;
 		else
@@ -1055,9 +1074,9 @@ public class World {
 	/**
 	 * Returns a set collecting all the units of this world. 
 	 * 
-	 * @return	The resulting set does not contain a null reference.
-	 * @return	Each unit in the resulting set is attached to this world,
-	 * 			and vice versa.
+	 * @note	The resulting set does not contain a null reference.
+	 * 
+	 * @return	Each unit in the resulting set is attached to this world and vice versa.
 	 */
 	public Set<Unit> getUnits() {
 		Set<Entity> allEntities = this.getEntities();
@@ -1069,43 +1088,47 @@ public class World {
 	}
 	
 	/**
-	 * Return the number of units associated with this world.
+	 * Returns the number of units associated with this world.
 	 *
-	 * @return  The total number of units collected in this world.
+	 * @return	The total number of units in this world.
+	 *				| this.getUnits().size()
 	 */
 	public int getNbUnits() {
 		return this.getUnits().size();
 	}
 	
 	/**
-	 * Returns a unit of this world that has a position equal to the given position.
-	 * @param position
-	 *				The position to find a unit at.
-	 * @return	A unit which occupies the cube with the given position.
-	 * 				Return null if no such unit exists.
+	 * Returns a unit of this world that has coordinates equal to the given coordinates.
+	 * @param	coordinates
+	 *				The coordinates to find a unit at.
+	 * @return	A unit which occupies the cube with the given coordinates.
+	 *				Return null if no such unit exists.
 	 */
-	public Unit getUnitAt(int[] position){
+	public Unit getUnitAt(int[] coordinates){
 		for (Unit unit: this.getUnits()){
 			int[] unitPosition = unit.getPosition().getCubeCoordinates();
-			if (Position.equals(position, unitPosition))
+			if (Position.equals(coordinates, unitPosition))
 				return unit;
 		}
 		return null;
 	}
 	
 	/**
-	 * Checks whether their are any units at the given position.
-	 * @param position
-	 *				The position to check.
-	 * @return	True if there is a unit in this world which cube position is equal to the given position.	
+	 * Checks whether there are any units at the given coordinates.
+	 * 
+	 * @param	coordinates
+	 *				The coordinates to check.
+	 *
+	 * @return	True if there is a unit in this world which cube coordinates are equal to the given coordinates.	
 	 */
-	public boolean hasUnitAt(int[] position){
-		Unit unit = this.getUnitAt(position);
+	public boolean hasUnitAt(int[] coordinates){
+		Unit unit = this.getUnitAt(coordinates);
 		if (unit == null)
 			return false;
 		else
 			return true;
 	}
+	
 	
 	// =================================================================================================
 	// Specific methods for logs of this world.
@@ -1114,9 +1137,9 @@ public class World {
 	/**
 	 * Returns a set collecting all the logs of this world. 
 	 * 
-	 * @return	The resulting set does not contain a null reference.
-	 * @return	Each log in the resulting set is attached to this world,
-	 * 			and vice versa.
+	 * @note	The resulting set does not contain a null reference.
+	 * 
+	 * @return	Each log in the resulting set is attached to this world and vice versa.
 	 */
 	public Set<Log> getLogs() {
 		Set<Entity> allEntities = this.getEntities();
@@ -1128,38 +1151,41 @@ public class World {
 	}
 	
 	/**
-	 * Return the number of logs associated with this world.
+	 * Returns the number of logs associated with this world.
 	 *
-	 * @return  The total number of logs collected in this world.
+	 * @return	The total number of logs collected in this world.
+	 *				| this.getLogs().size()
 	 */
 	public int getNbLogs() {
 		return this.getLogs().size();
 	}
 	
 	/**
-	 * Returns a log of this world that has a position equal to the given position.
-	 * @param position
-	 *				The position to find a log at.
-	 * @return	A log which occupies the cube with the given position.
-	 * 				Return null if no such log exists.
+	 * Returns a log of this world that has coordinates equal to the given coordinates.
+	 * @param coordinates
+	 *				The coordinates to find a log at.
+	 * @return	A log which occupies the cube with the given coordinates.
+	 *				Return null if no such log exists.
 	 */
-	public Log getLogAt(int[] position){
+	public Log getLogAt(int[] coordinates){
 		for (Log log: this.getLogs()){
 			int[] logPosition = log.getPosition().getCubeCoordinates();
-			if (Position.equals(position, logPosition))
+			if (Position.equals(coordinates, logPosition))
 				return log;
 		}
 		return null;
 	}
 	
 	/**
-	 * Checks whether their are any logs at the given position.
-	 * @param position
-	 *				The position to check.
-	 * @return	True if there is a log in this world which cube position is equal to the given position.	
+	 * Checks whether there are any logs at the given coordinates.
+	 * 
+	 * @param coordinates
+	 *				The coordinates to check.
+	 *
+	 * @return	True if there is a log in this world which cube coordinates is equal to the given coordinates.	
 	 */
-	public boolean hasLogAt(int[] position){
-		Log log = this.getLogAt(position);
+	public boolean hasLogAt(int[] coordinates){
+		Log log = this.getLogAt(coordinates);
 		if (log == null)
 			return false;
 		else
@@ -1173,9 +1199,9 @@ public class World {
 	/**
 	 * Returns a set collecting all the boulders of this world. 
 	 * 
-	 * @return	The resulting set does not contain a null reference.
-	 * @return	Each boulder in the resulting set is attached to this world,
-	 * 			and vice versa.
+	 * @note	The resulting set does not contain a null reference.
+	 * 
+	 * @return	Each boulder in the resulting set is attached to this world and vice versa.
 	 */
 	public Set<Boulder> getBoulders() {
 		Set<Entity> allEntities = this.getEntities();
@@ -1187,38 +1213,40 @@ public class World {
 	}
 	
 	/**
-	 * Return the number of boulders associated with this world.
+	 * Returns the number of boulders associated with this world.
 	 *
 	 * @return  The total number of boulders collected in this world.
+	 *				| this.getBoulders().size()
 	 */
 	public int getNbBoulders() {
 		return this.getBoulders().size();
 	}
 	
 	/**
-	 * Returns a boulder of this world that has a position equal to the given position.
-	 * @param position
-	 *				The position to find a boulder at.
-	 * @return	A boulder which occupies the cube with the given position.
-	 * 				Return null if no such boulder exists.
+	 * Returns a boulder of this world that has coordinates equal to the given coordinates.
+	 * 
+	 * @param coordinates
+	 *				The coordinates to find a boulder at.
+	 * @return	A boulder which occupies the cube with the given coordinates.
+	 *				Return null if no such boulder exists.
 	 */
-	public Boulder getBoulderAt(int[] position){
+	public Boulder getBoulderAt(int[] coordinates){
 		for (Boulder boulder: this.getBoulders()){
 			int[] boulderPosition = boulder.getPosition().getCubeCoordinates();
-			if (Position.equals(position, boulderPosition))
+			if (Position.equals(coordinates, boulderPosition))
 				return boulder;
 		}
 		return null;
 	}
 	
 	/**
-	 * Checks whether their are any boulders at the given position.
-	 * @param position
-	 *				The position to check.
-	 * @return	True if there is a boulder in this world which cube position is equal to the given position.	
+	 * Checks whether their are any boulders at the given coordinates.
+	 * @param coordinates
+	 *				The coordinates to check.
+	 * @return	True if there is a boulder in this world which cube coordinates are equal to the given coordinates.	
 	 */
-	public boolean hasBoulderAt(int[] position){
-		Boulder boulder = this.getBoulderAt(position);
+	public boolean hasBoulderAt(int[] coordinates){
+		Boulder boulder = this.getBoulderAt(coordinates);
 		if (boulder == null)
 			return false;
 		else
@@ -1231,7 +1259,7 @@ public class World {
 	
 	/**
 	 * Creates a new unit with random attributes at a random location.
-	 * If the maximal amount of units for a world is reached, then null is returned
+	 * If the maximal amount of units for a world is reached, then null is returned.
 	 * 
 	 * @return	A new unit with this world as its world and random valid name, weight, strength, agility, toughness and initial coordinates.
 	 *				If the maximal amount of units for a world is reched, then null is returned.
@@ -1265,22 +1293,30 @@ public class World {
 	}
 	
 	/**
-	 * Generates a random valid unit name of length 5.
-	 * @return	A random valid unit name of length 5.
-	 *				| result == nameGenerator(5)
+	 * A variable that stores the length of randomly generated names.
 	 */
-	private static String nameGenerator(){
-		int defaultLength = 5;
-		return nameGenerator(defaultLength);
+	private static final int DEFAULT_NAME_LENGTH = 5;
+	
+	/**
+	 * Generates a random valid unit name of length DEFAULT_NAME_LENGTH.
+	 * 
+	 * @return	A random valid unit name of length DEFAULT_NAME_LENGTH.
+	 *				| result == nameGenerator(DEFAULT_NAME_LENGTH)
+	 */
+	private static String nameGenerator() throws IllegalStateException{
+		return nameGenerator(DEFAULT_NAME_LENGTH);
 	}
 	
 	/**
 	 * Returns a random legal unit name of the given size.
+	 * 
 	 * @param length
+	 *				The length of the name that has to be generated.
+	 *
 	 * @return A random capital letter followed by a random string of allowed name characters of the given length minus 1.
 	 *				| result == getRandomCapitalLetter() + getRandomStringOfAllowedNameCharacters(length-1)
 	 */
-	private static String nameGenerator(int length){
+	private static String nameGenerator(int length) throws IllegalStateException{
 		String randomCapitalLetter = getRandomCapitalLetter();
 		String randomRestOfTheName = getRandomStringOfAllowedNameCharacters(length-1);
 		return randomCapitalLetter + randomRestOfTheName;
@@ -1288,9 +1324,12 @@ public class World {
 	
 	/**
 	 * Returns a string with legal name characters of the given length.
+	 * 
 	 * @param	length
 	 *				The length of the string that has to be generated.
+	 *
 	 * @return	A string of the given length, consisting of allowed name characters .
+	 * 
 	 * @throws	IllegalStateException
 	 *				The generated string is not the given length.
 	 */
@@ -1308,12 +1347,13 @@ public class World {
 	}
 
 	/**
-	 * A variable storing all the allowed name characters.
+	 * A variable that stores all the allowed name characters.
 	 */
 	private static String ALLOWED_NAME_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKMNOPQRSTUVWXYZ\"\' ";
 	
 	/**
 	 * Returns a random capital letter from the roman alphabet.
+	 * 
 	 * @return A random character that is in ALL_CAPITAL_LETTERS..
 	 */
 	private static String getRandomCapitalLetter() {
@@ -1322,35 +1362,35 @@ public class World {
 	}
 	
 	/**
-	 * A variable containing all capital letters of the roman alphabet.
+	 * A variable that stores all capital letters of the roman alphabet.
 	 */
 	private static String ALL_CAPITAL_LETTERS = "ABCDEFGHIJKMNOPQRSTUVWXYZ";
 	
 	/**
-	 * Generates random coordinates that valid initial coordinates for a unit.
+	 * Generates random coordinates that are valid initial coordinates for a unit.
 	 * 
-	 * @return	Random cube coordinates that are passable terrain and lie directly above a cube that is not passable terrain.
+	 * @return	Random cube coordinates that are passable terrain and lay directly above a cube that is not passable terrain.
 	 */
 	public int[] getRandomAvailableUnitCoordinates(){
 		int[] randomAvailableCoordinates = this.getRandomCoordinates();
 		while (!this.isValidInitialUnitCoordinates(randomAvailableCoordinates)){
 			randomAvailableCoordinates = this.getRandomCoordinates();
 		}
-		return randomAvailableCoordinates.clone();
+		return randomAvailableCoordinates;
 	}
 
 	/**
-	 * Returns random coordinates within the worlds bounderies.
+	 * Returns random coordinates within this worlds bounderies.
 	 * 
-	 * @return Random coordinates within the worlds bounderies.
+	 * @return	Random coordinates within this worlds bounderies.
 	 */
 	int[] getRandomCoordinates() {
 		int randomXCoordinate = CUBE_COORDINATE_MIN-1;
-		while (!this.isValidXCoordinate(randomXCoordinate))
+		while (!this.canHaveAsXCoordinate(randomXCoordinate))
 			randomXCoordinate = new Random().nextInt( this.getMaximumXValue());
 		
 		int randomYCoordinate = CUBE_COORDINATE_MIN-1;
-		while (!this.isValidYCoordinate(randomYCoordinate))
+		while (!this.canHaveAsYCoordinate(randomYCoordinate))
 			randomYCoordinate = new Random().nextInt( this.getMaximumYValue());
 		
 		int randomZCoordinate = CUBE_COORDINATE_MIN-1;
@@ -1365,10 +1405,11 @@ public class World {
 	 * Checks whether the given coordinates are valid initial unit coordinates.
 	 *  
 	 * @param	coordinates
-	 *         			The coordinates to check.
+	 *				The coordinates to check.
+	 *         
 	 * @return	True if and only if the given coordinates are passable and the cube right underneath is not passable or the lowest possable coordinates.
-	 *       			| result ==  ( this.isPassable(coordinates) && 
-	 *       			|		( (coordinates[2] == CUBE_COORDINATE_MIN) || (!this.isPassable(coordinatesRightUnderneath)) ) )
+	 *				| result ==  ( this.isPassable(coordinates) && 
+	 *				|		( (coordinates[2] == CUBE_COORDINATE_MIN) || (!this.isPassable(coordinatesRightUnderneath)) ) )
 	*/
 	public boolean isValidInitialUnitCoordinates(int[] coordinates){
 		int[] coordinatesRightUnderneath = {coordinates[0], coordinates[1], coordinates[2]-1};
@@ -1380,9 +1421,11 @@ public class World {
 	 * Returns whether the cube in the given coordinates is passable.
 	 * 
 	 * @param	coordinates	
-	 *            		The coordinates to be checked.
-	 * @return	Returns true if and only if the cube in the given coordinates is passable. A cube is passable when the terrain is AIR or WORKSHOP.
-	 * 					|result == cubes[coordinates[0]][coordinates[1]][coordinates[2]].isPassable();
+	 *				The coordinates that have to be checked.
+	 *
+	 * @return	Returns true if and only if the cube in the given coordinates is passable. 
+	 * 				A cube is passable when the terrain is AIR or WORKSHOP.
+	 *				|result == cubes[coordinates[0]][coordinates[1]][coordinates[2]].isPassable();
 	 */
 	private boolean isPassable(int[] coordinates){
 		return cubes[coordinates[0]][coordinates[1]][coordinates[2]].isPassable();
@@ -1392,12 +1435,13 @@ public class World {
 	 * Checks whether the given x-coordinate is a valid x-coordinate.
 	 *  
 	 * @param	xCoordinate
-	 *         			The x-coordinate to check.
+	 *				The x-coordinate to check.
+	 *
 	 * @return	True if and only if the given value is higher than or equal to the minimal coordinate value
-	 * 					and less than the maximal value.
-	 *       			| result == ((xCoordinate >= this.CUBE_COORDINATE_MIN) && (xCoordinate < this.getMaximumXValue()))
+	 *				and less than the maximal value.
+	 *				| result == ((xCoordinate >= this.CUBE_COORDINATE_MIN) && (xCoordinate < this.getMaximumXValue()))
 	*/
-	public boolean isValidXCoordinate(int xCoordinate){
+	public boolean canHaveAsXCoordinate(int xCoordinate){
 		return (xCoordinate < this.getMaximumXValue()) &&  xCoordinate >= World.CUBE_COORDINATE_MIN;
 	}
 	
@@ -1405,12 +1449,13 @@ public class World {
 	 * Checks whether the given y-coordinate is a valid ycoordinate.
 	 *  
 	 * @param	yCoordinate
-	 *         			The y-coordinate to check.
+	 *				The y-coordinate to check.
+	 *
 	 * @return	True if and only if the given value is higher than or equal to the minimal coordinate value
-	 * 					and less than the maximal value.
-	 *       			| result == ((yCoordinate >= this.CUBE_COORDINATE_MIN) && (yCoordinate < this.getMaximumYValue()))
+	 *				and less than the maximal value.
+	 *				| result == ((yCoordinate >= this.CUBE_COORDINATE_MIN) && (yCoordinate < this.getMaximumYValue()))
 	*/
-	public boolean isValidYCoordinate(int yCoordinate){
+	public boolean canHaveAsYCoordinate(int yCoordinate){
 		return yCoordinate < this.getMaximumYValue() &&  yCoordinate >= World.CUBE_COORDINATE_MIN;
 	}
 	
@@ -1418,10 +1463,10 @@ public class World {
 	 * Checks whether the given z-coordinate is a valid z-coordinate.
 	 *  
 	 * @param	zCoordinate
-	 *         			The z-coordinate to check.
+	 *				The z-coordinate to check.
 	 * @return	True if and only if the given value is higher than or equal to the minimal coordinate value
-	 * 					and less than the maximal value.
-	 *       			| result == ((zCoordinate >= this.CUBE_COORDINATE_MIN) && (zCoordinate < this.getMaximumZValue()))
+	 *				and less than the maximal value.
+	 *				| result == ((zCoordinate >= this.CUBE_COORDINATE_MIN) && (zCoordinate < this.getMaximumZValue()))
 	*/
 	public boolean isValidZCoordinate(int zCoordinate){
 		return zCoordinate < this.getMaximumZValue() &&  zCoordinate >= World.CUBE_COORDINATE_MIN;
@@ -1433,15 +1478,15 @@ public class World {
 	// ===============================================================================================
 	
 	/**
-	 * A variable storing the cube coordinates of all the collapsing cubes.
+	 * A variable that stores the cube coordinates of all the collapsing cubes.
 	 */
 	private List<int[]> collapsingCubes = new ArrayList<int[]>();
 	
 	/**
 	 * Advances the time for the world and all game objects inside it.
 	 * 
-	 * @param 	deltaT
-	 * 			The given game time to advance.
+	 * @param	deltaT
+	 *				The amount of time to advance the gametime of this world with.
 	 */
 	public void advanceTime(double deltaT) throws NullPointerException, IllegalStateException, IllegalArgumentException{
 		if  (deltaT < 0)

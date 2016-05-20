@@ -446,7 +446,7 @@ public class Position {
 	}
 	
 	/**
-	 * Return the x-coordinate of this unit.
+	 * Returns the x-coordinate of this unit.
 	 */
 	@Basic @Raw
 	public double getXCoordinate() {
@@ -454,7 +454,7 @@ public class Position {
 	}
 	
 	/**
-	 * Check whether the given x-coordinate is a valid x-coordinate for any unit.
+	 * Checks whether the given x-coordinate is a valid x-coordinate for any unit.
 	 *  
 	 * @param	x-coordinate
 	 *         			The x-coordinate to check.
@@ -468,7 +468,7 @@ public class Position {
 	}
 	
 	/**
-	 * Set the x-coordinate of this unit to the given x-coordinate.
+	 * Sets the x-coordinate of this unit to the given x-coordinate.
 	 * 
 	 * @param	xCoordinate
 	 *         			The new x-coordinate for this unit.
